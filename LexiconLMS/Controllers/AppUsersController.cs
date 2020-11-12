@@ -37,6 +37,7 @@ namespace LexiconLMS.Controllers
             var appUser = await _context.AppUser
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (appUser == null)
             {
                 return NotFound();
@@ -70,7 +71,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: AppUsers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
             {
@@ -144,7 +145,7 @@ namespace LexiconLMS.Controllers
         // POST: AppUsers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var appUser = await _context.AppUser.FindAsync(id);
             _context.AppUser.Remove(appUser);
