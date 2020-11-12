@@ -78,8 +78,8 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -111,10 +111,7 @@ namespace LexiconLMS.Migrations
                     b.Property<int?>("ActivityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AppUserId1")
+                    b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("CourseId")
@@ -136,7 +133,7 @@ namespace LexiconLMS.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.HasIndex("AppUserId1");
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("CourseId");
 
@@ -430,7 +427,7 @@ namespace LexiconLMS.Migrations
 
                     b.HasOne("LexiconLMS.Models.Entities.AppUser", "AppUser")
                         .WithMany("Documents")
-                        .HasForeignKey("AppUserId1");
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("LexiconLMS.Models.Entities.Course", "Course")
                         .WithMany("Documents")

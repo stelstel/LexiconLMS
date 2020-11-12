@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LexiconLMS.Migrations
 {
-    public partial class Init : Migration
+    public partial class Int : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -36,31 +36,6 @@ namespace LexiconLMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Course",
                 columns: table => new
                 {
@@ -69,7 +44,7 @@ namespace LexiconLMS.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     StartTime = table.Column<DateTime>(nullable: false),
-                    AppUserId = table.Column<int>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true),
                     ModuleId = table.Column<int>(nullable: false),
                     DocumentId = table.Column<int>(nullable: true)
                 },
@@ -95,6 +70,67 @@ namespace LexiconLMS.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    CourseId = table.Column<int>(nullable: true),
+                    DocumentId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Module",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    StartTime = table.Column<DateTime>(nullable: false),
+                    EndTime = table.Column<DateTime>(nullable: false),
+                    CourseId = table.Column<int>(nullable: false),
+                    ActivityId = table.Column<int>(nullable: false),
+                    DocumentId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Module", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Module_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -185,54 +221,6 @@ namespace LexiconLMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUser",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    CourseId = table.Column<int>(nullable: true),
-                    DocumentId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUser", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppUser_Course_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Course",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Module",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    StartTime = table.Column<DateTime>(nullable: false),
-                    EndTime = table.Column<DateTime>(nullable: false),
-                    CourseId = table.Column<int>(nullable: false),
-                    ActivityId = table.Column<int>(nullable: false),
-                    DocumentId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Module", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Module_Course_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Course",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Activity",
                 columns: table => new
                 {
@@ -271,7 +259,7 @@ namespace LexiconLMS.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     UploadTime = table.Column<DateTime>(nullable: false),
-                    AppUserId = table.Column<int>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true),
                     CourseId = table.Column<int>(nullable: true),
                     ModuleId = table.Column<int>(nullable: true),
                     ActivityId = table.Column<int>(nullable: true)
@@ -286,11 +274,11 @@ namespace LexiconLMS.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_AppUser_AppUserId",
+                        name: "FK_Document_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
-                        principalTable: "AppUser",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Document_Course_CourseId",
                         column: x => x.CourseId,
@@ -314,11 +302,6 @@ namespace LexiconLMS.Migrations
                 name: "IX_Activity_ModuleId",
                 table: "Activity",
                 column: "ModuleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUser_CourseId",
-                table: "AppUser",
-                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -346,6 +329,11 @@ namespace LexiconLMS.Migrations
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CourseId",
+                table: "AspNetUsers",
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -409,13 +397,10 @@ namespace LexiconLMS.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Activity");
 
             migrationBuilder.DropTable(
-                name: "AppUser");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ActivityType");
