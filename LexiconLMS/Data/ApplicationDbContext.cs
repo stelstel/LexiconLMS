@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using LexiconLMS.Models.Entities;
 
 namespace LexiconLMS.Data
 {
@@ -12,5 +13,6 @@ namespace LexiconLMS.Data
             : base(options)
         {
         }
+        public DbSet<LexiconLMS.Models.Entities.AppUser> AppUser { get; set; }
     }
 }
