@@ -12,18 +12,19 @@ namespace LexiconLMS.Controllers
 {
     public class AppUsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
-        public AppUsersController(ApplicationDbContext context)
+        public AppUsersController(ApplicationDbContext db)
         {
-            _context = context;
+            this.db = db;
         }
 
         // GET: AppUsers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.AppUser.Include(a => a.Course);
-            return View(await applicationDbContext.ToListAsync());
+            var model = await db.AppUser.Include(a => a.Course).ToListAsync();
+
+            return View(model);
         }
 
         // GET: AppUsers/Details/5
@@ -34,22 +35,23 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser
+            var model = await db.AppUser
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (appUser == null)
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(appUser);
+            return View(model);
         }
 
         // GET: AppUsers/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id");
+            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
+
             return View();
         }
 
@@ -58,15 +60,17 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Create(AppUser appUser)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appUser);
-                await _context.SaveChangesAsync();
+                db.Add(appUser);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
+
+            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+
             return View(appUser);
         }
 
@@ -78,12 +82,15 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser.FindAsync(id);
+            var appUser = await db.AppUser.FindAsync(id);
+
             if (appUser == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
+
+            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+
             return View(appUser);
         }
 
@@ -92,7 +99,7 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Edit(string id, AppUser appUser)
         {
             if (id != appUser.Id)
             {
@@ -103,8 +110,8 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(appUser);
-                    await _context.SaveChangesAsync();
+                    db.Update(appUser);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,7 +126,9 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
+
+            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+
             return View(appUser);
         }
 
@@ -131,9 +140,10 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser
+            var appUser = await db.AppUser
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (appUser == null)
             {
                 return NotFound();
@@ -147,15 +157,15 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var appUser = await _context.AppUser.FindAsync(id);
-            _context.AppUser.Remove(appUser);
-            await _context.SaveChangesAsync();
+            var appUser = await db.AppUser.FindAsync(id);
+            db.AppUser.Remove(appUser);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AppUserExists(string id)
         {
-            return _context.AppUser.Any(e => e.Id == id);
+            return db.AppUser.Any(e => e.Id == id);
         }
     }
 }
