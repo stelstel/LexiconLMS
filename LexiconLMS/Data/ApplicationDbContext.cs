@@ -14,8 +14,10 @@ namespace LexiconLMS.Data
             : base(options)
         {
         }
+
         public DbSet<LexiconLMS.Models.Entities.AppUser> AppUser { get; set; }
 
         // TODO Has query filter?
+        // TODO add morde DbSets entities    
     }
 }

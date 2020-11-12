@@ -30,6 +30,7 @@ namespace LexiconLMS.Controllers
         // GET: AppUsers/Details/5
         public async Task<IActionResult> Details(string? id)
         {
+            
             if (id == null)
             {
                 return NotFound();
