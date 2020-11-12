@@ -13,6 +13,8 @@ namespace LexiconLMS.Data
             : base(options)
         {
         }
+
         public DbSet<LexiconLMS.Models.Entities.AppUser> AppUser { get; set; }
+        // TODO add morde DbSets entities    
     }
 }
