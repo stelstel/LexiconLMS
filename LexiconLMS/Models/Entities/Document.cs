@@ -18,7 +18,7 @@ namespace LexiconLMS.Models.Entities
 
 
         // Foreign Keys
-        public int AppUserId { get; set; }
+        public string AppUserId { get; set; }
         public int? CourseId { get; set; }
         public int? ModuleId { get; set; }
         public int? ActivityId { get; set; }
