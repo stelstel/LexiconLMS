@@ -27,7 +27,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: AppUsers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
@@ -91,7 +91,7 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
         {
             if (id != appUser.Id)
             {
@@ -123,7 +123,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: AppUsers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
@@ -152,7 +152,7 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppUserExists(int id)
+        private bool AppUserExists(string id)
         {
             return _context.AppUser.Any(e => e.Id == id);
         }
