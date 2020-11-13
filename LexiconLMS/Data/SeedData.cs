@@ -17,10 +17,15 @@ namespace LexiconLMS.Data
             // "Handle resources", "use service until the 'using' is used up"
             using (var db = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                if (db.AppUser.Any())
+                if (db.Users.Any())
                 {
-                    return;
+                    db.Users.RemoveRange(db.Users);
+                    db.Roles.RemoveRange(db.Roles);
+
+                    await db.SaveChangesAsync();
                 }
+
+
 
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -42,6 +47,9 @@ namespace LexiconLMS.Data
                         throw new Exception(string.Join("\n", result.Errors));
                     }
                 }
+
+
+                // Seed admin
 
                 var adminEmail = "admin@lms.se";
 
@@ -86,10 +94,12 @@ namespace LexiconLMS.Data
 
 
 
-                var fake = new Faker("sv");
+
 
 
                 // Seed students
+
+                var fake = new Faker("sv");
 
                 var students = new List<AppUser>();
 
@@ -108,6 +118,59 @@ namespace LexiconLMS.Data
                         Email = studentEmail
                     };
 
+                    //var addStudentResult = await userManager.CreateAsync(student, adminPW);
+
+                    //if (!addStudentResult.Succeeded)
+                    //{
+                    //    throw new Exception(string.Join("\n", addStudentResult.Errors));
+                    //}
+
+                    //var studentUser = await userManager.FindByNameAsync(studentEmail);
+
+                    //if (await userManager.IsInRoleAsync(studentUser, "Student"))
+                    //{
+                    //    continue;
+                    //}
+
+                    //var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
+
+                    //if (!addToRoleResult.Succeeded)
+                    //{
+                    //    throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                    //}
+
+                    students.Add(student);
+                }
+
+                db.AddRange(students);
+                
+
+                // Seed courses
+
+                var courses = new List<Course>();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    var course = new Course
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = fake.Date.Soon()
+                    }; 
+
+                    courses.Add(course);
+                }
+
+                db.AddRange(courses);
+
+                // Add courses to existing students
+
+                var random = new Random();
+
+                foreach (var student in students)
+                {
+                    student.Course = courses[random.Next(courses.Count)];
+
                     var addStudentResult = await userManager.CreateAsync(student, adminPW);
 
                     if (!addStudentResult.Succeeded)
@@ -115,7 +178,7 @@ namespace LexiconLMS.Data
                         throw new Exception(string.Join("\n", addStudentResult.Errors));
                     }
 
-                    var studentUser = await userManager.FindByNameAsync(studentEmail);
+                    var studentUser = await userManager.FindByNameAsync(student.Email);
 
                     if (await userManager.IsInRoleAsync(studentUser, "Student"))
                     {
@@ -129,26 +192,12 @@ namespace LexiconLMS.Data
                         throw new Exception(string.Join("\n", addToRoleResult.Errors));
                     }
 
-                    students.Add(student);
+
                 }
 
-                db.AddRange(students);
 
-                // Seed courses
 
-                var courses = new List<Course>();
 
-                for (int i = 0; i < 20; i++)
-                {
-                    var course = new Course
-                    {
-                        Name = fake.Company.CatchPhrase()
-                    };
-
-                    courses.Add(course);
-                }
-
-                db.AddRange(courses);
 
 
 

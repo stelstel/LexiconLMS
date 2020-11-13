@@ -7,98 +7,88 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
-    public class UsersController : Controller
+    public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public UsersController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Users
+        // GET: Courses
         public async Task<IActionResult> Index()
         {
-            
-            var applicationDbContext = _context.Users.Include(a => a.Course);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.Courses.ToListAsync());
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(string? id)
+        // GET: Courses/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            
             if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users
-                .Include(a => a.Course)
+            var course = await _context.Courses
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (appUser == null)
+            if (course == null)
             {
                 return NotFound();
             }
 
-            return View(appUser);
+            return View(course);
         }
 
-        // GET: Users/Create
-        [Authorize(Roles = "Teacher")]
+        // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id");
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartTime,AppUserId,ModuleId,DocumentId")] Course course)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appUser);
+                _context.Add(course);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
-            return View(appUser);
+            return View(course);
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(string? id)
+        // GET: Courses/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users.FindAsync(id);
-            if (appUser == null)
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
-            return View(appUser);
+            return View(course);
         }
 
-        // POST: Users/Edit/5
+        // POST: Courses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime,AppUserId,ModuleId,DocumentId")] Course course)
         {
-            if (id != appUser.Id)
+            if (id != course.Id)
             {
                 return NotFound();
             }
@@ -107,12 +97,12 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(appUser);
+                    _context.Update(course);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppUserExists(appUser.Id))
+                    if (!CourseExists(course.Id))
                     {
                         return NotFound();
                     }
@@ -123,43 +113,41 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
-            return View(appUser);
+            return View(course);
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(string? id)
+        // GET: Courses/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users
-                .Include(a => a.Course)
+            var course = await _context.Courses
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (appUser == null)
+            if (course == null)
             {
                 return NotFound();
             }
 
-            return View(appUser);
+            return View(course);
         }
 
-        // POST: Users/Delete/5
+        // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var appUser = await _context.Users.FindAsync(id);
-            _context.Users.Remove(appUser);
+            var course = await _context.Courses.FindAsync(id);
+            _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppUserExists(string id)
+        private bool CourseExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Courses.Any(e => e.Id == id);
         }
     }
 }

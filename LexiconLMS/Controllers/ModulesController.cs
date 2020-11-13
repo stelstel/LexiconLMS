@@ -7,98 +7,93 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
-    public class UsersController : Controller
+    public class ModulesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public UsersController(ApplicationDbContext context)
+        public ModulesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Users
+        // GET: Modules
         public async Task<IActionResult> Index()
         {
-            
-            var applicationDbContext = _context.Users.Include(a => a.Course);
+            var applicationDbContext = _context.Module.Include(c => c.Course);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(string? id)
+        // GET: Modules/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            
             if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users
-                .Include(a => a.Course)
+            var @module = await _context.Module
+                .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (appUser == null)
+            if (@module == null)
             {
                 return NotFound();
             }
 
-            return View(appUser);
+            return View(@module);
         }
 
-        // GET: Users/Create
-        [Authorize(Roles = "Teacher")]
+        // GET: Modules/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id");
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Modules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartTime,EndTime,CourseId,ActivityId,DocumentId")] Module @module)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appUser);
+                _context.Add(@module);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
-            return View(appUser);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @module.CourseId);
+            return View(@module);
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(string? id)
+        // GET: Modules/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users.FindAsync(id);
-            if (appUser == null)
+            var @module = await _context.Module.FindAsync(id);
+            if (@module == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
-            return View(appUser);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @module.CourseId);
+            return View(@module);
         }
 
-        // POST: Users/Edit/5
+        // POST: Modules/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,CourseId,DocumentId")] AppUser appUser)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime,EndTime,CourseId,ActivityId,DocumentId")] Module @module)
         {
-            if (id != appUser.Id)
+            if (id != @module.Id)
             {
                 return NotFound();
             }
@@ -107,12 +102,12 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(appUser);
+                    _context.Update(@module);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppUserExists(appUser.Id))
+                    if (!ModuleExists(@module.Id))
                     {
                         return NotFound();
                     }
@@ -123,43 +118,43 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id", appUser.CourseId);
-            return View(appUser);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @module.CourseId);
+            return View(@module);
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(string? id)
+        // GET: Modules/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users
-                .Include(a => a.Course)
+            var @module = await _context.Module
+                .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (appUser == null)
+            if (@module == null)
             {
                 return NotFound();
             }
 
-            return View(appUser);
+            return View(@module);
         }
 
-        // POST: Users/Delete/5
+        // POST: Modules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var appUser = await _context.Users.FindAsync(id);
-            _context.Users.Remove(appUser);
+            var @module = await _context.Module.FindAsync(id);
+            _context.Module.Remove(@module);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppUserExists(string id)
+        private bool ModuleExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Module.Any(e => e.Id == id);
         }
     }
 }

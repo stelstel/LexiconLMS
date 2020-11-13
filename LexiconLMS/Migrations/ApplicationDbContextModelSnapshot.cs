@@ -177,7 +177,7 @@ namespace LexiconLMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Course");
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("LexiconLMS.Models.Entities.Document", b =>
