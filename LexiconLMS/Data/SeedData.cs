@@ -1,4 +1,5 @@
-﻿using LexiconLMS.Models.Entities;
+﻿using Bogus;
+using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,27 +14,28 @@ namespace LexiconLMS.Data
     {
         public static async Task InitializeAsync(IServiceProvider services, string adminPW)
         {
-            using (var context = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+            // "Handle resources", "use service until the 'using' is used up"
+            using (var db = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                if (context.AppUser.Any())
+                if (db.AppUser.Any())
                 {
                     return;
                 }
 
-                var userManger = services.GetRequiredService<UserManager<AppUser>>();
-                var roleManger = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                 var roleNames = new[] { "Teacher", "Student" };
 
                 foreach (var roleName in roleNames)
                 {
-                    if (await roleManger.RoleExistsAsync(roleName))
+                    if (await roleManager.RoleExistsAsync(roleName))
                     {
                         continue;
                     }
 
                     var role = new IdentityRole { Name = roleName };
-                    var result = await roleManger.CreateAsync(role);
+                    var result = await roleManager.CreateAsync(role);
 
                     if (!result.Succeeded)
                     {
@@ -43,7 +45,7 @@ namespace LexiconLMS.Data
 
                 var adminEmail = "admin@lms.se";
 
-                var foundUser = await userManger.FindByEmailAsync(adminEmail);
+                var foundUser = await userManager.FindByEmailAsync(adminEmail);
 
                 if (foundUser != null)
                 {
@@ -58,23 +60,23 @@ namespace LexiconLMS.Data
                     LastName = "LMS"
                 };
 
-                var addAdminResult = await userManger.CreateAsync(admin, adminPW);
+                var addAdminResult = await userManager.CreateAsync(admin, adminPW);
 
                 if (!addAdminResult.Succeeded)
                 {
                     throw new Exception(string.Join("\n", addAdminResult.Errors));
                 }
 
-                var adminUser = await userManger.FindByNameAsync(adminEmail);
+                var adminUser = await userManager.FindByNameAsync(adminEmail);
 
                 foreach (var role in roleNames)
                 {
-                    if (await userManger.IsInRoleAsync(adminUser, role))
+                    if (await userManager.IsInRoleAsync(adminUser, role))
                     {
                         continue;
                     }
 
-                    var addToRoleResult = await userManger.AddToRoleAsync(adminUser, role);
+                    var addToRoleResult = await userManager.AddToRoleAsync(adminUser, role);
 
                     if (!addToRoleResult.Succeeded)
                     {
@@ -84,9 +86,75 @@ namespace LexiconLMS.Data
 
 
 
+                var fake = new Faker("sv");
 
 
-                await context.SaveChangesAsync();
+                // Seed students
+
+                var students = new List<AppUser>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    var fName = fake.Name.FirstName();
+                    var lName = fake.Name.LastName();
+                    var studentEmail = fake.Internet.Email($"{fName} {lName}");
+
+
+                    var student = new AppUser
+                    {
+                        UserName = studentEmail,
+                        FirstName = fName,
+                        LastName = lName,
+                        Email = studentEmail
+                    };
+
+                    var addStudentResult = await userManager.CreateAsync(student, adminPW);
+
+                    if (!addStudentResult.Succeeded)
+                    {
+                        throw new Exception(string.Join("\n", addStudentResult.Errors));
+                    }
+
+                    var studentUser = await userManager.FindByNameAsync(studentEmail);
+
+                    if (await userManager.IsInRoleAsync(studentUser, "Student"))
+                    {
+                        continue;
+                    }
+
+                    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
+
+                    if (!addToRoleResult.Succeeded)
+                    {
+                        throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                    }
+
+                    students.Add(student);
+                }
+
+                db.AddRange(students);
+
+                // Seed courses
+
+                var courses = new List<Course>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    var course = new Course
+                    {
+                        Name = fake.Company.CatchPhrase()
+                    };
+
+                    courses.Add(course);
+                }
+
+                db.AddRange(courses);
+
+
+
+
+
+                await db.SaveChangesAsync();
             }
         }
     }
