@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
@@ -48,6 +49,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: AppUsers/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id");
