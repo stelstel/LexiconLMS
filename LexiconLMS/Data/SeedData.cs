@@ -115,7 +115,8 @@ namespace LexiconLMS.Data
                     courses.Add(course);
                 }
 
-                db.AddRange(courses);
+                ///db.AddRange(courses);
+               
 
 
 
@@ -136,13 +137,14 @@ namespace LexiconLMS.Data
                         FirstName = fName,
                         LastName = lName,
                         Email = studentEmail,
-                        Course = courses[random.Next(courses.Count)]
-                };
+                        Course = courses[1]
+                        //new Course { StartTime = DateTime.Now, Name = "Hej", Description = "Hej" }
+                    };
 
 
-                                   
 
-                   
+
+
 
 
                     var addStudentResult = await userManager.CreateAsync(student, adminPW);
@@ -166,7 +168,7 @@ namespace LexiconLMS.Data
                         throw new Exception(string.Join("\n", addToRoleResult.Errors));
                     }
 
-                    
+
 
 
                     //students.Add(student);
@@ -174,13 +176,13 @@ namespace LexiconLMS.Data
 
                 //db.AddRange(students);
 
-               
+
 
 
                 await db.SaveChangesAsync();
             }
         }
 
-        
+
     }
 }
