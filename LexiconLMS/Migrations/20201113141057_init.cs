@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LexiconLMS.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,7 @@ namespace LexiconLMS.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    ActivityId = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,10 +42,7 @@ namespace LexiconLMS.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    StartTime = table.Column<DateTime>(nullable: false),
-                    AppUserId = table.Column<string>(nullable: true),
-                    ModuleId = table.Column<int>(nullable: false),
-                    DocumentId = table.Column<int>(nullable: true)
+                    StartTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,8 +91,7 @@ namespace LexiconLMS.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    CourseId = table.Column<int>(nullable: true),
-                    DocumentId = table.Column<int>(nullable: true)
+                    CourseId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -119,9 +114,7 @@ namespace LexiconLMS.Migrations
                     Description = table.Column<string>(nullable: true),
                     StartTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
-                    CourseId = table.Column<int>(nullable: false),
-                    ActivityId = table.Column<int>(nullable: false),
-                    DocumentId = table.Column<int>(nullable: true)
+                    CourseId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LexiconLMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201113100057_Init")]
-    partial class Init
+    [Migration("20201113141057_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,9 +62,6 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -86,9 +83,6 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -159,17 +153,8 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ModuleId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -230,17 +215,11 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");

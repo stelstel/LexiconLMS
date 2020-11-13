@@ -21,6 +21,12 @@ namespace LexiconLMS.Data
                 {
                     db.Users.RemoveRange(db.Users);
                     db.Roles.RemoveRange(db.Roles);
+                    db.Courses.RemoveRange(db.Courses);
+                    db.RoleClaims.RemoveRange(db.RoleClaims);
+                    db.UserLogins.RemoveRange(db.UserLogins);
+                    db.UserClaims.RemoveRange(db.UserClaims);
+                    db.UserRoles.RemoveRange(db.UserRoles);
+                    db.UserTokens.RemoveRange(db.UserTokens);
 
                     await db.SaveChangesAsync();
                 }
@@ -101,49 +107,82 @@ namespace LexiconLMS.Data
 
                 var fake = new Faker("sv");
 
-                var students = new List<AppUser>();
+                //var students = new List<AppUser>();
 
-                for (int i = 0; i < 20; i++)
+                //for (int i = 0; i < 20; i++)
+                //{
+                //    var fName = fake.Name.FirstName();
+                //    var lName = fake.Name.LastName();
+                //    var studentEmail = fake.Internet.Email($"{fName} {lName}");
+
+
+                //    var student = new AppUser
+                //    {
+                //        UserName = studentEmail,
+                //        FirstName = fName,
+                //        LastName = lName,
+                //        Email = studentEmail
+                //    };
+
+                //    var addStudentResult = await userManager.CreateAsync(student, adminPW);
+
+                //    if (!addStudentResult.Succeeded)
+                //    {
+                //        throw new Exception(string.Join("\n", addStudentResult.Errors));
+                //    }
+
+                //    var studentUser = await userManager.FindByNameAsync(studentEmail);
+
+                //    if (await userManager.IsInRoleAsync(studentUser, "Student"))
+                //    {
+                //        continue;
+                //    }
+
+                //    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
+
+                //    if (!addToRoleResult.Succeeded)
+                //    {
+                //        throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                //    }
+
+                //    students.Add(student);
+                //}
+
+                //db.AddRange(students);
+
+
+
+                // Create test student
+
+                var student = new AppUser
                 {
-                    var fName = fake.Name.FirstName();
-                    var lName = fake.Name.LastName();
-                    var studentEmail = fake.Internet.Email($"{fName} {lName}");
+                    UserName = "test.testsson@gmail.com",
+                    FirstName = "Test",
+                    LastName = "Testsson",
+                    Email = "test.testsson@gmail.com"
+                };
 
+                var addStudentResult = await userManager.CreateAsync(student, adminPW);
 
-                    var student = new AppUser
-                    {
-                        UserName = studentEmail,
-                        FirstName = fName,
-                        LastName = lName,
-                        Email = studentEmail
-                    };
-
-                    //var addStudentResult = await userManager.CreateAsync(student, adminPW);
-
-                    //if (!addStudentResult.Succeeded)
-                    //{
-                    //    throw new Exception(string.Join("\n", addStudentResult.Errors));
-                    //}
-
-                    //var studentUser = await userManager.FindByNameAsync(studentEmail);
-
-                    //if (await userManager.IsInRoleAsync(studentUser, "Student"))
-                    //{
-                    //    continue;
-                    //}
-
-                    //var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
-
-                    //if (!addToRoleResult.Succeeded)
-                    //{
-                    //    throw new Exception(string.Join("\n", addToRoleResult.Errors));
-                    //}
-
-                    students.Add(student);
+                if (!addStudentResult.Succeeded)
+                {
+                    throw new Exception(string.Join("\n", addStudentResult.Errors));
                 }
 
-                db.AddRange(students);
-                
+                var studentUser = await userManager.FindByNameAsync("test.testsson@gmail.com");
+
+                //if (await userManager.IsInRoleAsync(studentUser, "Student"))
+                //{
+                //    continue;
+                //}
+
+                var addToRoleResult2 = await userManager.AddToRoleAsync(studentUser, "Student");
+
+                if (!addToRoleResult2.Succeeded)
+                {
+                    throw new Exception(string.Join("\n", addToRoleResult2.Errors));
+                }
+
 
                 // Seed courses
 
@@ -167,37 +206,42 @@ namespace LexiconLMS.Data
 
                 var random = new Random();
 
-                foreach (var student in students)
-                {
-                    student.Course = courses[random.Next(courses.Count)];
-
-                    var addStudentResult = await userManager.CreateAsync(student, adminPW);
-
-                    if (!addStudentResult.Succeeded)
-                    {
-                        throw new Exception(string.Join("\n", addStudentResult.Errors));
-                    }
-
-                    var studentUser = await userManager.FindByNameAsync(student.Email);
-
-                    if (await userManager.IsInRoleAsync(studentUser, "Student"))
-                    {
-                        continue;
-                    }
-
-                    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
-
-                    if (!addToRoleResult.Succeeded)
-                    {
-                        throw new Exception(string.Join("\n", addToRoleResult.Errors));
-                    }
+                student.Course = courses[random.Next(courses.Count)];
 
 
-                }
+                //foreach (var student in students)
+                //{
+                //    //student.Course = courses[random.Next(courses.Count)];
+
+
+                //    var addStudentResult = await userManager.CreateAsync(student, adminPW);
 
 
 
 
+                //    if (!addStudentResult.Succeeded)
+                //    {
+                //        throw new Exception(string.Join("\n", addStudentResult.Errors));
+                //    }
+
+                //    var studentUser = await userManager.FindByNameAsync(student.Email);
+
+                //    if (await userManager.IsInRoleAsync(studentUser, "Student"))
+                //    {
+                //        continue;
+                //    }
+
+                //    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
+
+
+                //    if (!addToRoleResult.Succeeded)
+                //    {
+                //        throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                //    }
+
+                //    var temp = student;
+
+                //}
 
 
 
@@ -206,5 +250,7 @@ namespace LexiconLMS.Data
                 await db.SaveChangesAsync();
             }
         }
+
+        
     }
 }

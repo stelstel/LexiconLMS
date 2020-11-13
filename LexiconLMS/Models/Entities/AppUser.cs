@@ -15,7 +15,6 @@ namespace LexiconLMS.Models.Entities
         // Foregin Keys
         public int? CourseId { get; set; }
 
-        public int? DocumentId { get; set; }
 
 
         // Navigation Properties

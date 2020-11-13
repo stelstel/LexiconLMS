@@ -60,9 +60,6 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -84,9 +81,6 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -157,17 +151,8 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ModuleId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -228,17 +213,11 @@ namespace LexiconLMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
