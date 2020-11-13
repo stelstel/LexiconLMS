@@ -15,9 +15,7 @@ namespace LexiconLMS.Models.Entities
 
 
         // Foreign Keys
-        public string AppUserId { get; set; }
-        public int ModuleId { get; set; }
-        public int? DocumentId { get; set; }
+        
 
 
         // Navigation Properties

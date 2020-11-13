@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
-    public class AppUsersController : Controller
+    public class UsersController : Controller
     {
         private readonly ApplicationDbContext db;
 
@@ -19,15 +20,15 @@ namespace LexiconLMS.Controllers
             this.db = db;
         }
 
-        // GET: AppUsers
+        // GET: Users
         public async Task<IActionResult> Index()
         {
-            var model = await db.AppUser.Include(a => a.Course).ToListAsync();
-
-            return View(model);
+            
+            var applicationDbContext = db.Users.Include(a => a.Course);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: AppUsers/Details/5
+        // GET: Users/Details/5
         public async Task<IActionResult> Details(string? id)
         {
             
@@ -36,7 +37,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var model = await db.AppUser
+            var appUser = await db.Users
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -48,7 +49,8 @@ namespace LexiconLMS.Controllers
             return View(model);
         }
 
-        // GET: AppUsers/Create
+        // GET: Users/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
@@ -56,7 +58,7 @@ namespace LexiconLMS.Controllers
             return View();
         }
 
-        // POST: AppUsers/Create
+        // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -75,7 +77,7 @@ namespace LexiconLMS.Controllers
             return View(appUser);
         }
 
-        // GET: AppUsers/Edit/5
+        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
@@ -83,7 +85,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var appUser = await db.AppUser.FindAsync(id);
+            var appUser = await db.Users.FindAsync(id);
 
             if (appUser == null)
             {
@@ -95,7 +97,7 @@ namespace LexiconLMS.Controllers
             return View(appUser);
         }
 
-        // POST: AppUsers/Edit/5
+        // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -133,7 +135,7 @@ namespace LexiconLMS.Controllers
             return View(appUser);
         }
 
-        // GET: AppUsers/Delete/5
+        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
@@ -141,7 +143,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var appUser = await db.AppUser
+            var appUser = await db.Users
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -153,20 +155,20 @@ namespace LexiconLMS.Controllers
             return View(appUser);
         }
 
-        // POST: AppUsers/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var appUser = await db.AppUser.FindAsync(id);
-            db.AppUser.Remove(appUser);
+            var appUser = await db.Users.FindAsync(id);
+            db.Users.Remove(appUser);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AppUserExists(string id)
         {
-            return db.AppUser.Any(e => e.Id == id);
+            return db.Users.Any(e => e.Id == id);
         }
     }
 }

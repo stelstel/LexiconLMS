@@ -16,8 +16,6 @@ namespace LexiconLMS.Models.Entities
 
         // Foreign Key
         public int CourseId { get; set; }
-        public int ActivityId { get; set; }
-        public int? DocumentId { get; set; }
 
 
         // Navigation Properties

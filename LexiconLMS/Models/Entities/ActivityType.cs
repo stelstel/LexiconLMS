@@ -12,7 +12,7 @@ namespace LexiconLMS.Models.Entities
 
 
         // Foreign Keys
-        public int ActivityId { get; set; }
+        
 
         // Navigation Properties
         public ICollection<Activity> Activities { get; set; }
