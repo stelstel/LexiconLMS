@@ -26,7 +26,6 @@ namespace LexiconLMS.Controllers
 
             var applicationDbContext = _context.Users.Include(a => a.Course);
             return View(await applicationDbContext.ToListAsync());
-            return View();
         }
 
         // GET: Users/Details/5

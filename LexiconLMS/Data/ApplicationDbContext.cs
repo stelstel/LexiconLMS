@@ -19,9 +19,12 @@ namespace LexiconLMS.Data
 
         public DbSet<Course> Courses { get; set; }
 
-        public DbSet<Module> Module { get; set; }
+        public DbSet<Module> Modules { get; set; }
+
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<ActivityType> ActivityTypes { get; set; }
 
         // TODO Has query filter?
-        // TODO add morde DbSets entities    
+
     }
 }

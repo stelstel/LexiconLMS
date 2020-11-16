@@ -27,12 +27,16 @@ namespace LexiconLMS.Data
                     db.UserClaims.RemoveRange(db.UserClaims);
                     db.UserRoles.RemoveRange(db.UserRoles);
                     db.UserTokens.RemoveRange(db.UserTokens);
+                    db.Activities.RemoveRange(db.Activities);
+                    db.ActivityTypes.RemoveRange(db.ActivityTypes);
 
                     await db.SaveChangesAsync();
                 }
 
 
                 var fake = new Faker("sv");
+                var random = new Random();
+
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -98,6 +102,9 @@ namespace LexiconLMS.Data
                 }
 
 
+
+
+
                 // Seed courses
 
                 var courses = new List<Course>();
@@ -114,13 +121,75 @@ namespace LexiconLMS.Data
                     courses.Add(course);
                 }
 
-                ///db.AddRange(courses);
-               
+
+
+                // Seed modules
+
+                var modules = new List<Module>();
+
+                for (int i = 0; i < 9; i++)
+                {
+                    var tempTime = fake.Date.Soon();
+                    var tempTimeSpan = TimeSpan.FromDays(5);
+
+                    var module = new Module
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = tempTime,
+                        EndTime = tempTime + tempTimeSpan,
+                        Course = courses[random.Next(courses.Count)]
+                    };
+
+                    modules.Add(module);
+                }
+
+                db.AddRange(modules);
+
+
+                // Seed Activity Types
+
+                var activityTypes = new List<ActivityType>();
+                string[] types = { "E-Learning", "Hand-in", "Lecture", "Group Meeting" };
+
+                for (int i = 0; i < types.Length; i++)
+                {
+                    var t = types[i];
+                    var atype = new ActivityType { Name = t };
+                    activityTypes.Add(atype);
+                }
+
+                db.AddRange(activityTypes);
+
+                // TODO: Make sure all activitytypes are selected at least once
+
+                // Seed activities
+
+                var activities = new List<Activity>();
+
+                for (int i = 0; i < 4; i++)
+                {
+                    var tempTime = fake.Date.Soon();
+                    var tempTimeSpan = TimeSpan.FromDays(5);
+
+                    var activity = new Activity
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = tempTime,
+                        EndTime = tempTime + tempTimeSpan,
+                        Module = modules[random.Next(modules.Count)],
+                        ActivityType = activityTypes[i]
+                    };
+
+                    activities.Add(activity);
+                }
+
+                db.AddRange(activities);
 
 
 
                 // Seed students
-                var random = new Random();
                 var students = new List<AppUser>();
 
                 for (int i = 0; i < 20; i++)
@@ -139,12 +208,6 @@ namespace LexiconLMS.Data
                         Course = courses[random.Next(courses.Count)]
                 };
 
-
-
-
-                // Seed courses
-
-                
 
 
                     var addStudentResult = await userManager.CreateAsync(student, adminPW);
