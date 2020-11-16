@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using LexiconLMS.Models.ViewModels;
 
 namespace LexiconLMS.Controllers
 {
@@ -20,13 +21,36 @@ namespace LexiconLMS.Controllers
             _context = context;
         }
 
+        // Teacher: User Accounts Index
+
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> TeacherUserIndex()
+        {
+            var model = _context.Users
+                .Include(a => a.Course)
+                .Select(u => new AppUserListViewModel
+                {
+                    AppUserId = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    FullName = $"{u.FirstName} {u.LastName}",
+                    Course = u.Course
+                });
+            
+
+            return View(await model.ToListAsync());
+
+        }
+
+
         // GET: Users
         public async Task<IActionResult> Index()
         {
 
             var applicationDbContext = _context.Users.Include(a => a.Course);
             return View(await applicationDbContext.ToListAsync());
-            return View();
+            //return View();
         }
 
         // GET: Users/Details/5
