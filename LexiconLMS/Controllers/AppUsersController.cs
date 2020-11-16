@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
-    public class UsersController : Controller
+    public class AppUsersController : Controller
     {
         private readonly ApplicationDbContext db;
 
-        public AppUsersController(ApplicationDbContext db)
+        public AppUsersController(ApplicationDbContext context)
         {
             this.db = db;
         }
@@ -23,9 +23,10 @@ namespace LexiconLMS.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            
-            var applicationDbContext = db.Users.Include(a => a.Course);
+
+            var applicationDbContext = _context.Users.Include(a => a.Course);
             return View(await applicationDbContext.ToListAsync());
+            return View();
         }
 
         // GET: Users/Details/5
@@ -50,11 +51,10 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users/Create
-        [Authorize(Roles = "Teacher")]
+        //[Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
-
+           ViewData["CourseId"] = new SelectList(_context.Set<Course>(), "Id", "Id");
             return View();
         }
 
