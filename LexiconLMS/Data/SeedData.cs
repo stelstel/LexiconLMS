@@ -137,9 +137,8 @@ namespace LexiconLMS.Data
                         FirstName = fName,
                         LastName = lName,
                         Email = studentEmail,
-                        Course = courses[1]
-                        //new Course { StartTime = DateTime.Now, Name = "Hej", Description = "Hej" }
-                    };
+                        Course = courses[random.Next(courses.Count)]
+                };
 
 
 
