@@ -4,11 +4,16 @@
     ViewData["Title"] = "Student";
 }
 
-<h1>Student</h1>
+<h2>@Html.DisplayFor(modelItem => Model.FirstName) @Html.DisplayFor(modelItem => Model.LastName)</h2>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
+
+<div class="container" id="current">
+    <h2>@Model.Course.Name</h2>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -42,8 +47,8 @@
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Course.Id)
-                </td>
+                    @Html.DisplayFor(modelItem => Model.Course.Name)
+                 </td>
                 @*<td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
