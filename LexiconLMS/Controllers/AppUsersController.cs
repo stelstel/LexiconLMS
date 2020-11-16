@@ -23,8 +23,8 @@ namespace LexiconLMS.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
+            var applicationDbContext = db.Users.Include(a => a.Course);
 
-            var applicationDbContext = _context.Users.Include(a => a.Course);
             return View(await applicationDbContext.ToListAsync());
         }
 
