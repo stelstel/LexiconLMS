@@ -15,12 +15,12 @@ namespace LexiconLMS.Controllers
 {
     public class AppUsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
         private UserManager<AppUser> userManager;
 
         public AppUsersController(ApplicationDbContext context, UserManager<AppUser> userManager )
         {
-            _context = context;
+            db = context;
             this.userManager = userManager;
         }
 
@@ -29,7 +29,7 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> TeacherUserIndex()
         {
-            var userList = await _context.Users
+            var userList = await db.Users
                 .Include(a => a.Course)
                 .ToListAsync();
 
