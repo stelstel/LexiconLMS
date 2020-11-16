@@ -147,6 +147,7 @@ namespace LexiconLMS.Data
                 }
 
                 db.AddRange(modules);
+                await db.SaveChangesAsync();
 
 
                 // Seed Activity Types
@@ -180,7 +181,7 @@ namespace LexiconLMS.Data
                         Description = fake.Lorem.Sentences(),
                         StartTime = tempTime,
                         EndTime = tempTime + tempTimeSpan,
-                        Module = modules[random.Next(modules.Count)],
+                        ModuleId = modules[random.Next(modules.Count)].Id,
                         ActivityType = activityTypes[i]
                     };
 
@@ -188,7 +189,7 @@ namespace LexiconLMS.Data
                 }
 
                 db.AddRange(activities);
-
+                await db.SaveChangesAsync();
 
 
                 // Seed students
@@ -240,7 +241,7 @@ namespace LexiconLMS.Data
                     students.Add(student);
                 }
 
-                //db.AddRange(students);
+                
 
 
 
@@ -258,9 +259,9 @@ namespace LexiconLMS.Data
                         Description = fake.Lorem.Sentences(),
                         UploadTime = fake.Date.Soon(),
                         AppUserId = students[random.Next(students.Count)].Id,
-                        CourseId = courses[random.Next(courses.Count)].Id
-                        //Module = modules[random.Next(modules.Count)],
-                        //Activity = activities[random.Next(activities.Count)]
+                        CourseId = courses[random.Next(courses.Count)].Id,
+                        ModuleId = modules[random.Next(modules.Count)].Id,
+                        ActivityId = activities[random.Next(activities.Count)].Id
                     };
 
                     documents.Add(document);
