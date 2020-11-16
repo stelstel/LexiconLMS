@@ -31,6 +31,8 @@ namespace LexiconLMS.Data
                     await db.SaveChangesAsync();
                 }
 
+
+                var fake = new Faker("sv");
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -96,57 +98,6 @@ namespace LexiconLMS.Data
                 }
 
 
-
-
-
-
-                // Seed students
-
-                var fake = new Faker("sv");
-
-                //var students = new List<AppUser>();
-
-                //for (int i = 0; i < 20; i++)
-                //{
-                //    var fName = fake.Name.FirstName();
-                //    var lName = fake.Name.LastName();
-                //    var studentEmail = fake.Internet.Email($"{fName} {lName}");
-
-
-                //    var student = new AppUser
-                //    {
-                //        UserName = studentEmail,
-                //        FirstName = fName,
-                //        LastName = lName,
-                //        Email = studentEmail
-                //    };
-
-                //    var addStudentResult = await userManager.CreateAsync(student, adminPW);
-
-                //    if (!addStudentResult.Succeeded)
-                //    {
-                //        throw new Exception(string.Join("\n", addStudentResult.Errors));
-                //    }
-
-                //    var studentUser = await userManager.FindByNameAsync(studentEmail);
-
-                //    if (await userManager.IsInRoleAsync(studentUser, "Student"))
-                //    {
-                //        continue;
-                //    }
-
-                //    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
-
-                //    if (!addToRoleResult.Succeeded)
-                //    {
-                //        throw new Exception(string.Join("\n", addToRoleResult.Errors));
-                //    }
-
-                //    students.Add(student);
-                //}
-
-                //db.AddRange(students);
-
                 // Seed courses
 
                 var courses = new List<Course>();
@@ -163,74 +114,75 @@ namespace LexiconLMS.Data
                     courses.Add(course);
                 }
 
-                db.AddRange(courses);
+                ///db.AddRange(courses);
+               
 
-                // Create test student
+
+
+                // Seed students
                 var random = new Random();
-                
-                var student = new AppUser
+                var students = new List<AppUser>();
+
+                for (int i = 0; i < 20; i++)
                 {
-                    UserName = "test.testsson@gmail.com",
-                    FirstName = "Test",
-                    LastName = "Testsson",
-                    Email = "test.testsson@gmail.com",
-                    Course = courses[random.Next(1, courses.Count + 1)]
+                    var fName = fake.Name.FirstName();
+                    var lName = fake.Name.LastName();
+                    var studentEmail = fake.Internet.Email($"{fName} {lName}");
+
+
+                    var student = new AppUser
+                    {
+                        UserName = studentEmail,
+                        FirstName = fName,
+                        LastName = lName,
+                        Email = studentEmail,
+                        Course = courses[random.Next(courses.Count)]
                 };
 
-                var addStudentResult = await userManager.CreateAsync(student, adminPW);
 
-                if (!addStudentResult.Succeeded)
-                {
-                    throw new Exception(string.Join("\n", addStudentResult.Errors));
+
+
+                // Seed courses
+
+                var courses = new List<Course>();
+
+
+                    var addStudentResult = await userManager.CreateAsync(student, adminPW);
+
+                    if (!addStudentResult.Succeeded)
+                    {
+                        throw new Exception(string.Join("\n", addStudentResult.Errors));
+                    }
+
+                    var studentUser = await userManager.FindByNameAsync(studentEmail);
+
+                    if (await userManager.IsInRoleAsync(studentUser, "Student"))
+                    {
+                        continue;
+                    }
+
+                    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
+
+                    if (!addToRoleResult.Succeeded)
+                    {
+                        throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                    }
+
+
+
+
+                    //students.Add(student);
                 }
 
-                var studentUser = await userManager.FindByNameAsync("test.testsson@gmail.com");
-
-                //if (await userManager.IsInRoleAsync(studentUser, "Student"))
-                //{
-                //    continue;
-                //}
-
-                var addToRoleResult2 = await userManager.AddToRoleAsync(studentUser, "Student");
-
-                if (!addToRoleResult2.Succeeded)
-                {
-                    throw new Exception(string.Join("\n", addToRoleResult2.Errors));
-                }
+                //db.AddRange(students);
 
 
-                
 
-                //student.Course = courses[random.Next(1, courses.Count + 1)];
-
-                //foreach (var student in students)
-                //{
-                //    //student.Course = courses[random.Next(courses.Count)];
-
-                //    var addStudentResult = await userManager.CreateAsync(student, adminPW);
-
-                //    if (!addStudentResult.Succeeded)
-                //    {
-                //        throw new Exception(string.Join("\n", addStudentResult.Errors));
-                //    }
-
-                //    var studentUser = await userManager.FindByNameAsync(student.Email);
-
-                //    if (await userManager.IsInRoleAsync(studentUser, "Student"))
-                //    {
-                //        continue;
-                //    }
-
-                //    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
-
-                //    if (!addToRoleResult.Succeeded)
-                //    {
-                //        throw new Exception(string.Join("\n", addToRoleResult.Errors));
-                //    }
-                //}
 
                 await db.SaveChangesAsync();
             }
         }
+
+
     }
 }
