@@ -132,15 +132,7 @@ namespace LexiconLMS.Data
                     Course = courses[random.Next(courses.Count)]
                 };
 
-
-
-
-                // Seed courses
-
-                
-
-
-                    var addStudentResult = await userManager.CreateAsync(student, adminPW);
+                var addStudentResult = await userManager.CreateAsync(student, adminPW);
 
                 if (!addStudentResult.Succeeded)
                 {
