@@ -4,14 +4,16 @@ using LexiconLMS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LexiconLMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201116095416_AddedActivities")]
+    partial class AddedActivities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +205,7 @@ namespace LexiconLMS.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Document");
                 });
 
             modelBuilder.Entity("LexiconLMS.Models.Entities.Module", b =>

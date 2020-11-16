@@ -24,9 +24,8 @@ namespace LexiconLMS.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var appUsers = await db.Users.Include(a => a.Course).ToListAsync();
-
-            return View(appUsers);
+            var applicationDbContext = _context.Users.Include(a => a.Course);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Users/Details/5
