@@ -170,6 +170,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
@@ -179,6 +180,7 @@ namespace LexiconLMS.Controllers
 
             var appUser = await db.Users
                 .Include(a => a.Course)
+                .Include(a => a.Documents)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (appUser == null)
@@ -190,14 +192,19 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: Users/Delete/5
+        [Authorize(Roles = "Teacher")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var appUser = await db.Users.FindAsync(id);
+            var appUser = await db.Users
+                .Include(u => u.Course)
+                .Include(u => u.Documents)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
             db.Users.Remove(appUser);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(TeacherUserIndex));
         }
 
         private bool AppUserExists(string id)
