@@ -23,10 +23,8 @@ namespace LexiconLMS.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-
             var applicationDbContext = _context.Users.Include(a => a.Course);
             return View(await applicationDbContext.ToListAsync());
-            return View();
         }
 
         // GET: Users/Details/5
@@ -156,6 +154,12 @@ namespace LexiconLMS.Controllers
             _context.Users.Remove(appUser);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Student(string id)
+        {
+            var appUser = await _context.Users.FindAsync(id);
+            return View(appUser);
         }
 
         private bool AppUserExists(string id)
