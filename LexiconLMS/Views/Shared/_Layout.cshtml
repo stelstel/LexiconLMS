@@ -24,9 +24,9 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <!--Teacher Navbar-->
                         @if (User.IsInRole("Teacher"))
                         {
+                            <!--Teacher Navbar-->
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">Courses</a>
                             </li>
@@ -41,12 +41,16 @@
                                 </div>
                             </li>
                         }
-                        else
+                        else if (User.IsInRole("Student"))
                         {
                             <!--Student Navbar-->
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">My Course</a>
                             </li>
+                        }
+                        else
+                        {
+                            <!--Not Logged in User-->
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Privacy">Privacy</a>
                             </li>

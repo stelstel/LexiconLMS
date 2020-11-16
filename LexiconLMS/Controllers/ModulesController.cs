@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
@@ -20,6 +21,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = db.Modules.Include(c => c.Course);
