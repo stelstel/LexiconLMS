@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LexiconLMS.Models.Entities;
+using AutoMapper;
+using LexiconLMS.Services;
 
 namespace LexiconLMS
 {
@@ -36,6 +38,8 @@ namespace LexiconLMS
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddScoped<ISelectService, SelectService>();
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -66,7 +70,7 @@ namespace LexiconLMS
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=AppUsers}/{action=Index}/{id?}");
+                    pattern: "{controller=Modules}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

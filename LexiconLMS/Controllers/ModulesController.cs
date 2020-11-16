@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
+using LexiconLMS.Models.ViewModels;
+using AutoMapper;
 
 namespace LexiconLMS.Controllers
 {
     public class ModulesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper mapper;
 
-        public ModulesController(ApplicationDbContext context)
+        public ModulesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: Modules
@@ -46,6 +51,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
@@ -57,16 +63,21 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartTime,EndTime,CourseId")] Module module)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Create(ModuleActivityCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+
+                var module = mapper.Map<Module>(viewModel);
+
                 _context.Add(module);
+                
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId);
-            return View(module);
+            //ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
+            return View(viewModel);
         }
 
         // GET: Modules/Edit/5
@@ -77,13 +88,13 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var @module = await _context.Modules.FindAsync(id);
-            if (@module == null)
+            var module = await _context.Modules.FindAsync(id);
+            if (module == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @module.CourseId);
-            return View(@module);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId);
+            return View(module);
         }
 
         // POST: Modules/Edit/5
@@ -91,9 +102,9 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime,EndTime,CourseId")] Module @module)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime,EndTime,CourseId")] Module module)
         {
-            if (id != @module.Id)
+            if (id != module.Id)
             {
                 return NotFound();
             }
@@ -102,12 +113,12 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(@module);
+                    _context.Update(module);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ModuleExists(@module.Id))
+                    if (!ModuleExists(module.Id))
                     {
                         return NotFound();
                     }
@@ -118,8 +129,8 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @module.CourseId);
-            return View(@module);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId);
+            return View(module);
         }
 
         // GET: Modules/Delete/5
@@ -130,10 +141,10 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var @module = await _context.Modules
+            var module = await _context.Modules
                 .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (@module == null)
+            if (module == null)
             {
                 return NotFound();
             }
@@ -146,8 +157,8 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @module = await _context.Modules.FindAsync(id);
-            _context.Modules.Remove(@module);
+            var module = await _context.Modules.FindAsync(id);
+            _context.Modules.Remove(module);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
