@@ -9,16 +9,19 @@ using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace LexiconLMS.Controllers
 {
     public class AppUsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private UserManager<AppUser> userManager;
 
-        public AppUsersController(ApplicationDbContext context)
+        public AppUsersController(ApplicationDbContext context, UserManager<AppUser> userManager )
         {
             _context = context;
+            this.userManager = userManager;
         }
 
         // Teacher: User Accounts Index
@@ -26,20 +29,26 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> TeacherUserIndex()
         {
-            var model = _context.Users
+            var userList = await _context.Users
                 .Include(a => a.Course)
-                .Select(u => new AppUserListViewModel
-                {
-                    AppUserId = u.Id,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    FullName = $"{u.FirstName} {u.LastName}",
-                    Course = u.Course
-                });
-            
+                .ToListAsync();
 
-            return View(await model.ToListAsync());
+            var model = new List<AppUserListViewModel>();
+            foreach (var appUser in userList)
+            {
+                model.Add(new AppUserListViewModel
+                {
+                    AppUserId = appUser.Id,
+                    FirstName = appUser.FirstName,
+                    LastName = appUser.LastName,
+                    Email = appUser.Email,
+                    FullName = $"{appUser.FirstName} {appUser.LastName}",
+                    Course = appUser.Course,
+                    IsTeacher = await userManager.IsInRoleAsync(appUser, "Teacher")
+                });
+            }
+
+            return View(model);
 
         }
 
