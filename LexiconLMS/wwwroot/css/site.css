@@ -73,3 +73,22 @@ body {
 #current {
     background: #dbdbdb;
 }
+
+#current h2 {
+    text-align: center;
+}
+
+i.material-icons {
+    font-size: 36px;
+    top: 10px;
+    position: relative;
+}
+
+/*#card-mod-act > .card-body{*/
+div#card-mod-act.card div.card-body{
+    text-align: center;
+}
+
+#card-hand-ins .card-title {
+    text-align: center;
+}
