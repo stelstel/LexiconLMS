@@ -54,7 +54,6 @@ namespace LexiconLMS.Data
                     }
                 }
 
-
                 // Seed admin
 
                 var adminEmail = "admin@lms.se";
@@ -143,7 +142,9 @@ namespace LexiconLMS.Data
 
 
 
+                // Seed courses
 
+                var courses = new List<Course>();
 
 
                     var addStudentResult = await userManager.CreateAsync(student, adminPW);
