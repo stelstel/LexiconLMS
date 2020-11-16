@@ -7,22 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
     public class ActivityTypesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
-        public ActivityTypesController(ApplicationDbContext context)
+        public ActivityTypesController(ApplicationDbContext db)
         {
-            _context = context;
+            this.db = db;
         }
 
         // GET: ActivityTypes
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ActivityTypes.ToListAsync());
+            return View(await db.ActivityTypes.ToListAsync());
         }
 
         // GET: ActivityTypes/Details/5
@@ -33,7 +35,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var activityType = await _context.ActivityTypes
+            var activityType = await db.ActivityTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityType == null)
             {
@@ -58,8 +60,8 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(activityType);
-                await _context.SaveChangesAsync();
+                db.Add(activityType);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(activityType);
@@ -73,7 +75,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var activityType = await _context.ActivityTypes.FindAsync(id);
+            var activityType = await db.ActivityTypes.FindAsync(id);
             if (activityType == null)
             {
                 return NotFound();
@@ -97,8 +99,8 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(activityType);
-                    await _context.SaveChangesAsync();
+                    db.Update(activityType);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +126,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var activityType = await _context.ActivityTypes
+            var activityType = await db.ActivityTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityType == null)
             {
@@ -139,15 +141,15 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activityType = await _context.ActivityTypes.FindAsync(id);
-            _context.ActivityTypes.Remove(activityType);
-            await _context.SaveChangesAsync();
+            var activityType = await db.ActivityTypes.FindAsync(id);
+            db.ActivityTypes.Remove(activityType);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ActivityTypeExists(int id)
         {
-            return _context.ActivityTypes.Any(e => e.Id == id);
+            return db.ActivityTypes.Any(e => e.Id == id);
         }
     }
 }

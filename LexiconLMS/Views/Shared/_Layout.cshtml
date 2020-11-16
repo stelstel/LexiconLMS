@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,12 +24,37 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (User.IsInRole("Teacher"))
+                        {
+                            <!--Teacher Navbar-->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">Courses</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Lists</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-controller="Courses" asp-action="Index">Courses</a>
+                                    <a class="dropdown-item" asp-controller="Modules" asp-action="Index">Modules</a>
+                                    <a class="dropdown-item" asp-controller="Activities" asp-action="Index">Activities</a>
+                                    <a class="dropdown-item" asp-controller="ActivityTypes" asp-action="Index">Activity Types</a>
+                                    <a class="dropdown-item" asp-controller="Documents" asp-action="Index">Documents</a>
+                                </div>
+                            </li>
+                        }
+                        else if (User.IsInRole("Student"))
+                        {
+                            <!--Student Navbar-->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">My Course</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!--Not Logged in User-->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Privacy">Privacy</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
