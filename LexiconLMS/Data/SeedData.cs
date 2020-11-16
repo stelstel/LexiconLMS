@@ -33,7 +33,6 @@ namespace LexiconLMS.Data
                 await db.SaveChangesAsync();
             }
 
-
             var fake = new Faker("sv");
             var random = new Random();
 
@@ -58,7 +57,8 @@ namespace LexiconLMS.Data
                 }
             }
 
-            // Seed admin
+            // Seed Admin
+
             var adminEmail = "admin@lms.se";
 
             var foundUser = await userManager.FindByEmailAsync(adminEmail);
@@ -100,9 +100,7 @@ namespace LexiconLMS.Data
                 }
             }
 
-
-
-            // Seed courses
+            // Seed Courses
 
             var courses = new List<Course>();
 
@@ -121,8 +119,7 @@ namespace LexiconLMS.Data
             db.AddRange(courses);
             await db.SaveChangesAsync();
 
-
-            // Seed modules
+            // Seed Modules
 
             var modules = new List<Module>();
 
@@ -147,7 +144,6 @@ namespace LexiconLMS.Data
             db.AddRange(modules);
             await db.SaveChangesAsync();
 
-
             // Seed Activity Types
 
             var activityTypes = new List<ActivityType>();
@@ -164,7 +160,7 @@ namespace LexiconLMS.Data
 
             // TODO: Make sure all activitytypes are selected at least once
 
-            // Seed activities
+            // Seed Activities
 
             var activities = new List<Activity>();
 
@@ -190,7 +186,7 @@ namespace LexiconLMS.Data
             await db.SaveChangesAsync();
 
 
-            // Seed students
+            // Seed Students
             var students = new List<AppUser>();
 
             for (int i = 0; i < 20; i++)
@@ -199,18 +195,14 @@ namespace LexiconLMS.Data
                 var lName = fake.Name.LastName();
                 var studentEmail = fake.Internet.Email($"{fName} {lName}");
 
-
                 var student = new AppUser
                 {
                     UserName = studentEmail,
                     FirstName = fName,
                     LastName = lName,
                     Email = studentEmail,
-                    //Course = courses[random.Next(courses.Count)]
                     CourseId = courses[random.Next(courses.Count)].Id
                 };
-
-
 
                 var addStudentResult = await userManager.CreateAsync(student, adminPW);
 
@@ -233,20 +225,12 @@ namespace LexiconLMS.Data
                     throw new Exception(string.Join("\n", addToRoleResult.Errors));
                 }
 
-
-
-
                 students.Add(student);
             }
 
-
-
-
-
-            // Seed documents
+            // Seed Documents
 
             var documents = new List<Document>();
-
 
             for (int i = 0; i < 30; i++)
             {
@@ -263,16 +247,11 @@ namespace LexiconLMS.Data
                 };
 
                 documents.Add(document);
-
             }
 
             db.AddRange(documents);
 
-
-
             await db.SaveChangesAsync();
         }
-
-
     }
 }
