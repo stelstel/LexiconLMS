@@ -31,8 +31,6 @@ namespace LexiconLMS.Data
                     await db.SaveChangesAsync();
                 }
 
-
-
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -53,7 +51,6 @@ namespace LexiconLMS.Data
                         throw new Exception(string.Join("\n", result.Errors));
                     }
                 }
-
 
                 // Seed admin
 
@@ -150,16 +147,34 @@ namespace LexiconLMS.Data
 
                 //db.AddRange(students);
 
+                // Seed courses
 
+                var courses = new List<Course>();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    var course = new Course
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = fake.Date.Soon()
+                    };
+
+                    courses.Add(course);
+                }
+
+                db.AddRange(courses);
 
                 // Create test student
-
+                var random = new Random();
+                
                 var student = new AppUser
                 {
                     UserName = "test.testsson@gmail.com",
                     FirstName = "Test",
                     LastName = "Testsson",
-                    Email = "test.testsson@gmail.com"
+                    Email = "test.testsson@gmail.com",
+                    Course = courses[random.Next(1, courses.Count + 1)]
                 };
 
                 var addStudentResult = await userManager.CreateAsync(student, adminPW);
@@ -184,40 +199,15 @@ namespace LexiconLMS.Data
                 }
 
 
-                // Seed courses
+                
 
-                var courses = new List<Course>();
-
-                for (int i = 0; i < 3; i++)
-                {
-                    var course = new Course
-                    {
-                        Name = fake.Company.CatchPhrase(),
-                        Description = fake.Lorem.Sentences(),
-                        StartTime = fake.Date.Soon()
-                    }; 
-
-                    courses.Add(course);
-                }
-
-                db.AddRange(courses);
-
-                // Add courses to existing students
-
-                var random = new Random();
-
-                student.Course = courses[random.Next(courses.Count)];
-
+                //student.Course = courses[random.Next(1, courses.Count + 1)];
 
                 //foreach (var student in students)
                 //{
                 //    //student.Course = courses[random.Next(courses.Count)];
 
-
                 //    var addStudentResult = await userManager.CreateAsync(student, adminPW);
-
-
-
 
                 //    if (!addStudentResult.Succeeded)
                 //    {
@@ -233,24 +223,14 @@ namespace LexiconLMS.Data
 
                 //    var addToRoleResult = await userManager.AddToRoleAsync(studentUser, "Student");
 
-
                 //    if (!addToRoleResult.Succeeded)
                 //    {
                 //        throw new Exception(string.Join("\n", addToRoleResult.Errors));
                 //    }
-
-                //    var temp = student;
-
                 //}
-
-
-
-
 
                 await db.SaveChangesAsync();
             }
         }
-
-        
     }
 }

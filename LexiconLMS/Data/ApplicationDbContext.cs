@@ -19,7 +19,7 @@ namespace LexiconLMS.Data
 
         public DbSet<Course> Courses { get; set; }
 
-        public DbSet<LexiconLMS.Models.Entities.Module> Module { get; set; }
+        public DbSet<Module> Module { get; set; }
 
         // TODO Has query filter?
         // TODO add morde DbSets entities    
