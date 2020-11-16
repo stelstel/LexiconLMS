@@ -30,6 +30,7 @@ namespace LexiconLMS.Controllers
         public async Task<IActionResult> TeacherUserIndex()
         {
             var userList = await db.Users
+                .OrderBy(u => u.LastName)
                 .Include(a => a.Course)
                 .ToListAsync();
 
