@@ -29,6 +29,7 @@ namespace LexiconLMS.Data
                     db.UserTokens.RemoveRange(db.UserTokens);
                     db.Activities.RemoveRange(db.Activities);
                     db.ActivityTypes.RemoveRange(db.ActivityTypes);
+                    db.Documents.RemoveRange(db.Documents);
 
                     await db.SaveChangesAsync();
                 }
@@ -103,8 +104,6 @@ namespace LexiconLMS.Data
 
 
 
-
-
                 // Seed courses
 
                 var courses = new List<Course>();
@@ -121,7 +120,9 @@ namespace LexiconLMS.Data
                     courses.Add(course);
                 }
 
-
+                db.AddRange(courses);
+                await db.SaveChangesAsync();
+                
 
                 // Seed modules
 
@@ -138,7 +139,8 @@ namespace LexiconLMS.Data
                         Description = fake.Lorem.Sentences(),
                         StartTime = tempTime,
                         EndTime = tempTime + tempTimeSpan,
-                        Course = courses[random.Next(courses.Count)]
+                        //Course = courses[random.Next(courses.Count)]
+                        CourseId = courses[random.Next(courses.Count)].Id
                     };
 
                     modules.Add(module);
@@ -205,8 +207,9 @@ namespace LexiconLMS.Data
                         FirstName = fName,
                         LastName = lName,
                         Email = studentEmail,
-                        Course = courses[random.Next(courses.Count)]
-                };
+                        //Course = courses[random.Next(courses.Count)]
+                        CourseId = courses[random.Next(courses.Count)].Id
+                    };
 
 
 
@@ -234,11 +237,37 @@ namespace LexiconLMS.Data
 
 
 
-                    //students.Add(student);
+                    students.Add(student);
                 }
 
                 //db.AddRange(students);
 
+
+
+                // Seed documents
+
+                var documents = new List<Document>();
+
+                
+                for (int i = 0; i < 30; i++)
+                {
+                    // TODO: Make it so that the documents only get either a course, module or activity (and the rest are not set)
+                    var document = new Document
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        UploadTime = fake.Date.Soon(),
+                        AppUserId = students[random.Next(students.Count)].Id,
+                        CourseId = courses[random.Next(courses.Count)].Id
+                        //Module = modules[random.Next(modules.Count)],
+                        //Activity = activities[random.Next(activities.Count)]
+                    };
+
+                    documents.Add(document);
+
+                }
+
+                db.AddRange(documents);
 
 
 
