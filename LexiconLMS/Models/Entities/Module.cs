@@ -13,10 +13,8 @@ namespace LexiconLMS.Models.Entities
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-
         // Foreign Key
         public int CourseId { get; set; }
-
 
         // Navigation Properties
         public Course Course { get; set; }

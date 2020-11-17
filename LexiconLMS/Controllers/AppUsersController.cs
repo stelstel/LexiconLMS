@@ -8,30 +8,54 @@ using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using LexiconLMS.Models.ViewModels.Student;
 
 namespace LexiconLMS.Controllers
 {
     public class AppUsersController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly UserManager<AppUser> userManager;
 
-        public AppUsersController(ApplicationDbContext db)
+        public AppUsersController(ApplicationDbContext db, UserManager<AppUser> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
         }
 
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = db.Users.Include(a => a.Course);
+            var model = await db.Users.Include(a => a.Course).ToListAsync();
 
-            return View(await applicationDbContext.ToListAsync());
+            return View(model);
+        }
+        
+        public async Task<IActionResult> StudentAssignments()
+        {
+            var userId = userManager.GetUserId(User);
+
+            var model = await db.Documents.Include(a => a.AppUser)
+                .Include(a => a.Activity)
+                .ThenInclude(a => a.ActivityType)
+                .Where(a => a.AppUserId == userId && a.Activity.ActivityType.Name == "Assignment")
+                .Select(a => new AssignmentListViewModel
+                {
+                    Name = a.Activity.Name,
+                    StartTime = a.Activity.StartTime, 
+                    EndTime = a.Activity.EndTime, 
+                    IsFinished = false
+                })
+                .ToListAsync();
+
+            return View(nameof(Index), model);
         }
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(string? id)
         {
-            
+
             if (id == null)
             {
                 return NotFound();
@@ -53,7 +77,7 @@ namespace LexiconLMS.Controllers
         //[Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
-           ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
+            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
 
             return View();
         }

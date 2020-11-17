@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LexiconLMS.Models.Entities.AppUser>
+﻿@model IEnumerable<AppUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -21,11 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
-            
             <th>
                 @Html.DisplayNameFor(model => model.Course)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>

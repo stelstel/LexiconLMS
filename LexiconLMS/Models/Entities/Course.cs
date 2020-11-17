@@ -12,12 +12,6 @@ namespace LexiconLMS.Models.Entities
         public string Description { get; set; }
         public DateTime StartTime { get; set; }
 
-
-
-        // Foreign Keys
-        
-
-
         // Navigation Properties
         public ICollection<AppUser> AppUsers { get; set; }
         public ICollection<Module> Modules { get; set; }
