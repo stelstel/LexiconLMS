@@ -25,10 +25,14 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users
+        // Future Log-In Page
         public async Task<IActionResult> Index()
         {
-            return View();
+            var applicationDbContext = db.Users.Include(a => a.Course);
+
+            return View(await applicationDbContext.ToListAsync());
         }
+
 
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
@@ -214,3 +218,4 @@ namespace LexiconLMS.Controllers
         }
     }
 }
+
