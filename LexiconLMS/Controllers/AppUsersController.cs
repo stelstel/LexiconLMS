@@ -36,7 +36,6 @@ namespace LexiconLMS.Controllers
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
             var userId = userManager.GetUserId(User);
-            // Bug Fix. Make sure it's inherited from the correct course
 
             var userCourseId = await db.Users.Include(a => a.Course)
                 .Where(a => a.Id == userId)
@@ -75,6 +74,31 @@ namespace LexiconLMS.Controllers
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
+                })
+                .ToListAsync();
+
+            return model;
+        }
+
+        public async Task<List<ActivityListViewModel>> GetStudentActivityListAsync()
+        {
+            var userId = userManager.GetUserId(User);
+
+            var userCourseId = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.CourseId)
+                .FirstOrDefaultAsync();
+
+            var model = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.CourseId == userCourseId)
+                .Select(a => new ActivityListViewModel
+                {
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    ActivityType = a.ActivityType.Name
                 })
                 .ToListAsync();
 
@@ -223,8 +247,9 @@ namespace LexiconLMS.Controllers
         public async Task<IActionResult> Student()
         {
             var userId = userManager.GetUserId(User);
-            var assignmentList = await GetStudentAssignmentsAsync();
             var moduleList = await GetStudentModuleListAsync();
+            var activityList = await GetStudentActivityListAsync();
+            var assignmentList = await GetStudentAssignmentsAsync();
 
             var appUser = await db.Users
                 .Include(a => a.Course)
@@ -236,6 +261,7 @@ namespace LexiconLMS.Controllers
             {
                 AssignmentList = assignmentList,
                 ModuleList = moduleList,
+                ActivityList = activityList,
                 AppUser = appUser
             };
 
