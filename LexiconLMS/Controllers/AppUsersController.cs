@@ -27,16 +27,9 @@ namespace LexiconLMS.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var assignmentList = await GetStudentAssignmentsAsync();
-
-            var model = new StudentCourseViewModel
-            {
-                AssignmentList = assignmentList
-            };
-
-            return View(model);
+            return View();
         }
-        
+
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
             var userId = userManager.GetUserId(User);
@@ -48,8 +41,8 @@ namespace LexiconLMS.Controllers
                 .Select(a => new AssignmentListViewModel
                 {
                     Name = a.Activity.Name,
-                    StartTime = a.Activity.StartTime, 
-                    EndTime = a.Activity.EndTime, 
+                    StartTime = a.Activity.StartTime,
+                    EndTime = a.Activity.EndTime,
                     IsFinished = false
                 })
                 .ToListAsync();
@@ -195,15 +188,24 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Student(string? id)
+        public async Task<IActionResult> Student()
         {
-            var appUser = await _context.Users
-                .Include(a => a.Course)
-                .ThenInclude(c => c.Modules)
-                .ThenInclude(mo => mo.Activities)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var userId = userManager.GetUserId(User);
+            var assignmentList = await GetStudentAssignmentsAsync();
 
-            return View(appUser);
+            var appUser = await db.Users
+                .Include(a => a.Course)
+                .ThenInclude(a => a.Modules)
+                .ThenInclude(a => a.Activities)
+                .FirstOrDefaultAsync(a => a.Id == userId);
+
+            var model = new StudentViewModel
+            {
+                AssignmentList = assignmentList,
+                AppUser = appUser
+            };
+
+            return View(model);
         }
 
         private bool AppUserExists(string id)
