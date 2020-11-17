@@ -7,5 +7,6 @@ namespace LexiconLMS.Services
     public interface ISelectService
     {
         Task<IEnumerable<SelectListItem>> SelectCourses();
+        Task<IEnumerable<SelectListItem>> SelectActivityTypes();
     }
 }

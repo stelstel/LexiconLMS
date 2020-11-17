@@ -69,9 +69,30 @@ namespace LexiconLMS.Controllers
             if (ModelState.IsValid)
             {
 
-                var module = mapper.Map<Module>(viewModel);
+                //var module = mapper.Map<Module>(viewModel);
+
+                var module = new Module
+                {
+                    CourseId = viewModel.CourseId,
+                    Name = viewModel.ModuleName,
+                    Description = viewModel.ModuleDescription,
+                    StartTime = viewModel.ModuleStartTime,
+                    EndTime = viewModel.ModuleEndTime
+                };
+
+                // How get the module id?
+                var activity = new Activity
+                {
+                    Name = viewModel.ActivityName,
+                    Description = viewModel.ActivityDescription,
+                    StartTime = viewModel.ActivityStartTime,
+                    EndTime = viewModel.ActivityEndTime,
+                    Module = module,
+                    ActivityTypeId = viewModel.ActivityTypeId
+                };
 
                 _context.Add(module);
+                _context.Add(activity);
                 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard

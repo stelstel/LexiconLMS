@@ -28,5 +28,15 @@ namespace LexiconLMS.Services
                 Value = n.Id.ToString()
             }).ToListAsync();
         }
+
+        public async Task<IEnumerable<SelectListItem>> SelectActivityTypes()
+        {
+            return await db.ActivityTypes.Select(n =>
+            new SelectListItem()
+            {
+                Text = n.Name,
+                Value = n.Id.ToString()
+            }).ToListAsync();
+        }
     }
 }
