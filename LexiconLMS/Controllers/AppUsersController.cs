@@ -197,7 +197,7 @@ namespace LexiconLMS.Controllers
 
         public async Task<IActionResult> Student(string? id)
         {
-            var appUser = await _context.Users
+            var appUser = await db.Users
                 .Include(a => a.Course)
                 .ThenInclude(c => c.Modules)
                 .ThenInclude(mo => mo.Activities)
