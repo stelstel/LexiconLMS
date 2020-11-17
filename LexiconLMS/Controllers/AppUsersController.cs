@@ -24,6 +24,7 @@ namespace LexiconLMS.Controllers
             this.userManager = userManager;
         }
 
+
         // GET: Users
         public async Task<IActionResult> Index()
         {
