@@ -195,6 +195,17 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Student(string? id)
+        {
+            var appUser = await _context.Users
+                .Include(a => a.Course)
+                .ThenInclude(c => c.Modules)
+                .ThenInclude(mo => mo.Activities)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            return View(appUser);
+        }
+
         private bool AppUserExists(string id)
         {
             return db.Users.Any(e => e.Id == id);

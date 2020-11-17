@@ -128,15 +128,14 @@ namespace LexiconLMS.Data
                 var tempTime = fake.Date.Soon();
                 var tempTimeSpan = TimeSpan.FromDays(5);
 
-                var module = new Module
-                {
-                    Name = fake.Company.CatchPhrase(),
-                    Description = fake.Lorem.Sentences(),
-                    StartTime = tempTime,
-                    EndTime = tempTime + tempTimeSpan,
-                    //Course = courses[random.Next(courses.Count)]
-                    CourseId = courses[random.Next(courses.Count)].Id
-                };
+                    var module = new Module
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = tempTime,
+                        EndTime = tempTime + tempTimeSpan,
+                        CourseId = courses[random.Next(courses.Count)].Id
+                    };
 
                 modules.Add(module);
             }
