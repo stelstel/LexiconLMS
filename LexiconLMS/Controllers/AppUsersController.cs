@@ -53,13 +53,41 @@ namespace LexiconLMS.Controllers
 
         }
 
-
-        // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Teacher()
         {
-            var applicationDbContext = db.Users.Include(a => a.Course);
+            var userId = userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return NotFound();
+            }
 
-            return View(await applicationDbContext.ToListAsync());
+            var appUser = await db.Users
+                .Include(a => a.Course)
+                .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (appUser == null)
+            {
+                return NotFound();
+            }
+
+            return View(appUser);
+        }
+
+
+        // Redirects authenticated users to Teacher or Student, respectively
+        // If not authenticated, show Index view ("welcome" info page)
+        public IActionResult Index()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Teacher"))
+                {
+                    return RedirectToAction(nameof(Teacher));
+                }
+                // TODO: Redirect to Student action when implemented
+                return RedirectToAction(nameof(Teacher));
+            }
+            return View();
         }
 
         // GET: Users/Details/5
