@@ -8,92 +8,56 @@ using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
-using LexiconLMS.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using LexiconLMS.Models.ViewModels.Student;
 
 namespace LexiconLMS.Controllers
 {
     public class AppUsersController : Controller
     {
         private readonly ApplicationDbContext db;
-        private UserManager<AppUser> userManager;
+        private readonly UserManager<AppUser> userManager;
 
-        public AppUsersController(ApplicationDbContext context, UserManager<AppUser> userManager )
+        public AppUsersController(ApplicationDbContext db, UserManager<AppUser> userManager)
         {
-            db = context;
+            this.db = db;
             this.userManager = userManager;
         }
 
-        // Teacher: User Accounts Index
-
-        [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> TeacherUserIndex()
+        // GET: Users
+        // Future Log-In Page
+        public async Task<IActionResult> Index()
         {
-            var userList = await db.Users
-                .OrderBy(u => u.LastName)
-                .Include(a => a.Course)
-                .ToListAsync();
+            var applicationDbContext = db.Users.Include(a => a.Course);
 
-            var model = new List<AppUserListViewModel>();
-            foreach (var appUser in userList)
-            {
-                model.Add(new AppUserListViewModel
-                {
-                    AppUserId = appUser.Id,
-                    FirstName = appUser.FirstName,
-                    LastName = appUser.LastName,
-                    Email = appUser.Email,
-                    FullName = $"{appUser.FirstName} {appUser.LastName}",
-                    Course = appUser.Course,
-                    IsTeacher = await userManager.IsInRoleAsync(appUser, "Teacher")
-                });
-            }
-
-            return View(model);
-
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        public async Task<IActionResult> Teacher()
+
+        public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
             var userId = userManager.GetUserId(User);
-            if (userId == null)
-            {
-                return NotFound();
-            }
 
-            var appUser = await db.Users
-                .Include(a => a.Course)
-                .FirstOrDefaultAsync(m => m.Id == userId);
-
-            if (appUser == null)
-            {
-                return NotFound();
-            }
-
-            return View(appUser);
-        }
-
-
-        // Redirects authenticated users to Teacher or Student, respectively
-        // If not authenticated, show Index view ("welcome" info page)
-        public IActionResult Index()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Teacher"))
+            var model = await db.Documents.Include(a => a.AppUser)
+                .Include(a => a.Activity)
+                .ThenInclude(a => a.ActivityType)
+                .Where(a => a.AppUserId == userId && a.Activity.ActivityType.Name == "Assignment")
+                .Select(a => new AssignmentListViewModel
                 {
-                    return RedirectToAction(nameof(Teacher));
-                }
-                // TODO: Redirect to Student action when implemented
-                return RedirectToAction(nameof(Teacher));
-            }
-            return View();
+                    Name = a.Activity.Name,
+                    StartTime = a.Activity.StartTime,
+                    EndTime = a.Activity.EndTime,
+                    IsFinished = false
+                })
+                .ToListAsync();
+
+            return model;
         }
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(string? id)
         {
-            
+
             if (id == null)
             {
                 return NotFound();
@@ -115,7 +79,7 @@ namespace LexiconLMS.Controllers
         //[Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
-           ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
+            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
 
             return View();
         }
@@ -198,7 +162,6 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users/Delete/5
-        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
@@ -208,7 +171,6 @@ namespace LexiconLMS.Controllers
 
             var appUser = await db.Users
                 .Include(a => a.Course)
-                .Include(a => a.Documents)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (appUser == null)
@@ -220,19 +182,34 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: Users/Delete/5
-        [Authorize(Roles = "Teacher")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var appUser = await db.Users
-                .Include(u => u.Course)
-                .Include(u => u.Documents)
-                .FirstOrDefaultAsync(u => u.Id == id);
-
+            var appUser = await db.Users.FindAsync(id);
             db.Users.Remove(appUser);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(TeacherUserIndex));
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Student()
+        {
+            var userId = userManager.GetUserId(User);
+            var assignmentList = await GetStudentAssignmentsAsync();
+
+            var appUser = await db.Users
+                .Include(a => a.Course)
+                .ThenInclude(a => a.Modules)
+                .ThenInclude(a => a.Activities)
+                .FirstOrDefaultAsync(a => a.Id == userId);
+
+            var model = new StudentViewModel
+            {
+                AssignmentList = assignmentList,
+                AppUser = appUser
+            };
+
+            return View(model);
         }
 
         private bool AppUserExists(string id)
@@ -241,3 +218,4 @@ namespace LexiconLMS.Controllers
         }
     }
 }
+

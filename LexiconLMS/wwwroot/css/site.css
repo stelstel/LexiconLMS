@@ -69,3 +69,54 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/****************************** Container *************************************/
+.container #current,
+.container #modules {
+    background: #dbdbdb;
+}
+
+.container #current,
+.container #modules,
+.card{
+    border: 1px solid #666;
+    border-radius: 8px;
+}
+
+.container h2 {
+    text-align: center;
+    margin: 0.8em 0;
+}
+
+i.material-icons {
+    font-size: 36px;
+    top: 12px;
+    position: relative;
+}
+
+/******************************* Card ****************************************/
+.card {
+    margin-bottom: 10px;
+}
+
+#card-mod-act h5 {
+    margin-bottom: 0;
+}
+
+div#card-mod-act.card div.card-body {
+    text-align: center;
+}
+
+#card-hand-ins .card-title,
+.ass-col{
+    text-align: center;
+}
+
+
+#ass-head-row{
+    font-weight: bold;
+}
+
+#modules {
+    margin-top: 2em;
+}

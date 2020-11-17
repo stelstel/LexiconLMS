@@ -16,22 +16,22 @@ namespace LexiconLMS.Data
         {
             // "Handle resources", "use service until the 'using' is used up"
             using var db = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
-            if (db.Users.Any())
-            {
-                db.Users.RemoveRange(db.Users);
-                db.Roles.RemoveRange(db.Roles);
-                db.Courses.RemoveRange(db.Courses);
-                db.RoleClaims.RemoveRange(db.RoleClaims);
-                db.UserLogins.RemoveRange(db.UserLogins);
-                db.UserClaims.RemoveRange(db.UserClaims);
-                db.UserRoles.RemoveRange(db.UserRoles);
-                db.UserTokens.RemoveRange(db.UserTokens);
-                db.Activities.RemoveRange(db.Activities);
-                db.ActivityTypes.RemoveRange(db.ActivityTypes);
-                db.Documents.RemoveRange(db.Documents);
+            //if (db.Users.Any())
+            //{
+            //    db.Users.RemoveRange(db.Users);
+            //    db.Roles.RemoveRange(db.Roles);
+            //    db.Courses.RemoveRange(db.Courses);
+            //    db.RoleClaims.RemoveRange(db.RoleClaims);
+            //    db.UserLogins.RemoveRange(db.UserLogins);
+            //    db.UserClaims.RemoveRange(db.UserClaims);
+            //    db.UserRoles.RemoveRange(db.UserRoles);
+            //    db.UserTokens.RemoveRange(db.UserTokens);
+            //    db.Activities.RemoveRange(db.Activities);
+            //    db.ActivityTypes.RemoveRange(db.ActivityTypes);
+            //    db.Documents.RemoveRange(db.Documents);
 
-                await db.SaveChangesAsync();
-            }
+            //    await db.SaveChangesAsync();
+            //}
 
             var fake = new Faker("sv");
             var random = new Random();
@@ -128,15 +128,14 @@ namespace LexiconLMS.Data
                 var tempTime = fake.Date.Soon();
                 var tempTimeSpan = TimeSpan.FromDays(5);
 
-                var module = new Module
-                {
-                    Name = fake.Company.CatchPhrase(),
-                    Description = fake.Lorem.Sentences(),
-                    StartTime = tempTime,
-                    EndTime = tempTime + tempTimeSpan,
-                    //Course = courses[random.Next(courses.Count)]
-                    CourseId = courses[random.Next(courses.Count)].Id
-                };
+                    var module = new Module
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = tempTime,
+                        EndTime = tempTime + tempTimeSpan,
+                        CourseId = courses[random.Next(courses.Count)].Id
+                    };
 
                 modules.Add(module);
             }
@@ -147,7 +146,7 @@ namespace LexiconLMS.Data
             // Seed Activity Types
 
             var activityTypes = new List<ActivityType>();
-            string[] types = { "E-Learning", "Hand-in", "Lecture", "Group Meeting" };
+            string[] types = { "E-Learning", "Assignment", "Lecture", "Group Meeting" };
 
             for (int i = 0; i < types.Length; i++)
             {
