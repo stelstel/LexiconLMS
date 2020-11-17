@@ -10,6 +10,7 @@ using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using LexiconLMS.Models.ViewModels.Student;
+using LexiconLMS.Models.ViewModels;
 
 namespace LexiconLMS.Controllers
 {
@@ -210,6 +211,56 @@ namespace LexiconLMS.Controllers
             };
 
             return View(model);
+        }
+
+        // Teacher: User Accounts Index
+
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> TeacherUserIndex()
+        {
+            var userList = await db.Users
+                .OrderBy(u => u.LastName)
+                .Include(a => a.Course)
+                .ToListAsync();
+
+            var model = new List<AppUserListViewModel>();
+            foreach (var appUser in userList)
+            {
+                model.Add(new AppUserListViewModel
+                {
+                    AppUserId = appUser.Id,
+                    FirstName = appUser.FirstName,
+                    LastName = appUser.LastName,
+                    Email = appUser.Email,
+                    FullName = $"{appUser.FirstName} {appUser.LastName}",
+                    Course = appUser.Course,
+                    IsTeacher = await userManager.IsInRoleAsync(appUser, "Teacher")
+                });
+            }
+
+            return View(model);
+
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Teacher()
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
+            var appUser = await db.Users
+                .Include(a => a.Course)
+                .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (appUser == null)
+            {
+                return NotFound();
+            }
+
+            return View(appUser);
         }
 
         private bool AppUserExists(string id)
