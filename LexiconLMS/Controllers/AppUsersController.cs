@@ -29,26 +29,77 @@ namespace LexiconLMS.Controllers
         // Future Log-In Page
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = db.Users.Include(a => a.Course);
+            var model = await db.Users.Include(a => a.Course).ToListAsync();
 
-            return View(await applicationDbContext.ToListAsync());
+            return View(model);
         }
-
 
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
             var userId = userManager.GetUserId(User);
 
-            var model = await db.Documents.Include(a => a.AppUser)
-                .Include(a => a.Activity)
-                .ThenInclude(a => a.ActivityType)
-                .Where(a => a.AppUserId == userId && a.Activity.ActivityType.Name == "Assignment")
+            var userCourseId = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.CourseId)
+                .FirstOrDefaultAsync();
+
+            var model = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
                 .Select(a => new AssignmentListViewModel
                 {
-                    Name = a.Activity.Name,
-                    StartTime = a.Activity.StartTime,
-                    EndTime = a.Activity.EndTime,
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
                     IsFinished = false
+                })
+                .ToListAsync();
+
+            return model;
+        }
+
+        public async Task<List<ModuleListViewModel>> GetStudentModuleListAsync()
+        {
+            var userId = userManager.GetUserId(User);
+
+            var userCourseId = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.CourseId)
+                .FirstOrDefaultAsync();
+
+            var model = await db.Modules.Include(a => a.Course)
+                .Where(a => a.CourseId == userCourseId)
+                .Select(a => new ModuleListViewModel
+                {
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                })
+                .ToListAsync();
+
+            return model;
+        }
+
+        public async Task<List<ActivityListViewModel>> GetStudentActivityListAsync()
+        {
+            var userId = userManager.GetUserId(User);
+
+            var userCourseId = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.CourseId)
+                .FirstOrDefaultAsync();
+
+            var model = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.CourseId == userCourseId)
+                .Select(a => new ActivityListViewModel
+                {
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    ActivityType = a.ActivityType.Name
                 })
                 .ToListAsync();
 
@@ -198,9 +249,12 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //[Authorize(Roles = "Student")]
         public async Task<IActionResult> Student()
         {
             var userId = userManager.GetUserId(User);
+            var moduleList = await GetStudentModuleListAsync();
+            var activityList = await GetStudentActivityListAsync();
             var assignmentList = await GetStudentAssignmentsAsync();
 
             var appUser = await db.Users
@@ -212,6 +266,8 @@ namespace LexiconLMS.Controllers
             var model = new StudentViewModel
             {
                 AssignmentList = assignmentList,
+                ModuleList = moduleList,
+                ActivityList = activityList,
                 AppUser = appUser
             };
 
