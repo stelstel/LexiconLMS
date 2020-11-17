@@ -71,10 +71,20 @@
     </div>
 </div>
 
+<!--Modules-->
 <div class="container" id="modules">
     <div class="row row-modules">
         <div class="col-sm-12">
-            <h2>Modules</h2>
+            <partial name="StudentModuleListPartial" model="@Model.ModuleList" />
+        </div>
+    </div>
+</div>
+
+<!--Activities-->
+<div class="container" id="modules">
+    <div class="row row-modules">
+        <div class="col-sm-12">
+            <partial name="StudentActivityListPartial" model="@Model.ActivityList" />
         </div>
     </div>
 </div>
