@@ -11,35 +11,72 @@
 </p>*@
 
 <div class="container" id="current">
-    <h2>@Model.Course.Name</h2>
-
-
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
+            <h2>@Model.Course.Name</h2>
+        </div>
+    </div>
+
+    <div class="row" >
+        
+        <div class="col-sm-5">
             <div id="card-mod-act" class="card">
                 <div class="card-body">
-                    <h5>Current module</h5>
-                    <p class="card-text">Current module... <a href="#"><i class="material-icons">chevron_right</i></a></p>
-                    <h5>Current activity</h5>
-                    <p class="card-text">Current activity...  <a href="#"><i class="material-icons">chevron_right</i></a></p>
+                    
+                    @if (@Model.Course.Modules.Count() > 0)
+                    {
+                        <h5>Current module</h5>
+                        <p class="card-text"><a href="#">@Model.Course.Modules.First().Name<i class="material-icons">chevron_right</i></a></p>
+                    }
+
+                    @if (@Model.Course.Modules.First().Activities.Count() > 0)
+                    {
+                        <h5>Current activity</h5>
+                        <p class="card-text">@Model.Course.Modules.First().Activities.First().Name<a href="#"><i class="material-icons">chevron_right</i></a></p>
+                    }
+
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-7">
             <div id="card-hand-ins" class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Upcoming hand-ins</h5>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <h5 class="card-title">Upcoming assignments</h5>
+                    <div class="row" id="ass-head-row">
+                        <div class="col col-sm-4"></div>
+                        <div class="col col-sm-4">Due date</div>
+                        <div class="col ass-col col-sm-4">Finished</div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-sm-4"><a href="#">Assignment 1</a></div>
+                        <div class="col col-sm-4">2020-12-01</div>
+                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-sm-4"><a href="#">Assignment 2</a></div>
+                        <div class="col col-sm-4">2020-12-01</div>
+                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-sm-4"><a href="#">Assignment 3</a></div>
+                        <div class="col col-sm-4">2020-12-01</div>
+                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-3"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
 </div>
 
-<table class="table">
+<div class="container" id="modules">
+    <div class="row row-modules">
+        <div class="col-sm-12">
+            <h2>Modules</h2>
+        </div>
+    </div>
+</div>
+
+<!--<table class="table">
     <thead>
         <tr>
             <th>
@@ -73,14 +110,14 @@
 
                 <td>
                     @Html.DisplayFor(modelItem => Model.Course.Name)
-                 </td>
+                 </td>-->
                 @*<td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>*@
-            </tr>
+            <!--</tr>
            
     </tbody>
-</table>
+</table>-->
 

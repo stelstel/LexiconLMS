@@ -139,7 +139,6 @@ namespace LexiconLMS.Data
                         Description = fake.Lorem.Sentences(),
                         StartTime = tempTime,
                         EndTime = tempTime + tempTimeSpan,
-                        //Course = courses[random.Next(courses.Count)]
                         CourseId = courses[random.Next(courses.Count)].Id
                     };
 

@@ -160,6 +160,8 @@ namespace LexiconLMS.Controllers
         {
             var appUser = await _context.Users
                 .Include(a => a.Course)
+                .ThenInclude(c => c.Modules)
+                .ThenInclude(mo => mo.Activities)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             return View(appUser);
