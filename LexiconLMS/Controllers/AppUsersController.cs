@@ -24,16 +24,20 @@ namespace LexiconLMS.Controllers
             this.userManager = userManager;
         }
 
-
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var model = await db.Users.Include(a => a.Course).ToListAsync();
+            var assignmentList = await GetStudentAssignmentsAsync();
+
+            var model = new StudentCourseViewModel
+            {
+                AssignmentList = assignmentList
+            };
 
             return View(model);
         }
         
-        public async Task<IActionResult> StudentAssignments()
+        public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
             var userId = userManager.GetUserId(User);
 
@@ -50,7 +54,7 @@ namespace LexiconLMS.Controllers
                 })
                 .ToListAsync();
 
-            return View(nameof(Index), model);
+            return model;
         }
 
         // GET: Users/Details/5

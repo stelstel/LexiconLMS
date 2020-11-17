@@ -8,6 +8,7 @@ namespace LexiconLMS.Models.ViewModels.Student
 {
     public class AssignmentListViewModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
 
         [DisplayName("Start Time")]
