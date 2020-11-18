@@ -6,6 +6,8 @@
 
 <h2>@Html.DisplayFor(modelItem => Model.AppUser.FullName)</h2>
 
+<!--Current-->
+<partial name="StudentCurrentPartial" model="@Model.CurrentViewModel"/>
 
 <div class="container" id="current">
 <!-- Modal -->
@@ -38,57 +40,10 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-sm-5">
-            <div id="card-mod-act" class="card">
-                <div class="card-body">
-
-                    @if (@Model.AppUser.Course.Modules.Count() > 0)
-                    {
-                        <h5>Current module</h5>
-                        <p class="card-text"><a href="#">@Model.AppUser.Course.Modules.First().Name<i class="material-icons">chevron_right</i></a></p>
-                    }
-
-                    @if (@Model.AppUser.Course.Modules.First().Activities.Count() > 0)
-                    {
-                        <h5>Current activity</h5>
-                        <p class="card-text">@Model.AppUser.Course.Modules.First().Activities.First().Name<a href="#"><i class="material-icons">chevron_right</i></a></p>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-7">
-            <div id="card-hand-ins" class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Upcoming assignments</h5>
-                    <div class="row" id="ass-head-row">
-                        <div class="col col-sm-4"></div>
-                        <div class="col col-sm-4">Due date</div>
-                        <div class="col ass-col col-sm-4">Finished</div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-sm-4"><a href="#">Assignment 1</a></div>
-                        <div class="col col-sm-4">2020-12-01</div>
-                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-1"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-sm-4"><a href="#">Assignment 2</a></div>
-                        <div class="col col-sm-4">2020-12-01</div>
-                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-2"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-sm-4"><a href="#">Assignment 3</a></div>
-                        <div class="col col-sm-4">2020-12-01</div>
-                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-3"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    
 
 <!--Modules-->
-<div class="container" id="modules">
+<div class="container cont-section" id="modules">
     <div class="row row-modules">
         <div class="col-sm-12">
             <partial name="StudentModuleListPartial" model="@Model.ModuleList" />
@@ -97,8 +52,8 @@
 </div>
 
 <!--Activities-->
-<div class="container" id="modules">
-    <div class="row row-modules">
+<div class="container cont-section" id="activities">
+    <div class="row row-activities">
         <div class="col-sm-12">
             <partial name="StudentActivityListPartial" model="@Model.ActivityList" />
         </div>
@@ -106,8 +61,8 @@
 </div>
 
 <!--Assignments-->
-<div class="container" id="assignments">
-    <div class="row row-modules">
+<div class="container cont-section" id="assignments">
+    <div class="row row-assignments">
         <div class="col-sm-12">
             <partial name="StudentAssignmentListPartial" model="@Model.AssignmentList" />
         </div>

@@ -35,6 +35,9 @@ namespace LexiconLMS.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ModuleId")
                         .HasColumnType("int");
 

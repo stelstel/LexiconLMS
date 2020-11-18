@@ -54,6 +54,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
                 .Select(a => new AssignmentListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
@@ -77,6 +78,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.CourseId == userCourseId)
                 .Select(a => new ModuleListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
@@ -101,6 +103,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Module.CourseId == userCourseId)
                 .Select(a => new ActivityListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
@@ -261,6 +264,7 @@ namespace LexiconLMS.Controllers
             var moduleList = await GetStudentModuleListAsync();
             var activityList = await GetStudentActivityListAsync();
             var assignmentList = await GetStudentAssignmentsAsync();
+            var current = await Current();
 
             var appUser = await db.Users
                 .Include(a => a.Course)
@@ -273,10 +277,79 @@ namespace LexiconLMS.Controllers
                 AssignmentList = assignmentList,
                 ModuleList = moduleList,
                 ActivityList = activityList,
-                AppUser = appUser
+                AppUser = appUser,
+                CurrentViewModel = current
+            };
+            return View(model);
+        }
+
+        //************************** Current *******************************
+        public async Task<CurrentViewModel> Current()
+        {
+            var userId = userManager.GetUserId(User);
+
+            var userCourseId = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.CourseId)
+                .FirstOrDefaultAsync();
+
+            var userCourseName = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.Course.Name)
+                .FirstOrDefaultAsync();
+
+            var timeNow = DateTime.Now;
+
+            var modules = await db.Modules.Include(a => a.Course)
+               .Where(a => a.CourseId == userCourseId)
+               .ToListAsync();
+
+            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks))
+                             .First();
+            
+            var activities = await db.Activities
+               .Where(a => a.ModuleId == currentModule.Id)
+               .ToListAsync();
+
+            var currentActivity = new Activity();
+
+            if (activities.Count > 0)
+            {
+                currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks))
+                                 .First();
+            }
+            else
+            {
+                currentActivity.Name = "No current activities";
+            }
+
+            var assignments = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
+                .ToListAsync();
+
+            var currentAssignment = new List<Activity>();
+
+            if (assignments.Count > 0)
+            {
+                assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
+                
+                for (int i = 0; i < assignments.Count && i < 3; i++)
+                {
+                    currentAssignment.Add(assignments[i]);
+                }
+            }
+            
+            var model = new CurrentViewModel
+            {
+                CourseName = userCourseName,
+                Module = currentModule,
+                Activity = currentActivity,
+                Assignments = currentAssignment
             };
 
-            return View(model);
+            return model;
         }
 
         // Teacher: User Accounts Index
