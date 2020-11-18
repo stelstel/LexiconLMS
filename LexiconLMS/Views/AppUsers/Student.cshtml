@@ -19,7 +19,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <h6>Description:</h6>
                     @Model.AppUser.Course.Description
+                    <h6 class="pt-3">Course participants:</h6>
+                    @foreach (var stud in Model.AppUser.Course.AppUsers)
+                    {
+                        @stud.FullName<br>
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -37,7 +43,7 @@
             <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
         </div>
     </div>
-
+ 
     <div class="row">
         <div class="col-sm-5">
             <div id="card-mod-act" class="card">

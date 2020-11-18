@@ -266,6 +266,8 @@ namespace LexiconLMS.Controllers
                 .Include(a => a.Course)
                 .ThenInclude(a => a.Modules)
                 .ThenInclude(a => a.Activities)
+                .Include(a => a.Course)
+                .ThenInclude(a => a.AppUsers)
                 .FirstOrDefaultAsync(a => a.Id == userId);
 
             var model = new StudentViewModel
