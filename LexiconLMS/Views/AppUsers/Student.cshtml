@@ -6,18 +6,43 @@
 
 <h2>@Html.DisplayFor(modelItem => Model.AppUser.FullName)</h2>
 
+
 <div class="container" id="current">
+<!-- Modal -->
+    <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="courseDescModalLabel"> @Model.AppUser.Course.Modules.First().Name</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @Model.AppUser.Course.Modules.First().Description
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-8">
             <h2>@Model.AppUser.Course.Name</h2>
+        </div>
+        <div class="col-sm-2">
+            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
         </div>
     </div>
 
-    <div class="row" >
+    <div class="row">
         <div class="col-sm-5">
             <div id="card-mod-act" class="card">
                 <div class="card-body">
-                    
+
                     @if (@Model.AppUser.Course.Modules.Count() > 0)
                     {
                         <h5>Current module</h5>
