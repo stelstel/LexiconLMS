@@ -276,7 +276,9 @@ namespace LexiconLMS.Controllers
 
         // Teacher: User Accounts Index
 
-        [Authorize(Roles = "Teacher")]
+
+        //[Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> TeacherUserIndex()
         {
             var userList = await db.Users
