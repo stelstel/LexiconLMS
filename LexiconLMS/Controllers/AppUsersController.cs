@@ -48,6 +48,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
                 .Select(a => new AssignmentListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
@@ -71,6 +72,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.CourseId == userCourseId)
                 .Select(a => new ModuleListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
@@ -95,6 +97,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Module.CourseId == userCourseId)
                 .Select(a => new ActivityListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
@@ -321,16 +324,9 @@ namespace LexiconLMS.Controllers
             {
                 assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
                 
-                for (int i = 0; i < assignments.Count && i < 3; i++) // Added assignments.Count
+                for (int i = 0; i < assignments.Count && i < 3; i++)
                 {
-                    //if (currentAssignment[i] != null)
-                    //{
-                        currentAssignment.Add(assignments[i]); // Changed from = to Add
-                    //}
-                    //else
-                    //{
-                    //    break;
-                    //}
+                    currentAssignment.Add(assignments[i]);
                 }
             }
             
