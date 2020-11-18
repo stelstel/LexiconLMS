@@ -1,6 +1,6 @@
 ﻿@model CurrentViewModel
 
-<div class="container" id="current">
+<div class="container cont-section" id="current">
     <div class="row">
         <div class="col-sm-12">
             <h2>@Model.CourseName</h2>
@@ -40,13 +40,16 @@
                         <div class="col ass-col col-sm-4">Finished</div>
                     </div>
 
-                    @*<div class="row">
-                        <div class="col col-sm-4"><a href="#">@Model.AssignmentList.First().Name</a></div>
-                        <div class="col col-sm-4">@Model.AssignmentList.First().EndTime</div>
-                        <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-1"></div>
-                    </div>*@
+                    @foreach (var assignment in Model.Assignments)
+                    {
+                        <div class="row">
+                            <div class="col col-sm-4"><a href="#">@assignment.Name</a></div>
+                            <div class="col col-sm-4">@assignment.EndTime</div>
+                            <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-1"></div>
+                        </div>
+                    }
 
-                    <div class="row">
+                    @*<div class="row">
                         <div class="col col-sm-4"><a href="#">Assignment 2</a></div>
                         <div class="col col-sm-4">2020-12-01</div>
                         <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-2"></div>
@@ -55,7 +58,7 @@
                         <div class="col col-sm-4"><a href="#">Assignment 3</a></div>
                         <div class="col col-sm-4">2020-12-01</div>
                         <div class="col ass-col col-sm-4"><input type="checkbox" class="form-check-input" id="check-ass-3"></div>
-                    </div>
+                    </div>*@
                 </div>
             </div>
         </div>

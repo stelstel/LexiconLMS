@@ -6,10 +6,11 @@
 
 <h2>@Html.DisplayFor(modelItem => Model.AppUser.FullName)</h2>
 
+<!--Current-->
 <partial name="StudentCurrentPartial" model="@Model.CurrentViewModel"/>
 
 <!--Modules-->
-<div class="container" id="modules">
+<div class="container cont-section" id="modules">
     <div class="row row-modules">
         <div class="col-sm-12">
             <partial name="StudentModuleListPartial" model="@Model.ModuleList" />
@@ -18,8 +19,8 @@
 </div>
 
 <!--Activities-->
-<div class="container" id="modules">
-    <div class="row row-modules">
+<div class="container cont-section" id="activities">
+    <div class="row row-activities">
         <div class="col-sm-12">
             <partial name="StudentActivityListPartial" model="@Model.ActivityList" />
         </div>
@@ -28,7 +29,7 @@
 
 <!--Assignments-->
 <div class="container" id="assignments">
-    <div class="row row-modules">
+    <div class="row row-assignments">
         <div class="col-sm-12">
             <partial name="StudentAssignmentListPartial" model="@Model.AssignmentList" />
         </div>

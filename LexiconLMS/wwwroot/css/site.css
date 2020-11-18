@@ -71,17 +71,19 @@ body {
 }
 
 /****************************** Container *************************************/
-.container #current,
-.container #modules {
+.container.cont-section {
     background: #dbdbdb;
     padding-bottom: 1em;
+    margin-top: 2em;
 }
 
-.container #current,
-.container #modules,
-.card{
+.container.cont-section,
+.card {
     border: 1px solid #666;
     border-radius: 8px;
+    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
 }
 
 .container h2 {
@@ -98,9 +100,6 @@ i.material-icons {
 /******************************* Card ****************************************/
 .card {
     margin-bottom: 10px;
-    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
-    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
 }
 
 #card-mod-act h5 {
@@ -116,11 +115,6 @@ div#card-mod-act.card div.card-body {
     text-align: center;
 }
 
-
 #ass-head-row{
     font-weight: bold;
-}
-
-#modules {
-    margin-top: 2em;
 }

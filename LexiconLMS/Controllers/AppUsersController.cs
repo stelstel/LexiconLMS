@@ -309,13 +309,37 @@ namespace LexiconLMS.Controllers
                 currentActivity.Name = "No current activities";
             }
 
-            
+            var assignments = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
+                .ToListAsync();
 
+            var currentAssignment = new List<Activity>();
+
+            if (assignments.Count > 0)
+            {
+                assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
+                
+                for (int i = 0; i < assignments.Count && i < 3; i++) // Added assignments.Count
+                {
+                    //if (currentAssignment[i] != null)
+                    //{
+                        currentAssignment.Add(assignments[i]); // Changed from = to Add
+                    //}
+                    //else
+                    //{
+                    //    break;
+                    //}
+                }
+            }
+            
             var model = new CurrentViewModel
             {
                 CourseName = userCourseName,
                 Module = currentModule,
-                Activity = currentActivity
+                Activity = currentActivity,
+                Assignments = currentAssignment
             };
 
             return model;
