@@ -340,7 +340,7 @@ namespace LexiconLMS.Controllers
             return model;
         }
 
-        [Authorize(Roles = "Teacher")]
+        //[Authorize(Roles = "Teacher")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> TeacherUserIndex()
         {
