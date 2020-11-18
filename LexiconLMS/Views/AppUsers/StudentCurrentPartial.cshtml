@@ -35,42 +35,43 @@
             </div>
         </div>
 
-        <div class="col-sm-8">
-            <div id="card-hand-ins" class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Upcoming assignments</h5>
-                    <div class="row" id="ass-head-row">
-                        <div class="col col-sm-6">Assignment</div>
-                        <div class="col col-sm-4">Due time</div>
-                        <div class="col ass-col col-sm-2">Finished</div>
+        @if (Model.Assignments.Count > 0)
+        {
+            <div class="col-sm-8">
+                <div id="card-hand-ins" class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Upcoming assignments</h5>
+                        <div class="row" id="ass-head-row">
+                            <div class="col col-sm-6">Assignment</div>
+                            <div class="col col-sm-4">Due time</div>
+                            <div class="col ass-col col-sm-2">Finished</div>
+                        </div>
+
+                        @foreach (var assignment in Model.Assignments)
+                        {
+                            <div class="row">
+                                <div class="col col-sm-6">
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                                </div>
+                                <div class="col col-sm-4">@assignment.EndTime</div>
+                                @*<div class="col ass-col col-sm-2">@Html.DisplayFor(i => assignment.IsFinished)</div>*@
+
+                                     <div class="col ass-col col-sm-2">
+                                        @if (assignment.IsFinished)
+                                        {
+                                            <i class="material-icons checkbox-ass">check_box</i>
+                                        }
+                                        else
+                                        {
+                                            <i class="material-icons checkbox-ass">check_box_outline_blank</i>
+                                        }
+                                     </div>
+                            </div>
+                        }
                     </div>
-
-                    @foreach (var assignment in Model.Assignments)
-                    {
-                <div class="row">
-                    <div class="col col-sm-6">
-                        <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
-                    </div>
-                    <div class="col col-sm-4">@assignment.EndTime</div>
-                    @*<div class="col ass-col col-sm-2">@Html.DisplayFor(i => assignment.IsFinished)</div>*@
-
-                         <div class="col ass-col col-sm-2">
-                            @if (assignment.IsFinished)
-                            {
-                                <i class="material-icons checkbox-ass">check_box</i>
-                            }
-                            else
-                            {
-                                <i class="material-icons checkbox-ass">check_box_outline_blank</i>
-                            }
-                         </div>
-
-
-                </div>
-                    }
                 </div>
             </div>
-        </div>
+        }
     </div>
 </div>
 
