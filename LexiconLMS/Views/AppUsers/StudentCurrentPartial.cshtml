@@ -13,12 +13,12 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <div id="card-mod-act" class="card">
                 <div class="card-body">
                     <h5>Current module</h5>
                     <p class="card-text">
-                        <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name</a>
+                        <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name<i class="material-icons play-icon">play_arrow</i></a>
                     </p>
                     <h5>Current activity</h5>
                     <p class="card-text">
@@ -28,14 +28,14 @@
                         }
                         else
                         {
-                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
+                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name<i class="material-icons play-icon">play_arrow</i></a>
                         }
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-7">
+        <div class="col-sm-8">
             <div id="card-hand-ins" class="card">
                 <div class="card-body">
                     <h5 class="card-title">Upcoming assignments</h5>
@@ -47,13 +47,26 @@
 
                     @foreach (var assignment in Model.Assignments)
                     {
-                        <div class="row">
-                            <div class="col col-sm-6">
-                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
-                            </div>
-                            <div class="col col-sm-4">@assignment.EndTime</div>
-                            <div class="col ass-col col-sm-2">@Html.DisplayFor(i => assignment.IsFinished)</div>
-                        </div>
+                <div class="row">
+                    <div class="col col-sm-6">
+                        <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                    </div>
+                    <div class="col col-sm-4">@assignment.EndTime</div>
+                    @*<div class="col ass-col col-sm-2">@Html.DisplayFor(i => assignment.IsFinished)</div>*@
+
+                         <div class="col ass-col col-sm-2">
+                            @if (assignment.IsFinished)
+                            {
+                                <i class="material-icons checkbox-ass">check_box</i>
+                            }
+                            else
+                            {
+                                <i class="material-icons checkbox-ass">check_box_outline_blank</i>
+                            }
+                         </div>
+
+
+                </div>
                     }
                 </div>
             </div>

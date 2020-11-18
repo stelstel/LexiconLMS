@@ -32,8 +32,17 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.EndTime)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsFinished)
+                <td id="ass-finished">
+                    @if (item.IsFinished)
+                    {
+                    <i class="material-icons checkbox-ass">check_box_outline_blank</i>
+                        //TODO switch icons
+                    }
+                    else
+                    {
+                        <i class="material-icons checkbox-ass">check_box</i>
+                        //TODO switch icons
+                    }
                 </td>
             </tr>
         }
