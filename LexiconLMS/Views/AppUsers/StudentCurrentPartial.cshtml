@@ -3,7 +3,13 @@
 <div class="container cont-section" id="current">
     <div class="row">
         <div class="col-sm-12">
-            <h1>@Model.CourseName</h1><a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
+            <h1>@Model.Course.Name</h1>
+            <i class="material-icons">face</i>
+        </div>
+    </div>
+    <div class="row">
+        <div id="col-modal" class="col-sm-12">
+            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
         </div>
     </div>
 
