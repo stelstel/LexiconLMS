@@ -26,20 +26,16 @@ function addToList() {
     //let inputValue = $(".activityForm");
     //let inputValue = document.getElementById("serializearray").innerHTML;
 
-    let obj = JSON.parse(document.getElementById("serializearray").innerHTML)
+    let obj = JSON.parse(document.getElementById("serializearray").innerHTML) // Serialisera 
     
     let inputValue = obj[0].value + " / " + obj[1].value + " / " + obj[3].value + " / " + obj[4].value;
     
 
     if (inputValue != "") {
         allActivities.push(obj);
-
-        //for (var i = 0; i < allActivities.length; i++) {
-        //    console.log(allActivities[i]);
-        //}
     }
 
-    console.log(allActivities);
+    //console.log(allActivities);
     
 
     
@@ -57,9 +53,9 @@ function addToList() {
         li.appendChild(xButton);                                        // Lägg till x-knappnoden till <li>
         document.getElementById("theList").appendChild(li);           // Lägg till listpunkt till listan i sig.
     }
-    //document.getElementById("myInput").value = "";                  // Nollställ inputvärde.
+                     
     //document.getElementById("serializearray").value = "";                  
-    document.getElementById("serializearray").innerHTML = "";                  
+    document.getElementById("serializearray").innerHTML = "";         // Nollställ inputvärde.         
 
     for (i = 0; i < remove.length; i++) {                           // Detta lägger till ta-bort-funktionen
         remove[i].onclick = function () {
@@ -67,13 +63,17 @@ function addToList() {
             parent.style.display = "none";
             for (var i = 0; i < allActivities.length; i++) {
                 if (allActivities[i] === obj) {
-                    allActivities.splice(i, 1);
-                } // Delete current object from list
+                    allActivities.splice(i, 1);                 // Delete current object from list when the x-button is clicked.
+                } 
             }
         }
     }
     
     
-} 
+}
+
+function sendJson() {
+    // DO AJAX
+}
 
 

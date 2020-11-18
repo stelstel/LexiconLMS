@@ -82,20 +82,20 @@ namespace LexiconLMS.Controllers
 
                 _context.Add(module);
 
-                foreach (var item in viewModel.Activities)
-                {
-                    var activity = new Activity
-                    {
-                        Name = item.ActivityName,
-                        Description = item.ActivityDescription,
-                        StartTime = item.ActivityStartTime,
-                        EndTime = item.ActivityEndTime,
-                        ActivityTypeId = item.ActivityTypeId,
-                        Module = module
-                    };
+                //foreach (var item in viewModel.Activities)
+                //{
+                //    var activity = new Activity
+                //    {
+                //        Name = item.ActivityName,
+                //        Description = item.ActivityDescription,
+                //        StartTime = item.ActivityStartTime,
+                //        EndTime = item.ActivityEndTime,
+                //        ActivityTypeId = item.ActivityTypeId,
+                //        Module = module
+                //    };
 
-                    _context.Add(activity);
-                }
+                //    _context.Add(activity);
+                //}
 
                 
                 await _context.SaveChangesAsync();

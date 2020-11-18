@@ -18,7 +18,7 @@ namespace LexiconLMS.Models.ViewModels
 
 
         public List<ActivityListViewModel> Activities { get; set; }
-
+        
         // Maybe make this into a collection of viewmodels that are passed from a partial view? 
         public string ActivityName { get; set; }
         public string ActivityDescription { get; set; }
