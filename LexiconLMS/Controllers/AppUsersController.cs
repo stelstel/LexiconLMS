@@ -286,6 +286,7 @@ namespace LexiconLMS.Controllers
             var userId = userManager.GetUserId(User);
 
             var userCourse = await db.Users.Include(a => a.Course)
+                .ThenInclude(c => c.AppUsers)
                 .Where(a => a.Id == userId)
                 .Select(a => a.Course)
                 .FirstOrDefaultAsync();
