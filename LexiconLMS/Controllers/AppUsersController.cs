@@ -26,12 +26,17 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users
-        // Future Log-In Page
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var model = await db.Users.Include(a => a.Course).ToListAsync();
-
-            return View(model);
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Teacher"))
+                {
+                    return RedirectToAction(nameof(TeacherUserIndex));
+                }
+                return RedirectToAction(nameof(Student));
+            }
+            return View();
         }
 
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
