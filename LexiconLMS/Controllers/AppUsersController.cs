@@ -343,7 +343,6 @@ namespace LexiconLMS.Controllers
             
             var model = new CurrentViewModel
             {
-                CourseName = userCourseName,
                 Module = currentModule,
                 Activity = currentActivity,
                 Assignments = currentAssignment

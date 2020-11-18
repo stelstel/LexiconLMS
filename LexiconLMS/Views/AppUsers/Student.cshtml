@@ -4,14 +4,12 @@
     ViewData["Title"] = "Student";
 }
 
-<h2>@Html.DisplayFor(modelItem => Model.AppUser.FullName)</h2>
+@*<h2>@Html.DisplayFor(modelItem => Model.AppUser.FullName)</h2>*@
 
-<!--Current-->
-<partial name="StudentCurrentPartial" model="@Model.CurrentViewModel"/>
 
-<div class="container" id="current">
-<!-- Modal -->
-    <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
+<!--<!-- Modal -->
+<!--<div class="container" id="current">-->
+    @*<div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,8 +26,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
+    </div>*@
+    @*<div class="row">
         <div class="col-sm-2">
         </div>
         <div class="col-sm-8">
@@ -38,9 +36,10 @@
         <div class="col-sm-2">
             <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
         </div>
-    </div>
+    </div>*@
 
-    
+<!--Current-->
+<partial name="StudentCurrentPartial" model="@Model.CurrentViewModel" />
 
 <!--Modules-->
 <div class="container cont-section" id="modules">
