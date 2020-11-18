@@ -80,19 +80,23 @@ namespace LexiconLMS.Controllers
                     EndTime = viewModel.ModuleEndTime
                 };
 
-                // How get the module id?
-                var activity = new Activity
-                {
-                    Name = viewModel.ActivityName,
-                    Description = viewModel.ActivityDescription,
-                    StartTime = viewModel.ActivityStartTime,
-                    EndTime = viewModel.ActivityEndTime,
-                    Module = module,
-                    ActivityTypeId = viewModel.ActivityTypeId
-                };
-
                 _context.Add(module);
-                _context.Add(activity);
+
+                foreach (var item in viewModel.Activities)
+                {
+                    var activity = new Activity
+                    {
+                        Name = item.ActivityName,
+                        Description = item.ActivityDescription,
+                        StartTime = item.ActivityStartTime,
+                        EndTime = item.ActivityEndTime,
+                        ActivityTypeId = item.ActivityTypeId,
+                        Module = module
+                    };
+
+                    _context.Add(activity);
+                }
+
                 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
@@ -170,7 +174,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            return View(@module);
+            return View(module);
         }
 
         // POST: Modules/Delete/5
@@ -188,5 +192,25 @@ namespace LexiconLMS.Controllers
         {
             return _context.Modules.Any(e => e.Id == id);
         }
+
+
+        //public void AddActivity(ModuleActivityCreateViewModel viewModel)
+        //{
+        //    var activity = new ActivityListViewModel
+        //    {
+        //        ActivityName = viewModel.ActivityName,
+        //        ActivityDescription = viewModel.ActivityDescription,
+        //        ActivityStartTime = viewModel.ActivityStartTime,
+        //        ActivityEndTime = viewModel.ActivityEndTime,
+        //        ActivityTypeId = viewModel.ActivityTypeId
+        //    };
+        //    var model = new ModuleActivityCreateViewModel();
+        //    model.Activities.Add(activity);
+        //    ModelState.Clear();
+        //    //return activity;
+        //    return View("Create",model);
+        //    //return RedirectToAction(nameof(Create));
+        //}
+
     }
 }
