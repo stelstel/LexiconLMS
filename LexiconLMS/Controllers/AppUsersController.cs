@@ -36,16 +36,12 @@ namespace LexiconLMS.Controllers
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
         {
             var userId = userManager.GetUserId(User);
-
-            var userCourseId = await db.Users.Include(a => a.Course)
-                .Where(a => a.Id == userId)
-                .Select(a => a.CourseId)
-                .FirstOrDefaultAsync();
+            var userCourse = await GetUserCourseAsync(userId);
 
             var model = await db.Activities.Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
-                .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
+                .Where(a => a.Module.Course == userCourse && a.ActivityType.Name == "Assignment")
                 .Select(a => new AssignmentListViewModel
                 {
                     Name = a.Name,
@@ -58,17 +54,21 @@ namespace LexiconLMS.Controllers
             return model;
         }
 
+        private async Task<Course> GetUserCourseAsync(string userId)
+        {
+            return await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.Course)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<ModuleListViewModel>> GetStudentModuleListAsync()
         {
             var userId = userManager.GetUserId(User);
-
-            var userCourseId = await db.Users.Include(a => a.Course)
-                .Where(a => a.Id == userId)
-                .Select(a => a.CourseId)
-                .FirstOrDefaultAsync();
+            var userCourse = await GetUserCourseAsync(userId);
 
             var model = await db.Modules.Include(a => a.Course)
-                .Where(a => a.CourseId == userCourseId)
+                .Where(a => a.Course.Id == userCourse.Id)
                 .Select(a => new ModuleListViewModel
                 {
                     Name = a.Name,
@@ -83,16 +83,12 @@ namespace LexiconLMS.Controllers
         public async Task<List<ActivityListViewModel>> GetStudentActivityListAsync()
         {
             var userId = userManager.GetUserId(User);
-
-            var userCourseId = await db.Users.Include(a => a.Course)
-                .Where(a => a.Id == userId)
-                .Select(a => a.CourseId)
-                .FirstOrDefaultAsync();
+            var userCourse = await GetUserCourseAsync(userId);
 
             var model = await db.Activities.Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
-                .Where(a => a.Module.CourseId == userCourseId)
+                .Where(a => a.Module.Course.Id == userCourse.Id)
                 .Select(a => new ActivityListViewModel
                 {
                     Name = a.Name,
