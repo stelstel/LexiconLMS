@@ -17,7 +17,14 @@
                     </p>
                     <h5>Current activity</h5>
                     <p class="card-text">
-                        <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
+                        @if (Model.Activity.Id == 0)
+                        {
+                            @Model.Activity.Name
+                        }
+                        else
+                        {
+                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
+                        }
                     </p>
                 </div>
             </div>
