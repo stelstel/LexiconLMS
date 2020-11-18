@@ -9,6 +9,7 @@ namespace LexiconLMS.Models.ViewModels.Student
 {
     public class ActivityListViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         [DisplayName("Start Time")]
         public DateTime StartTime { get; set; }

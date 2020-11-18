@@ -10,6 +10,7 @@ using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using LexiconLMS.Models.ViewModels.Student;
+using LexiconLMS.Models.ViewModels;
 
 namespace LexiconLMS.Controllers
 {
@@ -25,12 +26,17 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users
-        // Future Log-In Page
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var model = await db.Users.Include(a => a.Course).ToListAsync();
-
-            return View(model);
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Teacher"))
+                {
+                    return RedirectToAction(nameof(TeacherUserIndex));
+                }
+                return RedirectToAction(nameof(Student));
+            }
+            return View();
         }
 
         public async Task<List<AssignmentListViewModel>> GetStudentAssignmentsAsync()
@@ -44,6 +50,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Module.Course == userCourse && a.ActivityType.Name == "Assignment")
                 .Select(a => new AssignmentListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
@@ -71,6 +78,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Course.Id == userCourse.Id)
                 .Select(a => new ModuleListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
@@ -91,6 +99,7 @@ namespace LexiconLMS.Controllers
                 .Where(a => a.Module.Course.Id == userCourse.Id)
                 .Select(a => new ActivityListViewModel
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
@@ -208,7 +217,7 @@ namespace LexiconLMS.Controllers
             return View(appUser);
         }
 
-        // GET: Users/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
@@ -217,8 +226,9 @@ namespace LexiconLMS.Controllers
             }
 
             var appUser = await db.Users
-                .Include(a => a.Course)
-                .FirstOrDefaultAsync(m => m.Id == id);
+               .Include(u => u.Course)
+               .Include(u => u.Documents)
+               .FirstOrDefaultAsync(u => u.Id == id);
 
             if (appUser == null)
             {
@@ -228,12 +238,16 @@ namespace LexiconLMS.Controllers
             return View(appUser);
         }
 
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var appUser = await db.Users.FindAsync(id);
+            var appUser = await db.Users
+                .Include(u => u.Course)
+                .Include(u => u.Documents)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
             db.Users.Remove(appUser);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -246,6 +260,7 @@ namespace LexiconLMS.Controllers
             var moduleList = await GetStudentModuleListAsync();
             var activityList = await GetStudentActivityListAsync();
             var assignmentList = await GetStudentAssignmentsAsync();
+            var current = await Current();
 
             var appUser = await db.Users
                 .Include(a => a.Course)
@@ -258,10 +273,131 @@ namespace LexiconLMS.Controllers
                 AssignmentList = assignmentList,
                 ModuleList = moduleList,
                 ActivityList = activityList,
-                AppUser = appUser
+                AppUser = appUser,
+                CurrentViewModel = current
+            };
+            return View(model);
+        }
+
+        //************************** Current *******************************
+        public async Task<CurrentViewModel> Current()
+        {
+            var userId = userManager.GetUserId(User);
+
+            var userCourseId = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.CourseId)
+                .FirstOrDefaultAsync();
+
+            var userCourseName = await db.Users.Include(a => a.Course)
+                .Where(a => a.Id == userId)
+                .Select(a => a.Course.Name)
+                .FirstOrDefaultAsync();
+
+            var timeNow = DateTime.Now;
+
+            var modules = await db.Modules.Include(a => a.Course)
+               .Where(a => a.CourseId == userCourseId)
+               .ToListAsync();
+
+            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks))
+                             .First();
+            
+            var activities = await db.Activities
+               .Where(a => a.ModuleId == currentModule.Id)
+               .ToListAsync();
+
+            var currentActivity = new Activity();
+
+            if (activities.Count > 0)
+            {
+                currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks))
+                                 .First();
+            }
+            else
+            {
+                currentActivity.Name = "No current activities";
+            }
+
+            var assignments = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
+                .ToListAsync();
+
+            var currentAssignment = new List<Activity>();
+
+            if (assignments.Count > 0)
+            {
+                assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
+                
+                for (int i = 0; i < assignments.Count && i < 3; i++)
+                {
+                    currentAssignment.Add(assignments[i]);
+                }
+            }
+            
+            var model = new CurrentViewModel
+            {
+                CourseName = userCourseName,
+                Module = currentModule,
+                Activity = currentActivity,
+                Assignments = currentAssignment
             };
 
+            return model;
+        }
+
+        // Teacher: User Accounts Index
+
+
+        //[Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> TeacherUserIndex()
+        {
+            var userList = await db.Users
+                .OrderBy(u => u.LastName)
+                .Include(a => a.Course)
+                .ToListAsync();
+
+            var model = new List<AppUserListViewModel>();
+            foreach (var appUser in userList)
+            {
+                model.Add(new AppUserListViewModel
+                {
+                    AppUserId = appUser.Id,
+                    FirstName = appUser.FirstName,
+                    LastName = appUser.LastName,
+                    Email = appUser.Email,
+                    FullName = $"{appUser.FirstName} {appUser.LastName}",
+                    Course = appUser.Course,
+                    IsTeacher = await userManager.IsInRoleAsync(appUser, "Teacher")
+                });
+            }
+
             return View(model);
+
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Teacher()
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
+            var appUser = await db.Users
+                .Include(a => a.Course)
+                .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (appUser == null)
+            {
+                return NotFound();
+            }
+
+            return View(appUser);
         }
 
         private bool AppUserExists(string id)

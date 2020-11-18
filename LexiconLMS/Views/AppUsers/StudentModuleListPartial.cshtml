@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ModuleListViewModel>
 
-<h1>Modules</h1>
+<h2>Modules</h2>
 
 <table class="table">
     <thead>
@@ -21,7 +21,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)

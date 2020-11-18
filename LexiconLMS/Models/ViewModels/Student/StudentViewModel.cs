@@ -12,5 +12,7 @@ namespace LexiconLMS.Models.ViewModels.Student
         public IEnumerable<ModuleListViewModel> ModuleList { get; set; }
         public IEnumerable<ActivityListViewModel> ActivityList { get; set; }
         public AppUser AppUser { get; set; }
+
+        public CurrentViewModel CurrentViewModel { get; set; }
     }
 }
