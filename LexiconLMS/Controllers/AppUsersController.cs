@@ -253,7 +253,7 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> Student()
         {
             var userId = userManager.GetUserId(User);
@@ -279,29 +279,27 @@ namespace LexiconLMS.Controllers
             return View(model);
         }
 
-        //************************** Current *******************************
         public async Task<CurrentViewModel> Current()
         {
             var userId = userManager.GetUserId(User);
 
-            var userCourseId = await db.Users.Include(a => a.Course)
+            var userCourse = await db.Users.Include(a => a.Course)
                 .Where(a => a.Id == userId)
-                .Select(a => a.CourseId)
+                .Select(a => a.Course)
                 .FirstOrDefaultAsync();
 
-            var userCourseName = await db.Users.Include(a => a.Course)
-                .Where(a => a.Id == userId)
-                .Select(a => a.Course.Name)
-                .FirstOrDefaultAsync();
+            //var userCourseName = await db.Users.Include(a => a.Course)
+            //    .Where(a => a.Id == userId)
+            //    .Select(a => a.Course.Name)
+            //    .FirstOrDefaultAsync();
 
             var timeNow = DateTime.Now;
 
             var modules = await db.Modules.Include(a => a.Course)
-               .Where(a => a.CourseId == userCourseId)
+               .Where(a => a.Course.Id == userCourse.Id)
                .ToListAsync();
 
-            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks))
-                             .First();
+            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
             
             var activities = await db.Activities
                .Where(a => a.ModuleId == currentModule.Id)
@@ -310,19 +308,14 @@ namespace LexiconLMS.Controllers
             var currentActivity = new Activity();
 
             if (activities.Count > 0)
-            {
-                currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks))
-                                 .First();
-            }
+                currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
             else
-            {
                 currentActivity.Name = "No current activities";
-            }
-
+      
             var assignments = await db.Activities.Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
-                .Where(a => a.Module.CourseId == userCourseId && a.ActivityType.Name == "Assignment")
+                .Where(a => a.Module.Course.Id == userCourse.Id && a.ActivityType.Name == "Assignment")
                 .ToListAsync();
 
             var currentAssignment = new List<Activity>();
@@ -339,7 +332,7 @@ namespace LexiconLMS.Controllers
             
             var model = new CurrentViewModel
             {
-                CourseName = userCourseName,
+                CourseName = userCourse.Name,
                 Module = currentModule,
                 Activity = currentActivity,
                 Assignments = currentAssignment
@@ -348,10 +341,7 @@ namespace LexiconLMS.Controllers
             return model;
         }
 
-        // Teacher: User Accounts Index
-
-
-        //[Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> TeacherUserIndex()
         {
@@ -361,6 +351,7 @@ namespace LexiconLMS.Controllers
                 .ToListAsync();
 
             var model = new List<AppUserListViewModel>();
+
             foreach (var appUser in userList)
             {
                 model.Add(new AppUserListViewModel
