@@ -72,8 +72,26 @@ function addToList() {
     
 }
 
+
+
+
 function sendJson() {
-    // DO AJAX
+
+    var things = JSON.stringify({ 'allActivities': allActivities }); // Testing to preprocess array before sending
+
+    $.ajax({
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        type: 'POST',
+        url: '/Modules/Create',  // If this does not work a a second arg to the action, create a new action that returns the stuff?
+        data: things,
+        success: function () {
+            $('#result').html('"sendJson()" successfully called.');
+        },
+        failure: function (response) {
+            $('#result').html(response);
+        }
+    }); 
 }
 
 

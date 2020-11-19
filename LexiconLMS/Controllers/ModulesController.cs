@@ -10,6 +10,7 @@ using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels;
 using AutoMapper;
+using System.Text.Json;
 
 namespace LexiconLMS.Controllers
 {
@@ -64,7 +65,7 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(ModuleActivityCreateViewModel viewModel)
+        public async Task<IActionResult> Create(ModuleActivityCreateViewModel viewModel, IEnumerable<JsonElement> json)
         {
             if (ModelState.IsValid)
             {
