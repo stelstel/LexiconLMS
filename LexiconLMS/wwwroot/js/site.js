@@ -111,9 +111,14 @@ function addToList() {
     document.querySelector('.activityForm').reset();
 }
 
+
+
 function sendJson() {
 
-    //var things = JSON.stringify({ 'allActivities': allActivities }); // Testing to preprocess array before sending
+    let token = $('input[name="__RequestVerificationToken"]').val();
+
+    let module = {};
+    $('#module').serializeArray().forEach(d => module[d.name] = d.value || '');
 
     $.ajax({
         //contentType: 'application/json; charset=utf-8',
@@ -121,7 +126,11 @@ function sendJson() {
         dataType: 'json',
         type: 'POST',
         url: '/Modules/Create',  // If this does not work a a second arg to the action, create a new action that returns the stuff?
-        data: {data : result},
+        data: {
+            data: result,
+            __RequestVerificationToken: token,
+            module : module
+        },
         success: function () {
             $('#result').html('"sendJson()" successfully called.');
         },
@@ -130,5 +139,4 @@ function sendJson() {
         }
     }); 
 }
-
 
