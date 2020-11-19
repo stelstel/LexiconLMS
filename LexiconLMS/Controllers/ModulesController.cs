@@ -63,25 +63,25 @@ namespace LexiconLMS.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(ModuleActivityCreateViewModel viewModel, IEnumerable<JsonElement> json)
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Create(IEnumerable<ActivityListViewModel> data)
         {
             if (ModelState.IsValid)
             {
 
                 //var module = mapper.Map<Module>(viewModel);
 
-                var module = new Module
-                {
-                    CourseId = viewModel.CourseId,
-                    Name = viewModel.ModuleName,
-                    Description = viewModel.ModuleDescription,
-                    StartTime = viewModel.ModuleStartTime,
-                    EndTime = viewModel.ModuleEndTime
-                };
+                //var module = new Module
+                //{
+                //    CourseId = viewModel.CourseId,
+                //    Name = viewModel.ModuleName,
+                //    Description = viewModel.ModuleDescription,
+                //    StartTime = viewModel.ModuleStartTime,
+                //    EndTime = viewModel.ModuleEndTime
+                //};
 
-                _context.Add(module);
+               // _context.Add(module);
 
                 //foreach (var item in viewModel.Activities)
                 //{
@@ -99,11 +99,11 @@ namespace LexiconLMS.Controllers
                 //}
 
                 
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
+                //await _context.SaveChangesAsync();
+                //return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
             //ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
-            return View(viewModel);
+            return new JsonResult(new ActivityListViewModel() );
         }
 
         // GET: Modules/Edit/5
