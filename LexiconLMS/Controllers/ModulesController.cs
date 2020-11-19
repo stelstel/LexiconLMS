@@ -24,7 +24,7 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = db.Modules.Include(c => c.Course);
+            var applicationDbContext = db.Modules.Include(c => c.Course).OrderBy(c => c.Course.Name).ThenBy(c => c.StartTime);
             return View(await applicationDbContext.ToListAsync());
         }
 
