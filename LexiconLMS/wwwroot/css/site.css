@@ -15,6 +15,10 @@ a.navbar-brand {
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
+ }
+
+a:hover {
+    text-decoration: none; /* No link underline */
 }
 
 .btn-primary {
@@ -173,3 +177,13 @@ div#card-mod-act.card div.card-body {
 #courseDescModal .modal-footer {
     background: #dbdbdb;
 }
+
+/*
+tr {
+    font-weight: 900;
+    color: green;
+}
+
+tr a {
+    color: green;
+}*/
