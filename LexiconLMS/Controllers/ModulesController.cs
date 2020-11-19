@@ -65,7 +65,7 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(IEnumerable<ActivityListViewModel> data, ModulePostViewModel module)
+        public async Task<IActionResult> Create(TestViewModel test)
         {
             if (ModelState.IsValid)
             {

@@ -127,9 +127,11 @@ function sendJson() {
         type: 'POST',
         url: '/Modules/Create',  // If this does not work a a second arg to the action, create a new action that returns the stuff?
         data: {
-            data: result,
-            __RequestVerificationToken: token,
-            module : module
+            test: {
+                data: result,
+                module : module
+            },
+            __RequestVerificationToken: token
         },
         success: function () {
             $('#result').html('"sendJson()" successfully called.');
