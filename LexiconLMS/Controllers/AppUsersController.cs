@@ -149,19 +149,30 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CreateUser(CreateUserViewModel newUser)
         {
-            ModelState.AddModelError("Password", $"Some error messages.");
-            ModelState.AddModelError("Password", $"and some more.");
+            // 1) verify user not exists.
+            // 2) Verify password (now? how?)
+            // 3) create user using usermanager
+            // 4) if ok add role using rolemanager
+
+
+            var addUser = new AppUser
+            {
+                UserName = newUser.Email,
+                Email = newUser.Email,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName
+            };
+
+            var result = await userManager.CreateAsync(addUser, newUser.Password);
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
             return View();
-            //if (ModelState.IsValid)
-            //{
-            //    db.Add(appUser);
-            //    await db.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
 
-            //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
 
-            //return View(newUser);
         }
 
         // GET: Users/Edit/5
