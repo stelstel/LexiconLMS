@@ -133,7 +133,7 @@ namespace LexiconLMS.Controllers
 
         // GET: Users/Create
         //[Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult CreateUser()
         {
             ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
 
@@ -145,7 +145,7 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AppUser appUser)
+        public async Task<IActionResult> CreateUser(AppUser appUser)
         {
             if (ModelState.IsValid)
             {
