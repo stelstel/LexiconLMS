@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using LexiconLMS.Models.ViewModels.Student;
 using LexiconLMS.Models.ViewModels;
+using LexiconLMS.Models.ViewModels.Teacher;
 
 namespace LexiconLMS.Controllers
 {
@@ -132,10 +133,10 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users/Create
-        //[Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher")]
         public IActionResult CreateUser()
         {
-            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
+            //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
 
             return View();
         }
@@ -145,18 +146,22 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUser(AppUser appUser)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> CreateUser(CreateUserViewModel newUser)
         {
-            if (ModelState.IsValid)
-            {
-                db.Add(appUser);
-                await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            ModelState.AddModelError("Password", $"Some error messages.");
+            ModelState.AddModelError("Password", $"and some more.");
+            return View();
+            //if (ModelState.IsValid)
+            //{
+            //    db.Add(appUser);
+            //    await db.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
 
-            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+            //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
 
-            return View(appUser);
+            //return View(newUser);
         }
 
         // GET: Users/Edit/5
