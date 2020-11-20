@@ -52,8 +52,7 @@
                                 <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
                             </div>
                             <div class="col col-sm-4">@assignment.EndTime</div>
-                            @*<div class="col ass-col col-sm-2">@Html.DisplayFor(i => assignment.IsFinished)</div>*@
-
+                            
                             <div class="col ass-col col-sm-2">
                                 @if (assignment.IsFinished)
                                 {

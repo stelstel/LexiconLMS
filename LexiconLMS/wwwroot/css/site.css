@@ -187,3 +187,10 @@ tr {
 tr a {
     color: green;
 }*/
+
+.btn-dark,
+.btn-success{
+    border-radius: 30px;
+    margin-bottom: 10px;
+    width: 100%;
+}

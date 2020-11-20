@@ -73,30 +73,68 @@ namespace LexiconLMS.Controllers
         {
             var userId = userManager.GetUserId(User);
             var userCourse = await GetUserCourseAsync(userId);
+            var timeNow = DateTime.Now;
 
-            var model = await db.Modules.Include(a => a.Course)
+            //var currentModule = db.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            var modules = await db.Modules.Include(a => a.Course)
                 .Where(a => a.Course.Id == userCourse.Id)
                 .Select(a => new ModuleListViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
-                    EndTime = a.EndTime
+                    EndTime = a.EndTime,
+                    IsCurrentModule = false
+                })
+                .OrderBy(m => m.StartTime)
+                .ToListAsync();
+            
+            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            foreach (var mod in modules)
+            {
+                if (mod == currentModule )
+                {
+                    mod.IsCurrentModule = true;
+                }
+            }
+
+            return modules;
+        }
+
+        //************** Makes a list out of ALL activities for a student ********************
+        public async Task<List<ActivityListViewModel>> GetStudentActivityListAsync()
+        {
+            var userId = userManager.GetUserId(User);
+            var userCourse = await GetUserCourseAsync(userId);
+
+            var model = await db.Activities
+                .Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .ThenInclude(a => a.Course)
+                .Where(a => a.Module.Course.Id == userCourse.Id)
+                .Select(a => new ActivityListViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    ActivityType = a.ActivityType.Name
                 })
                 .ToListAsync();
 
             return model;
         }
 
-        public async Task<List<ActivityListViewModel>> GetStudentActivityListAsync()
+        //******************************************* GetModuleActivityListAsync *******************
+        // Makes a list out of activities belonging to a module
+        public async Task<List<ActivityListViewModel>> GetModuleActivityListAsync(int Id)
         {
-            var userId = userManager.GetUserId(User);
-            var userCourse = await GetUserCourseAsync(userId);
-
-            var model = await db.Activities.Include(a => a.ActivityType)
-                .Include(a => a.Module)
-                .ThenInclude(a => a.Course)
-                .Where(a => a.Module.Course.Id == userCourse.Id)
+            var model = await db.Activities
+                .Include(a => a.ActivityType)
+                .Where(a => a.Module.Id == Id)
+                .Where(a => a.ActivityType.Id != 3) // Except "Assignments"
                 .Select(a => new ActivityListViewModel
                 {
                     Id = a.Id,
@@ -258,7 +296,16 @@ namespace LexiconLMS.Controllers
         {
             var userId = userManager.GetUserId(User);
             var moduleList = await GetStudentModuleListAsync();
-            var activityList = await GetStudentActivityListAsync();
+            var module = moduleList.Find(y => y.IsCurrentModule);
+            List<ActivityListViewModel> activityList = null;
+
+
+            if (module != null)
+            {
+                activityList = await GetModuleActivityListAsync(module.Id);
+            }
+
+            //var activityList = await GetStudentActivityListAsync();
             var assignmentList = await GetStudentAssignmentsAsync();
             var current = await Current();
 

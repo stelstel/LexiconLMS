@@ -2,34 +2,22 @@
 
 <h2>Modules</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            @*GetModuleActivityListAsync(int moduleId)   asp-controller="AppUser" asp-action="GetModuleActivityListAsync(@item.Id)" *@
+            <a asp-controller="AppUsers" asp-action="GetModuleActivityListAsync" asp-route-id="@item.Id">
+                @if (item.IsCurrentModule)
+                {
+                    <div type="button" class="btn btn-success">@item.Name <br /> @item.StartTime <br />@item.EndTime</div>
+                }
+                else
+                {
+                    <div type="button" class="btn btn-dark">@item.Name <br /> @item.StartTime <br /> @item.EndTime</div>
+                }
+            </a>
+        </div>
+    </div>
+ }
+    

@@ -15,6 +15,7 @@ namespace LexiconLMS.Models.ViewModels.Student
         public DateTime StartTime { get; set; }
         [DisplayName("End Time")]
         public DateTime EndTime { get; set; }
+        public bool IsCurrentModule { get; set; }
 
         //public int CourseId { get; set; }
         //public Course Course { get; set; }

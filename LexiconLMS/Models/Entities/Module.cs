@@ -12,6 +12,7 @@ namespace LexiconLMS.Models.Entities
         public string Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        //public Module CurrentModule { get; set; }
 
         // Foreign Key
         public int CourseId { get; set; }

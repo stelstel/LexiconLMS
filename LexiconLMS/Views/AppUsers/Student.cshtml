@@ -7,19 +7,13 @@
 <!--Current-->
 <partial name="StudentCurrentPartial" model="@Model.CurrentViewModel" />
 
-<!--Modules-->
+<!--Modules and Activities-->
 <div class="container cont-section" id="modules">
     <div class="row row-modules">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             <partial name="StudentModuleListPartial" model="@Model.ModuleList" />
         </div>
-    </div>
-</div>
-
-<!--Activities-->
-<div class="container cont-section" id="activities">
-    <div class="row row-activities">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             <partial name="StudentActivityListPartial" model="@Model.ActivityList" />
         </div>
     </div>
