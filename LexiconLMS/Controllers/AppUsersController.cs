@@ -206,11 +206,6 @@ namespace LexiconLMS.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
-
-            // TODO
-            // FIX THIS. Current course (skicka med argument att sätta 'selected' i SelectListItem service)
-            // måste få med courseid till POSTen i view 
-
             if (id == null)
             {
                 return NotFound();

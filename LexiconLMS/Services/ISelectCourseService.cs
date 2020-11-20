@@ -7,5 +7,6 @@ namespace LexiconLMS.Services
     public interface ISelectCourseService
     {
         Task<IEnumerable<SelectListItem>> GetCoursesAsync();
+        Task<IEnumerable<SelectListItem>> GetCoursesAsync(int? selected);
     }
 }

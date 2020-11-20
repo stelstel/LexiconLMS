@@ -25,7 +25,19 @@ namespace LexiconLMS.Services
                 })
                 .ToListAsync();
 
-            selectList.Insert(0, new SelectListItem { Text = "---", Value = string.Empty, Selected = true });
+            selectList.Insert(0, new SelectListItem { Text = "---", Value = string.Empty, Selected = true});
+            return selectList;
+        }
+
+        public async Task<IEnumerable<SelectListItem>> GetCoursesAsync(int? selected)
+        {
+            var selectList = await GetCoursesAsync();
+            if (selected == null)
+            {
+                return selectList;
+            }
+            var theSelected = selectList.Where(s => s.Value == selected.ToString()).FirstOrDefault();
+            theSelected.Selected = true;
             return selectList;
         }
     }
