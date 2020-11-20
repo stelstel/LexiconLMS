@@ -136,10 +136,7 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult CreateUser()
         {
-            // Fetch course list for dropdown ith service in view instead
-            //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
-
-            return View();
+             return View();
         }
 
         [HttpPost]
@@ -149,19 +146,10 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                var foundUser = await userManager.FindByEmailAsync(newUser.Email);
-                if (foundUser != null)
+                if (AppUserEmailExists(newUser.Email))
                 {
                     ModelState.AddModelError(string.Empty, $"User '{newUser.Email}' already exists");
                     return View();
-                }
-
-                Course course = null;
-
-                // newUser.CourseId is null if nothing selected in course dropdown list
-                if (newUser.CourseId != null && !newUser.IsTeacher)
-                {
-                    course = await db.Courses.FirstOrDefaultAsync(c => c.Id == newUser.CourseId);
                 }
 
                 var addUser = new AppUser
@@ -170,7 +158,7 @@ namespace LexiconLMS.Controllers
                     Email = newUser.Email,
                     FirstName = newUser.FirstName,
                     LastName = newUser.LastName,
-                    Course = course
+                    Course = await CreateCourseSelectList(newUser)
                 };
 
                 var createResult = await userManager.CreateAsync(addUser, newUser.Password);
@@ -180,26 +168,18 @@ namespace LexiconLMS.Controllers
                     var createdUser = await userManager.FindByNameAsync(newUser.Email);
 
                     // Add role(s)
-                    // Before adding role, verify that any roles not have been applied yet.
+                    // Before adding role, verify that roles haven't have been applied yet.
                     // All users have role Student
                     if (!await userManager.IsInRoleAsync(createdUser, "Student"))
                     {
-                        var addToRoleResult = await userManager.AddToRoleAsync(createdUser, "Student");
-                        if (!addToRoleResult.Succeeded)
-                        {
-                            throw new Exception(string.Join("\n", addToRoleResult.Errors));
-                        }
+                        await AddAppUserToRoleAsync(createdUser, "Student");
 
                         // Add Teacher role if applicable
                         if (newUser.IsTeacher)
                         {
                             if (!await userManager.IsInRoleAsync(createdUser, "Teacher"))
                             {
-                                addToRoleResult = await userManager.AddToRoleAsync(createdUser, "Teacher");
-                                if (!addToRoleResult.Succeeded)
-                                {
-                                    throw new Exception(string.Join("\n", addToRoleResult.Errors));
-                                }
+                                await AddAppUserToRoleAsync(createdUser, "Teacher");
                             }
                         }
                     }
@@ -211,6 +191,16 @@ namespace LexiconLMS.Controllers
                 }
             }
             return View();
+        }
+
+        private async Task<IdentityResult> AddAppUserToRoleAsync(AppUser createdUser, String role)
+        {
+            var addToRoleResult = await userManager.AddToRoleAsync(createdUser, role);
+            if (!addToRoleResult.Succeeded)
+            {
+                throw new Exception(string.Join("\n", addToRoleResult.Errors));
+            }
+            return addToRoleResult;
         }
 
         // GET: Users/Edit/5
@@ -448,6 +438,24 @@ namespace LexiconLMS.Controllers
         {
             return db.Users.Any(e => e.Id == id);
         }
+
+        private bool AppUserEmailExists(string email)
+        {
+            return db.Users.Any(e => e.Email == email);
+        }
+        private async Task<Course> CreateCourseSelectList(CreateUserViewModel newUser)
+        {
+            Course course = null;
+
+            // newUser.CourseId is null if nothing selected in course dropdown list
+            if (newUser.CourseId != null && !newUser.IsTeacher)
+            {
+                course = await db.Courses.FirstOrDefaultAsync(c => c.Id == newUser.CourseId);
+            }
+
+            return course;
+        }
+
     }
 }
 
