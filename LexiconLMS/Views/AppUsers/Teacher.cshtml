@@ -5,9 +5,10 @@
 }
 
 <!--Current-->
-<partial name="TeacherCurrentPartial" model="@Model.TeacherCurrentViewModel"/>
+<partial name="TeacherCurrentPartial" model="@Model.TeacherCurrentViewModel" />
 
 <!--Modules-->
+<partial name="TeacherModulePartial" model="@Model.ModuleList" />
 
-<!--Activities-->
-
+<!--Assignments-->
+<partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />

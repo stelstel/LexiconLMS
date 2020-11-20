@@ -10,5 +10,7 @@ namespace LexiconLMS.Models.ViewModels.Teacher
     {
         public Course Course { get; set; }
         public TeacherCurrentViewModel TeacherCurrentViewModel { get; set; }
+        public IEnumerable<TeacherAssignmentListViewModel> AssignmentList { get; set; }
+        public IEnumerable<TeacherModuleViewModel> ModuleList { get; set; }
     }
 }
