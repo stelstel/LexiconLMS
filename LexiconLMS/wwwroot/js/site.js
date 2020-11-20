@@ -1,133 +1,75 @@
 ﻿
-// Update variable which holds the current form-data
-//$(function () {
-//    var update = function () {
-//        $('#serializearray').text(
-//            JSON.stringify($(".activityForm").serializeArray())
-//        );
-//        // Maybe not do array but string instead?
-//    };
-//    update();
-//    $(".activityForm").change(update);
-//})
-
-
-
 let remove = document.getElementsByClassName("remove");         // This classname is "activated" when one clicks addToList()
 
-// List to hold all activities from the form data
-let allActivities = [];
+
+let result = []
 
 function addToList() {
 
-    //let inputValue = document.getElementById("myInput").value;      // Hämta värde från inputfält.
-    //let inputValue = document.getElementById("serializearray").value;      
-    //let inputValue = $('#serializearray').text(JSON.stringify($(".activityForm").serializeArray()));      
-    //let inputValue = $(".activityForm");
-    //let inputValue = document.getElementById("serializearray").innerHTML;
+    let form = $('.activityForm');
+    let formData = form.serializeArray();
 
-    //let obj = JSON.parse(document.getElementById("serializearray").innerHTML) // Serialisera 
+    let temp = {};
+    formData.forEach(d => temp[d.name] = d.value || '');
+    result.push(temp);
 
-    let actForm = $('.activityForm');                   // Hämta html-elementet där formdatat finns.
-    let serialized = actForm.serializeArray();          // Gör om till name-value-pairs.
-    let newArray = [];          
-
-    serialized.forEach(x => newArray[x.name] = x.value || '');  // Transformera så det matchat modellen.
-
-    allActivities.push(newArray);               
-
-    let html = `<p>${newArray.ActivityTypeId}</p>`;         // Dynamiskt skriva ut.
-    $('#theList').append(html);
-
-    //let inputValue = obj[0].value + " / " + obj[1].value + " / " + obj[3].value + " / " + obj[4].value;
+    let activity = `${temp.ActivityName} ${temp.ActivityStartTime} ${temp.ActivityEndTime}`;
     
 
-    //if (inputValue != "") {
-    //    allActivities.push(obj);
-    //}
+    document.querySelector('.activityForm').reset();
 
-    console.log(allActivities);
-    
+    if (form === '') {                                                  // Kolla om någon input skrivits in.
+        alert("Tomt inputfält!");
+    } else {
+        let li = document.createElement("LI");                        // Skapa ny <li>-nod.
+        let elementText = document.createTextNode(activity);            // Tillsätt inputvärde till en ny text-nod.
+        li.appendChild(elementText);                                  // Lägg till text/barn-nod till nya <li>-noden. 
+        let xButton = document.createElement("button");                 // Skapa x-knapp.
+        let x = document.createTextNode("\u00D7");                      // Skapa variabel med x-symbol.
+        xButton.className = "remove";                                   // Ge x-knappen ett klassnamn.
+        xButton.appendChild(x);                                         // Lägg till x-symbolen till x-knappen.
+        li.appendChild(xButton);                                        // Lägg till x-knappnoden till <li>
+        document.getElementById("theList").appendChild(li);             // Lägg till listpunkt till listan i sig.
+    }
 
-    
+            
 
-    //if (inputValue === '') {                                        // Kolla om någon input skrivits in.
-    //    alert("Tomt inputfält!");
-    //} else {
-    //    let li = document.createElement("LI");                        // Skapa ny <li>-nod.
-    //    let elementText = document.createTextNode(inputValue);        // Tillsätt inputvärde till en ny text-nod.
-    //    li.appendChild(elementText);                                  // Lägg till text/barn-nod till nya <li>-noden. 
-    //    let xButton = document.createElement("button");                 // Skapa x-knapp.
-    //    let x = document.createTextNode("\u00D7");                      // Skapa variabel med x-symbol.
-    //    xButton.className = "remove";                                   // Ge x-knappen ett klassnamn.
-    //    xButton.appendChild(x);                                         // Lägg till x-symbolen till x-knappen.
-    //    li.appendChild(xButton);                                        // Lägg till x-knappnoden till <li>
-    //    document.getElementById("theList").appendChild(li);           // Lägg till listpunkt till listan i sig.
-    //}
-                     
-    ////document.getElementById("serializearray").value = "";                  
-    //document.getElementById("serializearray").innerHTML = "";         // Nollställ inputvärde.         
+    for (i = 0; i < remove.length; i++) {                           // Detta lägger till ta-bort-funktionen
+        remove[i].onclick = function () {
+            let parent = this.parentElement;
+            parent.style.display = "none";
+            for (var j = 0; j < result.length; j++) {
+                if (result[j] === temp) {
+                    result.splice(j, 1);                        // Delete current object from list when the x-button is clicked.
+                }
+            }
+        }
 
-    //for (i = 0; i < remove.length; i++) {                           // Detta lägger till ta-bort-funktionen
-    //    remove[i].onclick = function () {
-    //        let parent = this.parentElement;
-    //        parent.style.display = "none";
-    //        for (var i = 0; i < allActivities.length; i++) {
-    //            if (allActivities[i] === obj) {
-    //                allActivities.splice(i, 1);                 // Delete current object from list when the x-button is clicked.
-    //            } 
-    //        }
-    //    }
-    //}
-    
-    
+    }
+
 }
-
-//let temp = allActivities;
-
-//function ConvertFormToJSON(inputList) {
-//    var json = {};
-//    let jsonList = [];
-
-//    for (var i = 0; i < inputList.length; i++) {
-//        jQuery.each(inputList[i], function () {
-//            json[this.name] = this.value || '';
-//        });
-//        jsonList.push(json);
-//    }
-//    return jsonList;
-//}
 
 
 
 function sendJson() {
 
-    //var things = JSON.stringify({ 'allActivities': allActivities }); // Testing to preprocess array before sending
-    //alert("function called...");
+    let token = $('input[name="__RequestVerificationToken"]').val();                    // ??
 
-    let x = allActivities;
-
-    //let temp = ConvertFormToJSON(x);
-    //let test = "teststring";
-    //let test2 = [{ ActivityName: "Act1" } { ActivityDescription: "Act1 info" } { ActivityStartTime: "2020-01-01" } { ActivityEndTime: "2020-01-04" }{ ActivityTypeId: "72" }]
-    let test2 = [{ ActivityName: "Act1", ActivityDescription: "Act1 info", ActivityStartTime: "2020-01-01", ActivityEndTime: "2020-01-04", ActivityTypeId: "72" },
-    { ActivityName: "Act2", ActivityDescription: "Act2 info", ActivityStartTime: "2020-01-01", ActivityEndTime: "2020-01-04", ActivityTypeId: "73" }];
-
-
-
+    let module = {};
+    $('#module').serializeArray().forEach(d => module[d.name] = d.value || '');        // Get formdata for module
 
     $.ajax({
-        //contentType: 'application/json; charset=utf-8',
-        //contentType: 'application/json',
-        dataType: 'json',
-        //dataType: 'text',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        dataType: 'json',                                                              // We are sending an json-object (Modules) and an array of json-objects (Activities)
         type: 'POST',
-        url: '/Modules/TestAction',                                     // If this does not work a second arg to the action, create a new action that returns the stuff?
-        //url: '@Url.Action("Create")',                                 // If this does not work a second arg to the action, create a new action that returns the stuff?
-        //data: { activities: allActivities },                          // Skapa ett anonymt objekt (därav måsvingar) med namnet activities och datat från "temp".
-        //data: '{ activities: ' + JSON.stringify(allActivities) + '}',
-        //data: JSON.stringify(allActivities),
-        data: { test: test2 },
+        url: '/Modules/Create',                                                        // url for the /Controller/Action
+        data: {                                                                        // Set values for both arguments the Action is expecting
+            viewModel: {
+                data: result,                                       
+                module : module
+            },
+            __RequestVerificationToken: token
+        },
         success: function () {
             $('#result').html('"sendJson()" successfully called.');
         },
@@ -136,5 +78,4 @@ function sendJson() {
         }
     }); 
 }
-
 

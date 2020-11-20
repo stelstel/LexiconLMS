@@ -53,7 +53,7 @@ namespace LexiconLMS.Controllers
 
         // GET: Modules/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create(string activities)
+        public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
             return View();
@@ -63,47 +63,42 @@ namespace LexiconLMS.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(/*ModuleActivityCreateViewModel viewModel,*/ /*[FromForm]IEnumerable<ActivityListViewModel>*/)
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var module = new Module
+                {
+                    CourseId = viewModel.Module.CourseId,
+                    Name = viewModel.Module.ModuleName,
+                    Description = viewModel.Module.ModuleDescription,
+                    StartTime = viewModel.Module.ModuleStartTime,
+                    EndTime = viewModel.Module.ModuleEndTime
+                };
 
-                //var module = mapper.Map<Module>(viewModel);
+                _context.Add(module);
 
-                //var module = new Module
-                //{
-                //    CourseId = viewModel.CourseId,
-                //    Name = viewModel.ModuleName,
-                //    Description = viewModel.ModuleDescription,
-                //    StartTime = viewModel.ModuleStartTime,
-                //    EndTime = viewModel.ModuleEndTime
-                //};
-
-                //_context.Add(module);
-
-                //foreach (var item in viewModel.Activities)
-                //{
-                //    var activity = new Activity
-                //    {
-                //        Name = item.ActivityName,
-                //        Description = item.ActivityDescription,
-                //        StartTime = item.ActivityStartTime,
-                //        EndTime = item.ActivityEndTime,
-                //        ActivityTypeId = item.ActivityTypeId,
-                //        Module = module
-                //    };
-
-                //    _context.Add(activity);
-                //}
-
+                foreach (var item in viewModel.Data)
+                {
+                    var activity = new Activity
+                    {
+                        Name = item.ActivityName,
+                        Description = item.ActivityDescription,
+                        StartTime = item.ActivityStartTime,
+                        EndTime = item.ActivityEndTime,
+                        ActivityTypeId = item.ActivityTypeId,
+                        Module = module
+                    };
+                    _context.Add(activity);
+                }
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
             //ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
-            return View(/*viewModel*/);
+            return View(viewModel);
         }
 
         // GET: Modules/Edit/5
@@ -195,12 +190,7 @@ namespace LexiconLMS.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult TestAction(List<ActivityListViewModel> test)
-        {
-            return View();
-        }
-
+        
 
     }
 }
