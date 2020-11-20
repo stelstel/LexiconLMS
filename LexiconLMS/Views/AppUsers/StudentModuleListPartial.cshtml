@@ -10,7 +10,12 @@
             <a asp-controller="AppUsers" asp-action="GetModuleActivityListAsync" asp-route-id="@item.Id">
                 @if (item.IsCurrentModule)
                 {
-                    <div type="button" class="btn btn-success">@item.Name <br /> @item.StartTime <br />@item.EndTime</div>
+                    <div type="button" class="btn btn-success"
+                         data-ajax="true"
+                         data-ajax-method="GET"
+                         data-ajax-update="#col-modules"
+                         data-ajax-mode="replace"
+                         >@item.Name <br /> @item.StartTime <br />@item.EndTime</div>
                 }
                 else
                 {
