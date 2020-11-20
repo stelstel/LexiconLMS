@@ -1,10 +1,9 @@
-﻿@model CurrentViewModel
+﻿@model TeacherCurrentViewModel
 
 <div class="container cont-section" id="current">
     <div class="row">
         <div class="col-sm-12">
             <h1>@Model.Course.Name</h1>
-            
         </div>
     </div>
     <div class="row">
@@ -53,7 +52,7 @@
                                 <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
                             </div>
                             <div class="col col-sm-4">@assignment.EndTime</div>
-                            <div class="col ass-col col-sm-2">@Html.DisplayFor(i => assignment.IsFinished)</div>
+                            <div class="col ass-col col-sm-2">@Model.Finished</div>
                         </div>
                     }
                 </div>
@@ -62,6 +61,7 @@
     </div>
 </div>
 
+<!--See more Info-->
 <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -76,9 +76,9 @@
                     <h6>Description:</h6>
                     @Model.Course.Description
                     <h6 class="pt-3">Course participants:</h6>
-                    @foreach (var stud in Model.Course.AppUsers)
+                    @foreach (var student in Model.Course.AppUsers)
                     {
-                        @stud.FullName<br>
+                        <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@student.Id">@student.FullName</a><br>
                     }
                 </div>
             </div>

@@ -209,7 +209,7 @@ namespace LexiconLMS.Data
 
                     var activity = new Activity
                     {
-                        Name = activityType.Name,
+                        Name = $"{fake.Commerce.Product()} {activityType.Name}",
                         Description = fake.Lorem.Sentences(),
                         StartTime = activityStartTime,
                         EndTime = activityEndTime,
