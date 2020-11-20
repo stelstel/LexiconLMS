@@ -206,21 +206,37 @@ namespace LexiconLMS.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
+
+            // TODO
+            // FIX THIS. Current course (skicka med argument att sätta 'selected' i SelectListItem service)
+            // måste få med courseid till POSTen i view 
+
             if (id == null)
             {
                 return NotFound();
             }
+            // get role for user
+            var isTeacher = true;
+            
+            var editUser = await db.Users
+                .Where(u => u.Id == id)
+                .Select(u => new EditUserViewModel
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    IsTeacher = isTeacher,
+                    CourseId = u.CourseId
+                })
+                .FirstOrDefaultAsync();
 
-            var appUser = await db.Users.FindAsync(id);
-
-            if (appUser == null)
+            if (editUser == null)
             {
                 return NotFound();
             }
 
-            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
-
-            return View(appUser);
+            return View(editUser);
         }
 
         // POST: Users/Edit/5
@@ -228,37 +244,39 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, AppUser appUser)
+        public async Task<IActionResult> Edit(string id, EditUserViewModel editUser)
         {
-            if (id != appUser.Id)
+            if (id != editUser.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    db.Update(appUser);
-                    await db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AppUserExists(appUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        var appUser = await db.Users.FindAsync(id);
+                    
+            //        db.Update(appUser);
+            //        await db.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!AppUserExists(appUser.Id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
 
-            ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+            //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
 
-            return View(appUser);
+            return View(editUser);
         }
 
         [Authorize(Roles = "Teacher")]
