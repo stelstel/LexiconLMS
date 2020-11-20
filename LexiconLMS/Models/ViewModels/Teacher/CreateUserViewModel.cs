@@ -31,7 +31,7 @@ namespace LexiconLMS.Models.ViewModels.Teacher
         [Display(Name = "Create as Teacher?")]
         public bool IsTeacher { get; set; }
         
-        public Course? Course { get; set; }
+        public int? CourseId { get; set; }
 
     }
 }

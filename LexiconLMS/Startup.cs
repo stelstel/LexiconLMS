@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LexiconLMS.Models.Entities;
+using LexiconLMS.Services;
 
 namespace LexiconLMS
 {
@@ -35,6 +36,9 @@ namespace LexiconLMS
             services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Service to get an IEnumerable<SelectListItem> with courses
+            services.AddScoped<ISelectCourseService, SelectCourseService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

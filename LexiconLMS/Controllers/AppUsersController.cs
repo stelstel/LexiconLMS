@@ -156,14 +156,21 @@ namespace LexiconLMS.Controllers
                     return View();
                 }
 
-                // TODO: Add course if Course set (and only if Student?)
+                Course course = null;
+
+                // newUser.CourseId is null if nothing selected in course dropdown list
+                if (newUser.CourseId != null && !newUser.IsTeacher)
+                {
+                    course = await db.Courses.FirstOrDefaultAsync(c => c.Id == newUser.CourseId);
+                }
 
                 var addUser = new AppUser
                 {
                     UserName = newUser.Email,
                     Email = newUser.Email,
                     FirstName = newUser.FirstName,
-                    LastName = newUser.LastName
+                    LastName = newUser.LastName,
+                    Course = course
                 };
 
                 var createResult = await userManager.CreateAsync(addUser, newUser.Password);
