@@ -66,7 +66,7 @@ namespace LexiconLMS
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Activities}/{action=Index}/{id?}");
+                    pattern: "{controller=AppUsers}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
