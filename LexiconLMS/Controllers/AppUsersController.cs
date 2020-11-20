@@ -322,6 +322,7 @@ namespace LexiconLMS.Controllers
                 AppUser = appUser,
                 CurrentViewModel = current
             };
+
             return View(model);
         }
 
@@ -335,7 +336,6 @@ namespace LexiconLMS.Controllers
                 .Select(a => a.Course)
                 .FirstOrDefaultAsync();
 
-
             var timeNow = DateTime.Now;
 
             var modules = await db.Modules.Include(a => a.Course)
@@ -343,7 +343,7 @@ namespace LexiconLMS.Controllers
                .ToListAsync();
 
             var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-            
+
             var activities = await db.Activities
                .Where(a => a.ModuleId == currentModule.Id)
                .ToListAsync();
@@ -354,7 +354,7 @@ namespace LexiconLMS.Controllers
                 currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
             else
                 currentActivity.Name = "No current activities";
-      
+
             var assignments = await db.Activities.Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
@@ -366,13 +366,13 @@ namespace LexiconLMS.Controllers
             if (assignments.Count > 0)
             {
                 assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
-                
+
                 for (int i = 0; i < assignments.Count && i < 3; i++)
                 {
                     currentAssignment.Add(assignments[i]);
                 }
             }
-            
+
             var model = new CurrentViewModel
             {
                 Course = userCourse,
@@ -413,25 +413,83 @@ namespace LexiconLMS.Controllers
 
         }
 
+        // Teacher Course Page
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Teacher()
+        public async Task<IActionResult> Teacher(int? id)
         {
-            var userId = userManager.GetUserId(User);
-            if (userId == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var appUser = await db.Users
-                .Include(a => a.Course)
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var course = await db.Courses.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (appUser == null)
+            var current = await CurrentTeacher(id);
+
+            var model = new TeacherViewModel
+            {
+                Course = course,
+                TeacherCurrentViewModel = current,
+            };
+
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(appUser);
+            return View(model);
+        }
+
+        // Teacher Home Page
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> TeacherHome()
+        {
+            var courses = await db.Courses.ToListAsync();
+
+            var model = new TeacherHomeViewModel
+            {
+                Courses = courses
+            };
+
+            return View(model);
+        }
+
+        public async Task<TeacherCurrentViewModel> CurrentTeacher(int? id)
+        {
+            var timeNow = DateTime.Now;
+
+            var course = await db.Courses.Include(c => c.AppUsers)
+                .Include(c => c.Modules)
+                .ThenInclude(c => c.Activities)
+                .ThenInclude(c => c.ActivityType)
+                .Where(c => c.Id == id)
+                .FirstOrDefaultAsync();
+
+            var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            var assignments = module.Activities.Where(c => c.ActivityType.Name == "Assignment")
+                .OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).ToList();
+
+            if (assignments.Count < 3)
+                assignments = assignments.Take(assignments.Count).ToList();
+            else
+                assignments = assignments.Take(3).ToList();
+
+            // Percentage of the students that is finished - NOT IMPLEMENTED
+            double finished = 0.0;
+
+            var model = new TeacherCurrentViewModel
+            {
+                Course = course,
+                Module = module,
+                Activity = activity,
+                Assignments = assignments,
+                Finished = $"{finished} %"
+            };
+
+            return model;
         }
 
         private bool AppUserExists(string id)
