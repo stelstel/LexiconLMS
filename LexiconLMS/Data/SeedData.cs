@@ -137,17 +137,17 @@ namespace LexiconLMS.Data
             var modules = new List<Module>();
             string[] moduleNames =
             {
-                $"Module 1: Data Management",
-                $"Module 2: Microsoft Office",
-                $"Module 3: Essay Research",
-                $"Module 4: Essay Writing"
+                $"Data Management",
+                $"Microsoft Office",
+                $"Essay Research",
+                $"Essay Writing"
             };
 
             foreach (var course in courses)
             {
-                var courseStartTime = course.StartTime;
+                var moduleStartTime = course.StartTime;
                 var moduleLength = TimeSpan.FromDays(25);
-                var courseEndTime = courseStartTime + moduleLength;
+                var moduleEndTime = moduleStartTime + moduleLength;
 
                 for (int i = 0; i < moduleNames.Length; i++)
                 {
@@ -155,14 +155,14 @@ namespace LexiconLMS.Data
                     {
                         Name = moduleNames[i],
                         Description = fake.Lorem.Sentences(),
-                        StartTime = courseStartTime,
-                        EndTime = courseEndTime,
+                        StartTime = moduleStartTime,
+                        EndTime = moduleEndTime,
                         CourseId = course.Id
                     };
                     modules.Add(module);
 
-                    courseStartTime += moduleLength;
-                    courseEndTime += moduleLength;
+                    moduleStartTime += moduleLength;
+                    moduleEndTime += moduleLength;
                 }
             }
 
@@ -182,34 +182,49 @@ namespace LexiconLMS.Data
             }
 
             db.AddRange(activityTypes);
-
-            // TODO: Make sure all activitytypes are selected at least once
+            await db.SaveChangesAsync();
 
             // Seed Activities
 
             var activities = new List<Activity>();
 
-            for (int i = 0; i < 4; i++)
+            foreach (var module in modules)
             {
-                var tempTime = fake.Date.Soon();
-                var tempTimeSpan = TimeSpan.FromDays(5);
+                var activityStartTime = module.StartTime;
+                var moduleEndTime = module.EndTime;
 
-                var activity = new Activity
+                var activityLength = TimeSpan.FromDays(2.5);
+                var activityEndTime = activityStartTime + activityLength;
+
+                for (int i = 0; i < 10; i++)
                 {
-                    Name = fake.Company.CatchPhrase(),
-                    Description = fake.Lorem.Sentences(),
-                    StartTime = tempTime,
-                    EndTime = tempTime + tempTimeSpan,
-                    ModuleId = modules[random.Next(modules.Count)].Id,
-                    ActivityType = activityTypes[i]
-                };
+                    var activityType = new ActivityType();
+                    var randomId = random.Next(1, 5);
+                    var randomAssignment = random.Next(1, 4);
 
-                activities.Add(activity);
+                    if (randomAssignment == 1)
+                        activityType = activityTypes.Where(a => a.Name == "Assignment").FirstOrDefault();
+                    else
+                        activityType = activityTypes.FirstOrDefault(a => a.Id == randomId);
+
+                    var activity = new Activity
+                    {
+                        Name = activityType.Name,
+                        Description = fake.Lorem.Sentences(),
+                        StartTime = activityStartTime,
+                        EndTime = activityEndTime,
+                        ModuleId = module.Id,
+                        ActivityTypeId = activityType.Id
+                    };
+                    activities.Add(activity);
+
+                    activityStartTime = activityEndTime;
+                    activityEndTime += activityLength;
+                }
             }
 
             db.AddRange(activities);
             await db.SaveChangesAsync();
-
 
             // Seed Students
             var students = new List<AppUser>();
