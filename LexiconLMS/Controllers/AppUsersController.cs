@@ -313,6 +313,8 @@ namespace LexiconLMS.Controllers
                 .Include(a => a.Course)
                 .ThenInclude(a => a.Modules)
                 .ThenInclude(a => a.Activities)
+                .Include(a => a.Course)
+                .ThenInclude(a => a.AppUsers)
                 .FirstOrDefaultAsync(a => a.Id == userId);
 
             var model = new StudentViewModel
@@ -331,6 +333,7 @@ namespace LexiconLMS.Controllers
             var userId = userManager.GetUserId(User);
 
             var userCourse = await db.Users.Include(a => a.Course)
+                .ThenInclude(c => c.AppUsers)
                 .Where(a => a.Id == userId)
                 .Select(a => a.Course)
                 .FirstOrDefaultAsync();
@@ -384,7 +387,7 @@ namespace LexiconLMS.Controllers
             return model;
         }
 
-        [Authorize(Roles = "Teacher")]
+        //[Authorize(Roles = "Teacher")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> TeacherUserIndex()
         {
