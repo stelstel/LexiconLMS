@@ -136,43 +136,74 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult CreateUser()
         {
+            // Fetch course list for dropdown ith service in view instead
             //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id");
 
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CreateUser(CreateUserViewModel newUser)
         {
-            // 1) verify user not exists.
-            // 2) Verify password (now? how?)
-            // 3) create user using usermanager
-            // 4) if ok add role using rolemanager
-
-
-            var addUser = new AppUser
+            if (ModelState.IsValid)
             {
-                UserName = newUser.Email,
-                Email = newUser.Email,
-                FirstName = newUser.FirstName,
-                LastName = newUser.LastName
-            };
+                var foundUser = await userManager.FindByEmailAsync(newUser.Email);
+                if (foundUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, $"User '{newUser.Email}' already exists");
+                    return View();
+                }
 
-            var result = await userManager.CreateAsync(addUser, newUser.Password);
+                // TODO: Add course if Course set (and only if Student?)
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
+                var addUser = new AppUser
+                {
+                    UserName = newUser.Email,
+                    Email = newUser.Email,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName
+                };
+
+                var createResult = await userManager.CreateAsync(addUser, newUser.Password);
+
+                if (createResult.Succeeded)
+                {
+                    var createdUser = await userManager.FindByNameAsync(newUser.Email);
+
+                    // Add role(s)
+                    // Before adding role, verify that any roles not have been applied yet.
+                    // All users have role Student
+                    if (!await userManager.IsInRoleAsync(createdUser, "Student"))
+                    {
+                        var addToRoleResult = await userManager.AddToRoleAsync(createdUser, "Student");
+                        if (!addToRoleResult.Succeeded)
+                        {
+                            throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                        }
+
+                        // Add Teacher role if applicable
+                        if (newUser.IsTeacher)
+                        {
+                            if (!await userManager.IsInRoleAsync(createdUser, "Teacher"))
+                            {
+                                addToRoleResult = await userManager.AddToRoleAsync(createdUser, "Teacher");
+                                if (!addToRoleResult.Succeeded)
+                                {
+                                    throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach (var error in createResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-
             return View();
-
-
         }
 
         // GET: Users/Edit/5
