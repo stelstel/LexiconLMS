@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LexiconLMS.Models.ViewModels
 {
-    public class ActivityListViewModel
+    public class ActivityPostViewModel
     {
         public string ActivityName { get; set; }
         public string ActivityDescription { get; set; }

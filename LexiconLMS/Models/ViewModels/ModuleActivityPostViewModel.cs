@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace LexiconLMS.Models.ViewModels
 {
-    public class TestViewModel
+    public class ModuleActivityPostViewModel
     {
-        public IEnumerable<ActivityListViewModel> Data { get; set; }
+        public IEnumerable<ActivityPostViewModel> Data { get; set; }
         public ModulePostViewModel Module { get; set; }
     }
 }

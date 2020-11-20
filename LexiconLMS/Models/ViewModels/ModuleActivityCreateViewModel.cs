@@ -1,31 +1,38 @@
-﻿using LexiconLMS.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using System.ComponentModel;
+
 
 namespace LexiconLMS.Models.ViewModels
 {
     public class ModuleActivityCreateViewModel
     {
-        // TODO: change names so it fits both Module and Activity, fix mismatch in controller
 
+        [DisplayName("Course (temp)")]
         public int CourseId { get; set; }
+        [DisplayName("Name")]
         public string ModuleName { get; set; }
+        [DisplayName("Description")]
         public string ModuleDescription { get; set; }
+        [DisplayName("Start Time")]
         public DateTime ModuleStartTime { get; set; }
+        [DisplayName("End Time")]
         public DateTime ModuleEndTime { get; set; }
 
 
-        public List<ActivityListViewModel> Activities { get; set; }
-        
-        // Maybe make this into a collection of viewmodels that are passed from a partial view? 
+        //public List<ActivityPostViewModel> Activities { get; set; }
+
+        [DisplayName("Name")]
         public string ActivityName { get; set; }
+        [DisplayName("Description")]
         public string ActivityDescription { get; set; }
+        [DisplayName("Start Time")]
         public DateTime ActivityStartTime { get; set; }
+        [DisplayName("End Time")]
         public DateTime ActivityEndTime { get; set; }
+        [DisplayName("Type")]
         public int ActivityTypeId { get; set; }
-        public Module Module { get; set; }
+
+        //public Module Module { get; set; }
 
 
 

@@ -1,112 +1,141 @@
-﻿@*@model LexiconLMS.Models.Entities.Module*@
-@model LexiconLMS.Models.ViewModels.ModuleActivityCreateViewModel
+﻿@model LexiconLMS.Models.ViewModels.ModuleActivityCreateViewModel
 @inject LexiconLMS.Services.ISelectService service
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Modules and Activities";
 }
 
 <h1>Create</h1>
 
 <h4>Module</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+
+    
         <form id="module">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" asp-items="@await service.SelectCourses()" class="form-control"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CourseId" class="control-label"></label>
+                            <select asp-for="CourseId" asp-items="@await service.SelectCourses()" class="form-control"></select>
+                            <span asp-validation-for="CourseId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ModuleName" class="control-label"></label>
+                            <input asp-for="ModuleName" class="form-control" />
+                            <span asp-validation-for="ModuleName" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="ModuleStartTime" class="control-label"></label>
+                            <input asp-for="ModuleStartTime" class="form-control" />
+                            <span asp-validation-for="ModuleStartTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ModuleEndTime" class="control-label"></label>
+                            <input asp-for="ModuleEndTime" class="form-control" />
+                            <span asp-validation-for="ModuleEndTime" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label asp-for="ModuleDescription" class="control-label"></label><br />
+                            <textarea asp-for="ModuleDescription" class="form-control" rows="12">Add module description here...</textarea>
+                            <span asp-validation-for="ModuleDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="ModuleName" class="control-label"></label>
-                <input asp-for="ModuleName" class="form-control" />
-                <span asp-validation-for="ModuleName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ModuleDescription" class="control-label"></label>
-                <input asp-for="ModuleDescription" class="form-control" />
-                <span asp-validation-for="ModuleDescription" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModuleStartTime" class="control-label"></label>
-                <input asp-for="ModuleStartTime" class="form-control" />
-                <span asp-validation-for="ModuleStartTime" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ModuleEndTime" class="control-label"></label>
-                <input asp-for="ModuleEndTime" class="form-control" />
-                <span asp-validation-for="ModuleEndTime" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input onclick="sendJson()" type="button" value="Create module" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-
-    <hr>
-
-
-    <div class="col-md-8">
-        <form class="activityForm">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="ActivityTypeId" class="control-label"></label>
-                <select asp-for="ActivityTypeId" asp-items="@await service.SelectActivityTypes()" class="form-control"></select>
-                <span asp-validation-for="ActivityTypeId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ActivityName" class="control-label"></label>
-                <input asp-for="ActivityName" class="form-control" />
-                <span asp-validation-for="ActivityName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ActivityDescription" class="control-label"></label>
-                <input asp-for="ActivityDescription" class="form-control" />
-                <span asp-validation-for="ActivityDescription" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ActivityStartTime" class="control-label"></label>
-                <input asp-for="ActivityStartTime" class="form-control" />
-                <span asp-validation-for="ActivityStartTime" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ActivityEndTime" class="control-label"></label>
-                <input asp-for="ActivityEndTime" class="form-control" />
-                <span asp-validation-for="ActivityEndTime" class="text-danger"></span>
-            </div>
-
 
             @*<div class="form-group">
-            <input type="submit" value="Add to module" class="btn btn-primary" />
-        </div>*@
-            @*<input class="rounded" type="text" id="myInput" placeholder="Test..." autofocus>*@
-            <span onclick="addToList()" class="btn btn-primary">Add to Module</span>
+                <input onclick="sendJson()" type="button" value="Create module" class="btn btn-primary" />
+            </div>*@
+
 
         </form>
-        <p>TypeId/Name/StartTime/EndTime</p>
-        <div id="theList" class="rounded"></div>
-
-        <hr> 
-
-        <div id="result"></div>
+    
 
 
+
+<hr />
+<h4>Activities</h4>
+
+
+<form class="activityForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+
+                <div class="form-group">
+                    <label asp-for="ActivityTypeId" class="control-label"></label>
+                    <select asp-for="ActivityTypeId" asp-items="@await service.SelectActivityTypes()" class="form-control"></select>
+                    <span asp-validation-for="ActivityTypeId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ActivityName" class="control-label"></label>
+                    <input asp-for="ActivityName" class="form-control" />
+                    <span asp-validation-for="ActivityName" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="ActivityStartTime" class="control-label"></label>
+                    <input asp-for="ActivityStartTime" class="form-control" />
+                    <span asp-validation-for="ActivityStartTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ActivityEndTime" class="control-label"></label>
+                    <input asp-for="ActivityEndTime" class="form-control" />
+                    <span asp-validation-for="ActivityEndTime" class="text-danger"></span>
+                </div>
+
+
+            </div>
+
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="ActivityDescription" class="control-label"></label><br />
+                    <textarea asp-for="ActivityDescription" class="form-control" rows="4">Add activity description here...</textarea>
+                    <span asp-validation-for="ActivityDescription" class="text-danger"></span>
+                </div>
+
+                <div class="form-group bg-light">
+                    <label for="exampleFormControlSelect2">Module activities</label>
+                    <div id="theList" class="rounded bg-light"></div>
+                </div>
+
+
+            </div>
+
+            <div class="form-group">
+                @*<span onclick="addToList()" class="btn btn-primary">Add to Module</span>*@
+                <input onclick="addToList()" type="button" value="Add to Module" class="btn btn-primary" />
+            </div>
+
+        </div>
     </div>
+</form>
 
 
+    
 
+
+<div class="form-group">
+    <input onclick="sendJson()" type="button" value="Create module" class="btn btn-primary" />
 </div>
+
 
 <div>
     <a asp-action="Index">Back to List</a>

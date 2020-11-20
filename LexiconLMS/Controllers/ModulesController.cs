@@ -65,45 +65,40 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(TestViewModel test)
+        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var module = new Module
+                {
+                    CourseId = viewModel.Module.CourseId,
+                    Name = viewModel.Module.ModuleName,
+                    Description = viewModel.Module.ModuleDescription,
+                    StartTime = viewModel.Module.ModuleStartTime,
+                    EndTime = viewModel.Module.ModuleEndTime
+                };
 
-                //var module = mapper.Map<Module>(viewModel);
+                _context.Add(module);
 
-                //var module = new Module
-                //{
-                //    CourseId = viewModel.CourseId,
-                //    Name = viewModel.ModuleName,
-                //    Description = viewModel.ModuleDescription,
-                //    StartTime = viewModel.ModuleStartTime,
-                //    EndTime = viewModel.ModuleEndTime
-                //};
+                foreach (var item in viewModel.Data)
+                {
+                    var activity = new Activity
+                    {
+                        Name = item.ActivityName,
+                        Description = item.ActivityDescription,
+                        StartTime = item.ActivityStartTime,
+                        EndTime = item.ActivityEndTime,
+                        ActivityTypeId = item.ActivityTypeId,
+                        Module = module
+                    };
+                    _context.Add(activity);
+                }
 
-               // _context.Add(module);
-
-                //foreach (var item in viewModel.Activities)
-                //{
-                //    var activity = new Activity
-                //    {
-                //        Name = item.ActivityName,
-                //        Description = item.ActivityDescription,
-                //        StartTime = item.ActivityStartTime,
-                //        EndTime = item.ActivityEndTime,
-                //        ActivityTypeId = item.ActivityTypeId,
-                //        Module = module
-                //    };
-
-                //    _context.Add(activity);
-                //}
-
-                
-                //await _context.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
             //ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
-            return new JsonResult(new ActivityListViewModel() );
+            return View(viewModel);
         }
 
         // GET: Modules/Edit/5
@@ -195,23 +190,7 @@ namespace LexiconLMS.Controllers
         }
 
 
-        //public void AddActivity(ModuleActivityCreateViewModel viewModel)
-        //{
-        //    var activity = new ActivityListViewModel
-        //    {
-        //        ActivityName = viewModel.ActivityName,
-        //        ActivityDescription = viewModel.ActivityDescription,
-        //        ActivityStartTime = viewModel.ActivityStartTime,
-        //        ActivityEndTime = viewModel.ActivityEndTime,
-        //        ActivityTypeId = viewModel.ActivityTypeId
-        //    };
-        //    var model = new ModuleActivityCreateViewModel();
-        //    model.Activities.Add(activity);
-        //    ModelState.Clear();
-        //    //return activity;
-        //    return View("Create",model);
-        //    //return RedirectToAction(nameof(Create));
-        //}
+        
 
     }
 }
