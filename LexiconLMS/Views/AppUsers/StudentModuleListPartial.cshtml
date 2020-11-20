@@ -6,20 +6,21 @@
 {
     <div class="row">
         <div class="col-sm-12">
-            @*GetModuleActivityListAsync(int moduleId)   asp-controller="AppUser" asp-action="GetModuleActivityListAsync(@item.Id)" *@
-            <a asp-controller="AppUsers" asp-action="GetModuleActivityListAsync" asp-route-id="@item.Id">
+            <a asp-action="GetActListAjax" asp-route-id="@item.Id"
+               data-ajax="true"
+               data-ajax-method="GET"
+               data-ajax-update="#col-activities"
+               data-ajax-mode="replace">
                 @if (item.IsCurrentModule)
                 {
-                    <div type="button" class="btn btn-success"
-                         data-ajax="true"
-                         data-ajax-method="GET"
-                         data-ajax-update="#col-modules"
-                         data-ajax-mode="replace"
-                         >@item.Name <br /> @item.StartTime <br />@item.EndTime</div>
+                    <div type="button" class="btn btn-success">
+                        @item.Name <br /> @item.StartTime <br />@item.EndTime</div>
                 }
                 else
                 {
-                    <div type="button" class="btn btn-dark">@item.Name <br /> @item.StartTime <br /> @item.EndTime</div>
+                    <div type="button" class="btn btn-dark">
+                        @item.Name <br /> @item.StartTime <br /> @item.EndTime</div>
+
                 }
             </a>
         </div>

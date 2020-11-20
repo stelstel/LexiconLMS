@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using LexiconLMS.Models.ViewModels.Student;
 using LexiconLMS.Models.ViewModels;
+using LexiconLMS.Extensions;
 
 namespace LexiconLMS.Controllers
 {
@@ -75,8 +76,6 @@ namespace LexiconLMS.Controllers
             var userCourse = await GetUserCourseAsync(userId);
             var timeNow = DateTime.Now;
 
-            //var currentModule = db.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-
             var modules = await db.Modules.Include(a => a.Course)
                 .Where(a => a.Course.Id == userCourse.Id)
                 .Select(a => new ModuleListViewModel
@@ -89,17 +88,19 @@ namespace LexiconLMS.Controllers
                 })
                 .OrderBy(m => m.StartTime)
                 .ToListAsync();
+
+            var currentModuleId = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First().Id;
+
+            //foreach (var mod in modules)
+            //{
+            //    if (mod.Id == currentModuleId)
+            //    {
+            //        mod.IsCurrentModule = true;
+            //    }
+            //}
+
+            SetCurrentModule(modules, currentModuleId);
             
-            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-
-            foreach (var mod in modules)
-            {
-                if (mod == currentModule )
-                {
-                    mod.IsCurrentModule = true;
-                }
-            }
-
             return modules;
         }
 
@@ -129,7 +130,7 @@ namespace LexiconLMS.Controllers
 
         //******************************************* GetModuleActivityListAsync *******************
         // Makes a list out of activities belonging to a module
-        public async Task<List<ActivityListViewModel>> GetModuleActivityListAsync(int Id)
+        private async Task<List<ActivityListViewModel>> GetModuleActivityListAsync(int Id)
         {
             var model = await db.Activities
                 .Include(a => a.ActivityType)
@@ -146,6 +147,23 @@ namespace LexiconLMS.Controllers
                 .ToListAsync();
 
             return model;
+        }
+
+        //************************* GetActListAjax ******************************************
+        public async Task<IActionResult> GetActListAjax(int? Id)
+        {
+            //if (moduleId == null) return BadRequest();
+
+            //if (Request.IsAjax())
+            //{
+                var currentModule = db.Activities
+                    .Include(a => a.Module)
+                    .Where(a => a.ModuleId == Id);
+
+                return PartialView("StudentActivityListPartial", await GetModuleActivityListAsync((int)Id));
+            //}
+
+            //return BadRequest();
         }
 
         // GET: Users/Details/5
@@ -346,7 +364,7 @@ namespace LexiconLMS.Controllers
                .ToListAsync();
 
             var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-            
+
             var activities = await db.Activities
                .Where(a => a.ModuleId == currentModule.Id)
                .ToListAsync();
@@ -357,7 +375,7 @@ namespace LexiconLMS.Controllers
                 currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
             else
                 currentActivity.Name = "No current activities";
-      
+
             var assignments = await db.Activities.Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
@@ -369,13 +387,13 @@ namespace LexiconLMS.Controllers
             if (assignments.Count > 0)
             {
                 assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
-                
+
                 for (int i = 0; i < assignments.Count && i < 3; i++)
                 {
                     currentAssignment.Add(assignments[i]);
                 }
             }
-            
+
             var model = new CurrentViewModel
             {
                 Course = userCourse,
@@ -440,6 +458,28 @@ namespace LexiconLMS.Controllers
         private bool AppUserExists(string id)
         {
             return db.Users.Any(e => e.Id == id);
+        }
+
+        //*************************************** SetCurrentModule **********************************************
+        // Params:
+        // modules,         List<ModuleListViewModel>,  containing the modules
+        // currentModuleId, int,                        containing current module Id
+
+        private List<ModuleListViewModel> SetCurrentModule(List<ModuleListViewModel> modules, int currentModuleId) {
+            foreach (var mod in modules)
+            {
+                if (mod.Id == currentModuleId)
+                {
+                    mod.IsCurrentModule = true;
+                }
+                else
+                {
+                    mod.IsCurrentModule = false;
+                }
+
+            }
+
+            return modules;
         }
     }
 }
