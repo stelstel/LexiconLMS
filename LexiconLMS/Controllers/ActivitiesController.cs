@@ -24,8 +24,13 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = db.Activities.Include(a => a.ActivityType).Include(a => a.Module);
-            return View(await applicationDbContext.ToListAsync());
+            var model = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .OrderBy(a => a.ModuleId)
+                .ThenBy(a => a.StartTime)
+                .ToListAsync();
+
+            return View(model);
         }
 
         // GET: Activities/Details/5
