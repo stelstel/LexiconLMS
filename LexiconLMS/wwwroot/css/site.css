@@ -160,7 +160,8 @@ div#card-mod-act.card div.card-body {
 }
 
 #ass-head-row,
-#activity-header-row {
+#activity-header-row,
+#assig-header-row{
     font-weight: bold;
     border-bottom-width: 2px;
     border-bottom-style: solid;
@@ -169,11 +170,13 @@ div#card-mod-act.card div.card-body {
     color: white;
 }
 
-#ass-head-row {
+#ass-head-row,
+#assig-header-row {
     margin-bottom: 0.8em;
 }
 
-#activity-header-row {
+#activity-header-row,
+#assig-header-row {
     margin-left: -10px;
     margin-right: -10px;
 }
