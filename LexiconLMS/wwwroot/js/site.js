@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$('#col-modules .btn').click(function () {
+    $('#col-modules .btn').each(function () {
+        $(this).css("margin-left", "0");
+    });
 
-// Write your JavaScript code.
+    //$(this).addClass("btn-success");
+    $('#col-activities').hide();
+    $(this).animate({ "margin-left": '1em' });
+    $('#col-activities').slideDown("medium");
+});
+

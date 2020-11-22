@@ -2,40 +2,36 @@
 
 <h2>Activities</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ActivityType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ActivityType)
-            </td>
-        </tr>
+<div id="activity-header-row" class="row">
+    <div class="col-sm-3">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="col-sm-3">
+        @Html.DisplayNameFor(model => model.StartTime)
+    </div>
+    <div class="col-sm-3">
+        @Html.DisplayNameFor(model => model.EndTime)
+    </div>
+    <div class="col-sm-3">
+        @Html.DisplayNameFor(model => model.ActivityType)
+    </div>
+</div>
+
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-sm-3">
+            <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+        </div>
+        <div class="col-sm-3">
+            @Html.DisplayFor(modelItem => item.StartTime)
+        </div>
+        <div class="col-sm-3">
+            @Html.DisplayFor(modelItem => item.EndTime)
+        </div>
+        <div class="col-sm-3">
+            @Html.DisplayFor(modelItem => item.ActivityType)
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+

@@ -5,7 +5,7 @@
 @foreach (var item in Model)
 {
     <div class="row">
-        <div class="col-sm-12">
+        <div id="col-modules" class="col-sm-12">
             <a asp-action="GetActListAjax" asp-route-id="@item.Id"
                data-ajax="true"
                data-ajax-method="GET"

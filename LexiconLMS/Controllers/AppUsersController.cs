@@ -91,14 +91,6 @@ namespace LexiconLMS.Controllers
 
             var currentModuleId = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First().Id;
 
-            //foreach (var mod in modules)
-            //{
-            //    if (mod.Id == currentModuleId)
-            //    {
-            //        mod.IsCurrentModule = true;
-            //    }
-            //}
-
             SetCurrentModule(modules, currentModuleId);
             
             return modules;
@@ -146,24 +138,27 @@ namespace LexiconLMS.Controllers
                 })
                 .ToListAsync();
 
+            //SetCurrentModule(model, Id);
+
             return model;
         }
 
         //************************* GetActListAjax ******************************************
         public async Task<IActionResult> GetActListAjax(int? Id)
         {
-            //if (moduleId == null) return BadRequest();
+            if (Id == null) return BadRequest();
 
-            //if (Request.IsAjax())
-            //{
-                var currentModule = db.Activities
-                    .Include(a => a.Module)
-                    .Where(a => a.ModuleId == Id);
-
+            if (Request.IsAjax())
+            {
+                var currentModule = db.Modules
+                    .Include(m => m.Activities)
+                    .ThenInclude(a => a.ModuleId)
+                    .Where(m => m.Id == Id);
+                    
                 return PartialView("StudentActivityListPartial", await GetModuleActivityListAsync((int)Id));
-            //}
+            }
 
-            //return BadRequest();
+            return BadRequest();
         }
 
         // GET: Users/Details/5
