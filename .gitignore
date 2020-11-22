@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/LexiconLMS/Migrations/20201117100428_Init5.cs
+/LexiconLMS/Migrations/20201117100428_Init5.Designer.cs
+/LexiconLMS/Migrations/20201117103920_Init6.Designer.cs
+/LexiconLMS/Migrations/20201117103920_Init6.cs

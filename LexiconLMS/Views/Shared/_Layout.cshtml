@@ -1,11 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@inject IEnumerable<Course> Course
+
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LexiconLMS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="~/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
@@ -19,12 +26,45 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (User.IsInRole("Teacher"))
+                        {
+                            <!--Teacher Navbar-->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="TeacherHome">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="TeacherUserIndex">Users</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Lists</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-controller="Courses" asp-action="Index">Courses</a>
+                                    <a class="dropdown-item" asp-controller="Modules" asp-action="Index">Modules</a>
+                                    <a class="dropdown-item" asp-controller="Activities" asp-action="Index">Activities</a>
+                                    <a class="dropdown-item" asp-controller="ActivityTypes" asp-action="Index">Activity Types</a>
+                                    <a class="dropdown-item" asp-controller="Documents" asp-action="Index">Documents</a>
+                                </div>
+                            </li>
+                        }
+                        else if (User.IsInRole("Student"))
+                        {
+                            <!--Student Navbar-->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Student">My Course</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="TeacherUserIndex">Users</a>
+                            </li>
+
+
+                        }
+                        else
+                        {
+                            <!--Not Logged in User-->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Privacy">Privacy</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

@@ -1,0 +1,90 @@
+﻿@model TeacherCurrentViewModel
+
+<div class="container cont-section" id="current">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>@Model.Course.Name</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div id="col-modal" class="col-sm-12">
+            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-5">
+            <div id="card-mod-act" class="card">
+                <div class="card-body">
+                    <h5>Current module</h5>
+                    <p class="card-text">
+                        <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name</a>
+                    </p>
+                    <h5>Current activity</h5>
+                    <p class="card-text">
+                        @if (Model.Activity.Id == 0)
+                        {
+                            @Model.Activity.Name
+                        }
+                        else
+                        {
+                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-7">
+            <div id="card-hand-ins" class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upcoming assignments</h5>
+                    <div class="row" id="ass-head-row">
+                        <div class="col col-sm-6">Assignment</div>
+                        <div class="col col-sm-4">Due time</div>
+                        <div class="col ass-col col-sm-2">Finished</div>
+                    </div>
+
+                    @foreach (var assignment in Model.Assignments)
+                    {
+                        <div class="row">
+                            <div class="col col-sm-6">
+                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                            </div>
+                            <div class="col col-sm-4">@assignment.EndTime</div>
+                            <div class="col ass-col col-sm-2">@Model.Finished</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--See more Info-->
+<div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseDescModalLabel">@Model.Course.Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body">
+                    <h6>Description:</h6>
+                    @Model.Course.Description
+                    <h6 class="pt-3">Course participants:</h6>
+                    @foreach (var student in Model.Course.AppUsers)
+                    {
+                        <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@student.Id">@student.FullName</a><br>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

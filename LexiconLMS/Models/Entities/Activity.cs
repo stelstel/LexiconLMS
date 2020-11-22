@@ -12,12 +12,11 @@ namespace LexiconLMS.Models.Entities
         public string Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-
+        public bool IsFinished { get; set; }
 
         // Foreign Keys
         public int ModuleId { get; set; }
         public int ActivityTypeId { get; set; }
-
 
         // Navigation Properties
         public Module Module { get; set; }

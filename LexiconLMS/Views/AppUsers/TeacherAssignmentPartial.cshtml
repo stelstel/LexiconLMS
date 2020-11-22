@@ -1,14 +1,7 @@
-﻿@model IEnumerable<Module>
+﻿@model IEnumerable<TeacherAssignmentListViewModel>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<h2>Assignments</h2>
 
-<h1>Modules</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -22,16 +15,16 @@
                 @Html.DisplayNameFor(model => model.EndTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Course)
+                @Html.DisplayNameFor(model => model.Finished)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)
@@ -40,14 +33,14 @@
                 @Html.DisplayFor(modelItem => item.EndTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Course.Name)
+                @Html.DisplayFor(modelItem => item.Finished)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>

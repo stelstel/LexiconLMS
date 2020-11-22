@@ -1,0 +1,32 @@
+﻿@model TeacherViewModel
+
+@{
+    ViewData["Title"] = "Teacher";
+}
+
+<!--Current-->
+<div class="container cont-section" id="current">
+    <div class="row row-activities">
+        <div class="col-sm-12">
+            <partial name="TeacherCurrentPartial" model="@Model.TeacherCurrentViewModel" />
+        </div>
+    </div>
+</div>
+
+<!--Modules-->
+<div class="container cont-section" id="modules">
+    <div class="row row-activities">
+        <div class="col-sm-12">
+            <partial name="TeacherModulePartial" model="@Model.ModuleList" />
+        </div>
+    </div>
+</div>
+
+<!--Assignments-->
+<div class="container cont-section" id="assignments">
+    <div class="row row-activities">
+        <div class="col-sm-12">
+            <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
+        </div>
+    </div>
+</div>

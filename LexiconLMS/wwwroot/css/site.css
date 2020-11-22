@@ -1,4 +1,7 @@
-﻿a.navbar-brand {
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
@@ -67,5 +70,68 @@ body {
   line-height: 60px; /* Vertically center the text there */
 }
 
+h1 {
+    text-align: center;
+}
 
+#col-modal {
+    text-align: center;
+    margin-top: -12px;
+    margin-bottom: 1.5em;
+}
 
+thead {
+    background: white;
+    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+}
+
+/****************************** Container *************************************/
+.container.cont-section {
+    background: #dbdbdb;
+    padding-bottom: 1em;
+    margin-top: 2em;
+}
+
+.container.cont-section,
+.card {
+    border: 1px solid #666;
+    border-radius: 8px;
+    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+}
+
+.container h2 {
+    text-align: center;
+    margin: 0.8em 0;
+}
+
+i.material-icons {
+    font-size: 36px;
+    top: 12px;
+    position: relative;
+}
+
+/******************************* Card ****************************************/
+.card {
+    margin-bottom: 10px;
+}
+
+#card-mod-act h5 {
+    margin-bottom: 0;
+}
+
+div#card-mod-act.card div.card-body {
+    text-align: center;
+}
+
+#card-hand-ins .card-title,
+.ass-col{
+    text-align: center;
+}
+
+#ass-head-row{
+    font-weight: bold;
+}

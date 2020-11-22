@@ -7,23 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
     public class ActivitiesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(ApplicationDbContext db)
         {
-            _context = context;
+            this.db = db;
         }
 
         // GET: Activities
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Activities.Include(a => a.ActivityType).Include(a => a.Module);
-            return View(await applicationDbContext.ToListAsync());
+            var model = await db.Activities.Include(a => a.ActivityType)
+                .Include(a => a.Module)
+                .OrderBy(a => a.ModuleId)
+                .ThenBy(a => a.StartTime)
+                .ToListAsync();
+
+            return View(model);
         }
 
         // GET: Activities/Details/5
@@ -34,7 +41,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities
+            var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -49,8 +56,8 @@ namespace LexiconLMS.Controllers
         // GET: Activities/Create
         public IActionResult Create()
         {
-            ViewData["ActivityTypeId"] = new SelectList(_context.ActivityTypes, "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id");
+            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id");
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id");
             return View();
         }
 
@@ -63,12 +70,12 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(activity);
-                await _context.SaveChangesAsync();
+                db.Add(activity);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
             return View(activity);
         }
 
@@ -80,13 +87,13 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities.FindAsync(id);
+            var activity = await db.Activities.FindAsync(id);
             if (activity == null)
             {
                 return NotFound();
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
             return View(activity);
         }
 
@@ -106,8 +113,8 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(activity);
-                    await _context.SaveChangesAsync();
+                    db.Update(activity);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -122,8 +129,8 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
             return View(activity);
         }
 
@@ -135,7 +142,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities
+            var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +159,15 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await _context.Activities.FindAsync(id);
-            _context.Activities.Remove(activity);
-            await _context.SaveChangesAsync();
+            var activity = await db.Activities.FindAsync(id);
+            db.Activities.Remove(activity);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ActivityExists(int id)
         {
-            return _context.Activities.Any(e => e.Id == id);
+            return db.Activities.Any(e => e.Id == id);
         }
     }
 }

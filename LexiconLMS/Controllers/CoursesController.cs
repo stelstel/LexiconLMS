@@ -7,22 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext db)
         {
-            _context = context;
+            this.db = db;
         }
 
         // GET: Courses
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            return View(await db.Courses.ToListAsync());
         }
 
         // GET: Courses/Details/5
@@ -33,7 +35,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var course = await db.Courses
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
@@ -58,8 +60,8 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                db.Add(course);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
@@ -73,7 +75,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await db.Courses.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
@@ -97,8 +99,8 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    db.Update(course);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +126,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var course = await db.Courses
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
@@ -139,15 +141,15 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            var course = await db.Courses.FindAsync(id);
+            db.Courses.Remove(course);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CourseExists(int id)
         {
-            return _context.Courses.Any(e => e.Id == id);
+            return db.Courses.Any(e => e.Id == id);
         }
     }
 }

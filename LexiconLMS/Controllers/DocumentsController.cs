@@ -7,22 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LexiconLMS.Controllers
 {
     public class DocumentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
-        public DocumentsController(ApplicationDbContext context)
+        public DocumentsController(ApplicationDbContext db)
         {
-            _context = context;
+            this.db = db;
         }
 
         // GET: Documents
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Documents.Include(d => d.Activity).Include(d => d.AppUser).Include(d => d.Course).Include(d => d.Module);
+            var applicationDbContext = db.Documents.Include(d => d.Activity).Include(d => d.AppUser).Include(d => d.Course).Include(d => d.Module);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +36,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents
+            var document = await db.Documents
                 .Include(d => d.Activity)
                 .Include(d => d.AppUser)
                 .Include(d => d.Course)
@@ -51,10 +53,10 @@ namespace LexiconLMS.Controllers
         // GET: Documents/Create
         public IActionResult Create()
         {
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Id");
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id");
+            ViewData["ActivityId"] = new SelectList(db.Activities, "Id", "Id");
+            ViewData["AppUserId"] = new SelectList(db.Users, "Id", "Id");
+            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id");
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id");
             return View();
         }
 
@@ -67,14 +69,14 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(document);
-                await _context.SaveChangesAsync();
+                db.Add(document);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Id", document.ActivityId);
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", document.AppUserId);
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", document.CourseId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", document.ModuleId);
+            ViewData["ActivityId"] = new SelectList(db.Activities, "Id", "Id", document.ActivityId);
+            ViewData["AppUserId"] = new SelectList(db.Users, "Id", "Id", document.AppUserId);
+            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", document.CourseId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", document.ModuleId);
             return View(document);
         }
 
@@ -86,15 +88,15 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents.FindAsync(id);
+            var document = await db.Documents.FindAsync(id);
             if (document == null)
             {
                 return NotFound();
             }
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Id", document.ActivityId);
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", document.AppUserId);
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", document.CourseId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", document.ModuleId);
+            ViewData["ActivityId"] = new SelectList(db.Activities, "Id", "Id", document.ActivityId);
+            ViewData["AppUserId"] = new SelectList(db.Users, "Id", "Id", document.AppUserId);
+            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", document.CourseId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", document.ModuleId);
             return View(document);
         }
 
@@ -114,8 +116,8 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(document);
-                    await _context.SaveChangesAsync();
+                    db.Update(document);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -130,10 +132,10 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Id", document.ActivityId);
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", document.AppUserId);
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", document.CourseId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", document.ModuleId);
+            ViewData["ActivityId"] = new SelectList(db.Activities, "Id", "Id", document.ActivityId);
+            ViewData["AppUserId"] = new SelectList(db.Users, "Id", "Id", document.AppUserId);
+            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", document.CourseId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", document.ModuleId);
             return View(document);
         }
 
@@ -145,7 +147,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents
+            var document = await db.Documents
                 .Include(d => d.Activity)
                 .Include(d => d.AppUser)
                 .Include(d => d.Course)
@@ -164,15 +166,15 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var document = await _context.Documents.FindAsync(id);
-            _context.Documents.Remove(document);
-            await _context.SaveChangesAsync();
+            var document = await db.Documents.FindAsync(id);
+            db.Documents.Remove(document);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentExists(int id)
         {
-            return _context.Documents.Any(e => e.Id == id);
+            return db.Documents.Any(e => e.Id == id);
         }
     }
 }

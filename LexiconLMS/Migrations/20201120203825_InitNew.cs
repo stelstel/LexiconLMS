@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LexiconLMS.Migrations
 {
-    public partial class init : Migration
+    public partial class InitNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ActivityType",
+                name: "ActivityTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -17,7 +17,7 @@ namespace LexiconLMS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ActivityType", x => x.Id);
+                    table.PrimaryKey("PK_ActivityTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,7 +105,7 @@ namespace LexiconLMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Module",
+                name: "Modules",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -118,9 +118,9 @@ namespace LexiconLMS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Module", x => x.Id);
+                    table.PrimaryKey("PK_Modules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Module_Courses_CourseId",
+                        name: "FK_Modules_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
@@ -213,7 +213,7 @@ namespace LexiconLMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Activity",
+                name: "Activities",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -222,28 +222,29 @@ namespace LexiconLMS.Migrations
                     Description = table.Column<string>(nullable: true),
                     StartTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
+                    IsFinished = table.Column<bool>(nullable: false),
                     ModuleId = table.Column<int>(nullable: false),
                     ActivityTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Activity", x => x.Id);
+                    table.PrimaryKey("PK_Activities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Activity_ActivityType_ActivityTypeId",
+                        name: "FK_Activities_ActivityTypes_ActivityTypeId",
                         column: x => x.ActivityTypeId,
-                        principalTable: "ActivityType",
+                        principalTable: "ActivityTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Activity_Module_ModuleId",
+                        name: "FK_Activities_Modules_ModuleId",
                         column: x => x.ModuleId,
-                        principalTable: "Module",
+                        principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -258,41 +259,41 @@ namespace LexiconLMS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Document_Activity_ActivityId",
+                        name: "FK_Documents_Activities_ActivityId",
                         column: x => x.ActivityId,
-                        principalTable: "Activity",
+                        principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_AspNetUsers_AppUserId",
+                        name: "FK_Documents_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_Courses_CourseId",
+                        name: "FK_Documents_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_Module_ModuleId",
+                        name: "FK_Documents_Modules_ModuleId",
                         column: x => x.ModuleId,
-                        principalTable: "Module",
+                        principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activity_ActivityTypeId",
-                table: "Activity",
+                name: "IX_Activities_ActivityTypeId",
+                table: "Activities",
                 column: "ActivityTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activity_ModuleId",
-                table: "Activity",
+                name: "IX_Activities_ModuleId",
+                table: "Activities",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
@@ -340,28 +341,28 @@ namespace LexiconLMS.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_ActivityId",
-                table: "Document",
+                name: "IX_Documents_ActivityId",
+                table: "Documents",
                 column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_AppUserId",
-                table: "Document",
+                name: "IX_Documents_AppUserId",
+                table: "Documents",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_CourseId",
-                table: "Document",
+                name: "IX_Documents_CourseId",
+                table: "Documents",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_ModuleId",
-                table: "Document",
+                name: "IX_Documents_ModuleId",
+                table: "Documents",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Module_CourseId",
-                table: "Module",
+                name: "IX_Modules_CourseId",
+                table: "Modules",
                 column: "CourseId");
         }
 
@@ -383,22 +384,22 @@ namespace LexiconLMS.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Activity");
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ActivityType");
+                name: "ActivityTypes");
 
             migrationBuilder.DropTable(
-                name: "Module");
+                name: "Modules");
 
             migrationBuilder.DropTable(
                 name: "Courses");
