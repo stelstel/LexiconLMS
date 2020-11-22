@@ -138,6 +138,7 @@ namespace LexiconLMS.Controllers
                 })
                 .ToListAsync();
 
+            // TODO Get module list
             //SetCurrentModule(model, Id);
 
             return model;

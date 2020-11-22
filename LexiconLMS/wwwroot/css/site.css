@@ -154,10 +154,6 @@ div#card-mod-act.card div.card-body {
     text-align: center;
 }
 
-#card-hand-ins .card-title {
-    font-weight: bold;
-}
-
 #card-mod-act .play-icon {
     font-size: 23px;
     top: 7px;
@@ -166,6 +162,20 @@ div#card-mod-act.card div.card-body {
 #ass-head-row,
 #activity-header-row {
     font-weight: bold;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: black;
+    background: gray;
+    color: white;
+}
+
+#ass-head-row {
+    margin-bottom: 0.8em;
+}
+
+#activity-header-row {
+    margin-left: -10px;
+    margin-right: -10px;
 }
 
 #ass-finished {
@@ -198,7 +208,7 @@ div#card-mod-act.card div.card-body {
     height: 100%;
     background: white;
     padding-bottom: 1em;
-    border-width: 2px;
+    border-width: 3px;
     border-style: solid;
     border-color: #28a745;
     border-radius: 8px;
