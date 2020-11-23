@@ -26,9 +26,9 @@ namespace LexiconLMS.Models.ViewModels.Teacher
         [Display(Name = "Confirm Password")]
         [Required, DataType(DataType.Password), Compare(nameof(ConfirmPassword))]       
         public string ConfirmPassword { get; set; }
-        
-        [Display(Name = "Create as Teacher?")]
-        public bool IsTeacher { get; set; }
+
+        [Required]
+        public bool IsStudent { get; set; } = true;
 
         [Display(Name = "Course")]
         public int? CourseId { get; set; }

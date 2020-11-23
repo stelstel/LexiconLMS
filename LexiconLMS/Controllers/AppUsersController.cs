@@ -175,7 +175,7 @@ namespace LexiconLMS.Controllers
                         await AddAppUserToRoleAsync(createdUser, "Student");
 
                         // Add Teacher role if applicable
-                        if (newUser.IsTeacher)
+                        if (!newUser.IsStudent)
                         {
                             if (!await userManager.IsInRoleAsync(createdUser, "Teacher"))
                             {
@@ -559,7 +559,7 @@ namespace LexiconLMS.Controllers
             Course course = null;
 
             // newUser.CourseId is null if nothing selected in course dropdown list
-            if (newUser.CourseId != null && !newUser.IsTeacher)
+            if (newUser.CourseId != null && newUser.IsStudent)
             {
                 course = await db.Courses.FirstOrDefaultAsync(c => c.Id == newUser.CourseId);
             }
