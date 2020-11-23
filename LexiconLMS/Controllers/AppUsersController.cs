@@ -436,13 +436,16 @@ namespace LexiconLMS.Controllers
             }
 
             var course = await db.Courses.FirstOrDefaultAsync(m => m.Id == id);
-
             var current = await CurrentTeacher(id);
+            var assignmentList = await AssignmentListTeacher(id);
+            var moduleList = await ModuleListTeacher(id);
 
             var model = new TeacherViewModel
             {
                 Course = course,
                 TeacherCurrentViewModel = current,
+                AssignmentList = assignmentList,
+                ModuleList = moduleList
             };
 
             if (model == null)
@@ -503,6 +506,43 @@ namespace LexiconLMS.Controllers
             };
 
             return model;
+        }
+
+        public async Task<List<TeacherAssignmentListViewModel>> AssignmentListTeacher(int? id)
+        {
+            // Percentage of the students that is finished - NOT IMPLEMENTED
+            var finished = 0.0;
+
+            var assignments = await db.Activities.Include(a => a.ActivityType).Include(a => a.Module).ThenInclude(a => a.Course)
+                .Where(a => a.ActivityType.Name == "Assignment" && a.Module.Course.Id == id)
+                .OrderBy(a => a.StartTime)
+                .Select(a => new TeacherAssignmentListViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    Finished = $"{finished} %",
+                })
+                .ToListAsync();
+
+            return assignments;
+        }
+
+        public async Task<List<TeacherModuleViewModel>> ModuleListTeacher(int? id)
+        {
+            var modules = await db.Modules.Where(m => m.CourseId == id)
+                .OrderBy(a => a.StartTime)
+                .Select(a => new TeacherModuleViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                })
+                .ToListAsync();
+
+            return modules;
         }
 
         private bool AppUserExists(string id)

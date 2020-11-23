@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LexiconLMS.Models.Entities;
+using AutoMapper;
 using LexiconLMS.Services;
 
 namespace LexiconLMS
@@ -37,6 +38,8 @@ namespace LexiconLMS
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddScoped<ISelectService, SelectService>();
+            services.AddAutoMapper(typeof(Startup));
             // Service to get an IEnumerable<SelectListItem> with courses
             services.AddScoped<ISelectCourseService, SelectCourseService>();
 
