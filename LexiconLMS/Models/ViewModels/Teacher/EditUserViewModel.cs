@@ -21,13 +21,17 @@ namespace LexiconLMS.Models.ViewModels.Teacher
         [Required, StringLength(30, ErrorMessage = "Do not enter more than 30 characters")]
         public string LastName { get; set; }
 
-        //[Display(Name = "New Password")]
-        //[Required, DataType(DataType.Password), Compare(nameof(ConfirmPassword))]
-        //public string? Password { get; set; }
+        [Display(Name = "Current Password")]
+        [DataType(DataType.Password)]
+        public string? CurrentPassword { get; set; }
 
-        //[Display(Name = "Confirm Password")]
-        //[Required, DataType(DataType.Password), Compare(nameof(ConfirmPassword))]
-        //public string? ConfirmPassword { get; set; }
+        [Display(Name = "New Password")]
+        [DataType(DataType.Password), Compare(nameof(ConfirmPassword))]
+        public string? Password { get; set; }
+
+        [Display(Name = "Confirm Password")]
+        [DataType(DataType.Password), Compare(nameof(ConfirmPassword))]
+        public string? ConfirmPassword { get; set; }
 
         [Display(Name = "Course")]
         public int? CourseId { get; set; }

@@ -256,11 +256,29 @@ namespace LexiconLMS.Controllers
                 try
                 {
                     var appUser = await db.Users.FindAsync(id);
+
+                    if (editUser.CurrentPassword != null && editUser.Password != null)
+                    {
+                        var updatePasswordresult = await userManager.ChangePasswordAsync(appUser, editUser.CurrentPassword, editUser.Password);
+                        if (!updatePasswordresult.Succeeded)
+                        {
+                            foreach (var err in updatePasswordresult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, err.Description);
+                            }
+                        }
+                    }
+
+                    // TODO: don't update if password change gone wrong?
+
+                    // TODO: give feedback on succesful update
+
                     appUser.CourseId = editUser.CourseId;
                     appUser.FirstName = editUser.FirstName;
                     appUser.LastName = editUser.LastName;
                     db.Update(appUser);
                     await db.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -273,7 +291,9 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+               
+
+                //return RedirectToAction(nameof(Index));
             }
 
                 //if (ModelState.IsValid)
