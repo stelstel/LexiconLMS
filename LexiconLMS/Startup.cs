@@ -70,7 +70,7 @@ namespace LexiconLMS
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Modules}/{action=Create}/{id?}");
+                    pattern: "{controller=AppUsers}/{action=TeacherHome}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
