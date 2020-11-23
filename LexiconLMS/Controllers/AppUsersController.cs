@@ -217,8 +217,6 @@ namespace LexiconLMS.Controllers
 
             var appUser = await userManager.FindByIdAsync(id);
             var isTeacher = await userManager.IsInRoleAsync(appUser, "Teacher");
-        
-          
             
             var editUser = await db.Users
                 .Where(u => u.Id == id)
@@ -253,32 +251,57 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        var appUser = await db.Users.FindAsync(id);
-                    
-            //        db.Update(appUser);
-            //        await db.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!AppUserExists(appUser.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var appUser = await db.Users.FindAsync(id);
+                    appUser.CourseId = editUser.CourseId;
+                    appUser.FirstName = editUser.FirstName;
+                    appUser.LastName = editUser.LastName;
+                    db.Update(appUser);
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AppUserExists(editUser.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
 
-            //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+                //if (ModelState.IsValid)
+                //{
+                //    try
+                //    {
+                //        var appUser = await db.Users.FindAsync(id);
 
-            return View(editUser);
+                //        db.Update(appUser);
+                //        await db.SaveChangesAsync();
+                //    }
+                //    catch (DbUpdateConcurrencyException)
+                //    {
+                //        if (!AppUserExists(appUser.Id))
+                //        {
+                //            return NotFound();
+                //        }
+                //        else
+                //        {
+                //            throw;
+                //        }
+                //    }
+                //    return RedirectToAction(nameof(Index));
+                //}
+
+                //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
+
+                return View(editUser);
         }
 
         [Authorize(Roles = "Teacher")]
