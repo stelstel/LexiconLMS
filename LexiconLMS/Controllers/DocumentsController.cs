@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using LexiconLMS.Models.ViewModels.Document;
+using Microsoft.AspNetCore.Identity;
 
 namespace LexiconLMS.Controllers
 {
     public class DocumentsController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly UserManager<AppUser> userManager;
 
-        public DocumentsController(ApplicationDbContext db)
+        public DocumentsController(ApplicationDbContext db, UserManager<AppUser> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
         }
 
         // GET: Documents
@@ -30,30 +34,49 @@ namespace LexiconLMS.Controllers
 
         // GET: Get Upload Course Document
         [Authorize(Roles = "Teacher")]
+        [HttpGet]
         public async Task<IActionResult> UploadCourseDoc(int? id)
         {
-            var course = await db.Documents.Include(d => d.Activity)
-                .Include(d => d.AppUser)
-                .Include(d => d.Course)
-                .Include(d => d.Module)
-                .Where(d => d.CourseId == id).FirstOrDefaultAsync();
+            var courses = await db.Courses.ToListAsync();
+            var course = courses.Where(a => a.Id == id).FirstOrDefault();
 
-            return View(course);
+            var model = new UploadCourseDocViewModel
+            {
+                Course = course
+            };
+           
+            return View(model);
         }
 
-        // GET: Get Upload Course Document
+        // POST: Get Upload Course Document
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadCourseDoc()
+        public async Task<IActionResult> UploadCourseDoc(int? id, Document model)
         {
-            var course = await db.Documents.Include(d => d.Activity)
-                .Include(d => d.AppUser)
-                .Include(d => d.Course)
-                .Include(d => d.Module)
-                .Where(d => d.CourseId == id).FirstOrDefaultAsync();
+            if (ModelState.IsValid)
+            {
+                var userId = userManager.GetUserId(User);
 
-            return View(course);
+                var courses = await db.Courses.ToListAsync();
+                var course = courses.Where(a => a.Id == id).FirstOrDefault();
+
+                var newModel = new Document
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Course = course,
+                    CourseId = course.Id,
+                    UploadTime = DateTime.Now,
+                    AppUserId = userId
+                };
+
+                db.Add(newModel);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
         }
 
         // GET: Documents/Details/5

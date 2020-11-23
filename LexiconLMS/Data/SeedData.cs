@@ -17,22 +17,22 @@ namespace LexiconLMS.Data
             // "Handle resources", "use service until the 'using' is used up"
             using var db = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
 
-            if (db.Users.Any())
-            {
-                db.Users.RemoveRange(db.Users);
-                db.Roles.RemoveRange(db.Roles);
-                db.Courses.RemoveRange(db.Courses);
-                db.RoleClaims.RemoveRange(db.RoleClaims);
-                db.UserLogins.RemoveRange(db.UserLogins);
-                db.UserClaims.RemoveRange(db.UserClaims);
-                db.UserRoles.RemoveRange(db.UserRoles);
-                db.UserTokens.RemoveRange(db.UserTokens);
-                db.Activities.RemoveRange(db.Activities);
-                db.ActivityTypes.RemoveRange(db.ActivityTypes);
-                db.Documents.RemoveRange(db.Documents);
+            //if (db.Users.Any())
+            //{
+            //    db.Users.RemoveRange(db.Users);
+            //    db.Roles.RemoveRange(db.Roles);
+            //    db.Courses.RemoveRange(db.Courses);
+            //    db.RoleClaims.RemoveRange(db.RoleClaims);
+            //    db.UserLogins.RemoveRange(db.UserLogins);
+            //    db.UserClaims.RemoveRange(db.UserClaims);
+            //    db.UserRoles.RemoveRange(db.UserRoles);
+            //    db.UserTokens.RemoveRange(db.UserTokens);
+            //    db.Activities.RemoveRange(db.Activities);
+            //    db.ActivityTypes.RemoveRange(db.ActivityTypes);
+            //    db.Documents.RemoveRange(db.Documents);
 
-                await db.SaveChangesAsync();
-            }
+            //    await db.SaveChangesAsync();
+            //}
 
             var fake = new Faker("en");
             var random = new Random();

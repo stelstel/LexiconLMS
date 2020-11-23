@@ -8,5 +8,6 @@ namespace LexiconLMS.Services
     {
         Task<IEnumerable<SelectListItem>> SelectCourses();
         Task<IEnumerable<SelectListItem>> SelectActivityTypes();
+        Task<IEnumerable<SelectListItem>> GetCourse(int? id);
     }
 }
