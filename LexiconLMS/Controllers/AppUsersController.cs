@@ -138,8 +138,6 @@ namespace LexiconLMS.Controllers
                 })
                 .ToListAsync();
           
-            //var modules = SetCurrentModule(await GetStudentModuleListAsync(), Id);
-
             return model;
         }
 
