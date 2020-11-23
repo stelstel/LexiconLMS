@@ -5,11 +5,11 @@
 @foreach (var item in Model)
 {
     <div class="row">
-        <div id="col-modules" class="col-sm-12">
+        <div class="col-sm-12">
             <a asp-action="GetActListAjax" asp-route-id="@item.Id"
                data-ajax="true"
                data-ajax-method="GET"
-               data-ajax-update="#col-activities"
+               data-ajax-update="#modules"
                data-ajax-mode="replace">
                 @if (item.IsCurrentModule)
                 {

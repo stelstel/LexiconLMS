@@ -137,9 +137,8 @@ namespace LexiconLMS.Controllers
                     ActivityType = a.ActivityType.Name
                 })
                 .ToListAsync();
-
-            // TODO Get module list
-            //SetCurrentModule(model, Id);
+          
+            //var modules = SetCurrentModule(await GetStudentModuleListAsync(), Id);
 
             return model;
         }
@@ -151,12 +150,44 @@ namespace LexiconLMS.Controllers
 
             if (Request.IsAjax())
             {
-                var currentModule = db.Modules
-                    .Include(m => m.Activities)
-                    .ThenInclude(a => a.ModuleId)
-                    .Where(m => m.Id == Id);
-                    
-                return PartialView("StudentActivityListPartial", await GetModuleActivityListAsync((int)Id));
+                // Jag har modul Id (Id)
+                // Ta reda på vilket kurs Id modulen har
+                // Lista all moduler som har samma kurs id
+
+                var module = await db.Modules
+                    .FirstOrDefaultAsync(m => m.Id == Id);
+
+                var modId = module.Id;
+
+                var courseId = module.CourseId;
+
+                var modules = await db.Modules
+                    .Where(ms => ms.CourseId == courseId)
+                    .OrderBy(m => m.StartTime)
+                    .ToListAsync();
+
+                List<ModuleListViewModel> moduleList = new List<ModuleListViewModel>();
+
+                foreach (var mod in modules)
+                {
+                    var modLVM = new ModuleListViewModel();
+                    modLVM.Id = mod.Id;
+                    modLVM.Name = mod.Name;
+                    modLVM.StartTime = mod.StartTime;
+                    modLVM.EndTime = mod.EndTime;
+                    modLVM.IsCurrentModule = false;
+
+                    moduleList.Add(modLVM);
+                }
+
+                SetCurrentModule(moduleList, (int)Id);
+
+                StudentViewModel studVM = new StudentViewModel();
+
+                studVM.ModuleList = moduleList;
+                studVM.ActivityList = GetModuleActivityListAsync((int)Id).Result;
+
+                return PartialView("StudentModuleAndActivityPartial", studVM);
             }
 
             return BadRequest();
@@ -472,7 +503,6 @@ namespace LexiconLMS.Controllers
                 {
                     mod.IsCurrentModule = false;
                 }
-
             }
 
             return modules;

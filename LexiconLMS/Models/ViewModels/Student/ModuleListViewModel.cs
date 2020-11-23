@@ -18,6 +18,7 @@ namespace LexiconLMS.Models.ViewModels.Student
         public bool IsCurrentModule { get; set; }
 
         //public int CourseId { get; set; }
+
         //public Course Course { get; set; }
     }
 }
