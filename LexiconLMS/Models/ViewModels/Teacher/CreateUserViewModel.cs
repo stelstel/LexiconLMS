@@ -28,7 +28,7 @@ namespace LexiconLMS.Models.ViewModels.Teacher
         public string ConfirmPassword { get; set; }
 
         [Required]
-        public bool IsStudent { get; set; } = true;
+        public bool IsTeacher { get; set; } = true;
 
         [Display(Name = "Course")]
         public int? CourseId { get; set; }

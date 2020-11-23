@@ -152,6 +152,10 @@ namespace LexiconLMS.Controllers
                     return View();
                 }
 
+                if (newUser.IsTeacher)
+                {
+                    newUser.CourseId = null;
+                }
                 var addUser = new AppUser
                 {
                     UserName = newUser.Email,
@@ -175,7 +179,7 @@ namespace LexiconLMS.Controllers
                         await AddAppUserToRoleAsync(createdUser, "Student");
 
                         // Add Teacher role if applicable
-                        if (!newUser.IsStudent)
+                        if (newUser.IsTeacher)
                         {
                             if (!await userManager.IsInRoleAsync(createdUser, "Teacher"))
                             {
@@ -210,8 +214,11 @@ namespace LexiconLMS.Controllers
             {
                 return NotFound();
             }
-            // get role for user
-            var isTeacher = true;
+
+            var appUser = await userManager.FindByIdAsync(id);
+            var isTeacher = await userManager.IsInRoleAsync(appUser, "Teacher");
+        
+          
             
             var editUser = await db.Users
                 .Where(u => u.Id == id)
@@ -559,7 +566,7 @@ namespace LexiconLMS.Controllers
             Course course = null;
 
             // newUser.CourseId is null if nothing selected in course dropdown list
-            if (newUser.CourseId != null && newUser.IsStudent)
+            if (newUser.CourseId != null && !newUser.IsTeacher)
             {
                 course = await db.Courses.FirstOrDefaultAsync(c => c.Id == newUser.CourseId);
             }
