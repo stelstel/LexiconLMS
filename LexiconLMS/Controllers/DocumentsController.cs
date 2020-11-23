@@ -28,6 +28,34 @@ namespace LexiconLMS.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // GET: Get Upload Course Document
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> UploadCourseDoc(int? id)
+        {
+            var course = await db.Documents.Include(d => d.Activity)
+                .Include(d => d.AppUser)
+                .Include(d => d.Course)
+                .Include(d => d.Module)
+                .Where(d => d.CourseId == id).FirstOrDefaultAsync();
+
+            return View(course);
+        }
+
+        // GET: Get Upload Course Document
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadCourseDoc()
+        {
+            var course = await db.Documents.Include(d => d.Activity)
+                .Include(d => d.AppUser)
+                .Include(d => d.Course)
+                .Include(d => d.Module)
+                .Where(d => d.CourseId == id).FirstOrDefaultAsync();
+
+            return View(course);
+        }
+
         // GET: Documents/Details/5
         public async Task<IActionResult> Details(int? id)
         {
