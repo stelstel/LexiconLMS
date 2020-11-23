@@ -38,5 +38,32 @@ namespace LexiconLMS.Services
                 Value = n.Id.ToString()
             }).ToListAsync();
         }
+
+        // Select 
+        public async Task<IEnumerable<SelectListItem>> SelectCourseSetEmptyDefault()
+        {
+            var selectList = await db.Courses
+                .Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                })
+                .ToListAsync();
+
+            selectList.Insert(0, new SelectListItem { Text = "---", Value = string.Empty, Selected = true });
+            return selectList;
+        }
+
+        public async Task<IEnumerable<SelectListItem>> SelectCourseSetSelected(int? selected)
+        {
+            var selectList = await SelectCourseSetEmptyDefault();
+            if (selected == null)
+            {
+                return selectList;
+            }
+            var theSelected = selectList.Where(s => s.Value == selected.ToString()).FirstOrDefault();
+            theSelected.Selected = true;
+            return selectList;
+        }
     }
 }

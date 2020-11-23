@@ -1,5 +1,5 @@
 ﻿@model LexiconLMS.Models.ViewModels.Teacher.EditUserViewModel
-@inject LexiconLMS.Services.ISelectCourseService courseSelect
+@inject LexiconLMS.Services.ISelectService courseSelect
 
 @{
     ViewData["Title"] = "Edit User";
@@ -31,7 +31,7 @@
                 <!-- dont show if teacher -->
                 <div class="form-group">
                     <label asp-for="CourseId" class="control-label"></label>
-                    <select asp-for="CourseId" class="form-control" asp-items="@await courseSelect.GetCoursesAsync(Model.CourseId)"></select>
+                    <select asp-for="CourseId" class="form-control" asp-items="@await courseSelect.SelectCourseSetSelected(Model.CourseId)"></select>
                     <span asp-validation-for="CourseId" class="text-danger"></span>
                 </div>
 
