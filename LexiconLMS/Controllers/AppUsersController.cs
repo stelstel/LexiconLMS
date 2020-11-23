@@ -269,15 +269,22 @@ namespace LexiconLMS.Controllers
                         }
                     }
 
-                    // TODO: don't update if password change gone wrong?
-
                     // TODO: give feedback on succesful update
 
-                    appUser.CourseId = editUser.CourseId;
-                    appUser.FirstName = editUser.FirstName;
-                    appUser.LastName = editUser.LastName;
-                    db.Update(appUser);
-                    await db.SaveChangesAsync();
+                    // Don't update if password change gone wrong
+                    if (ModelState.IsValid)
+                    {
+                        appUser.CourseId = editUser.CourseId;
+                        appUser.FirstName = editUser.FirstName;
+                        appUser.LastName = editUser.LastName;
+                        db.Update(appUser);
+                        await db.SaveChangesAsync();
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        ViewBag.Result = "Update Successful!";
+                    }
 
                 }
                 catch (DbUpdateConcurrencyException)
