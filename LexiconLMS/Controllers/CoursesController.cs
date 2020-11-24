@@ -78,6 +78,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Courses/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -98,6 +99,8 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime")] Course course)
         {
             if (id != course.Id)
@@ -123,12 +126,14 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("TeacherHome", "AppUsers");
             }
             return View(course);
         }
 
         // GET: Courses/Delete/5
+        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -149,12 +154,14 @@ namespace LexiconLMS.Controllers
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await db.Courses.FindAsync(id);
             db.Courses.Remove(course);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("TeacherHome", "AppUsers");
         }
 
         private bool CourseExists(int id)
