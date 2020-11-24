@@ -17,7 +17,10 @@
 <div class="container cont-section" id="modules">
     <div class="row row-activities">
         <div class="col-sm-12">
-            <partial name="TeacherModulePartial" model="@Model.ModuleList" />
+            @if (Model.Course.Modules != null)
+            {
+                <partial name="TeacherModulePartial" model="@Model.ModuleList" />
+            }
             <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add modules</a>
             
         </div>
@@ -28,7 +31,10 @@
 <div class="container cont-section" id="assignments">
     <div class="row row-activities">
         <div class="col-sm-12">
-            <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
+            @if (Model.Course.Modules != null)
+            {
+                <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
+            }
             <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add assignments</a>
         </div>
     </div>
