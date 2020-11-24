@@ -167,9 +167,10 @@ div#card-mod-act.card div.card-body {
     top: 7px;
 }
 
+#ass-row-headers,
 #ass-head-row,
 #activity-header-row,
-#assig-header-row{
+#assig-header-row {
     font-weight: bold;
     border-bottom-width: 2px;
     border-bottom-style: solid;
@@ -178,11 +179,13 @@ div#card-mod-act.card div.card-body {
     color: white;
 }
 
+#ass-row-headers,
 #ass-head-row,
 #assig-header-row {
     margin-bottom: 0.8em;
 }
 
+#ass-row-headers,
 #activity-header-row,
 #assig-header-row {
     margin-left: -10px;
@@ -237,6 +240,24 @@ div#card-mod-act.card div.card-body {
     width: 100%;
 }
 
+#assignments #btn-teacher-add-assignment i {
+    top: 6px;
+    margin-right: 0.5rem;
+}
+
+#btn-teacher-add-assignment {
+    padding-top: 0;
+    webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+}
+
+#btn-teacher-add-assignment:hover {
+    
+    webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
 
 .row-modules {
     margin-top: 1em;
@@ -263,4 +284,23 @@ div#card-mod-act.card div.card-body {
 #assignments i.material-icons {
     font-size: 1.5rem;
     top: 0;
+}
+
+#ass-col-icons{
+    text-align: center;
+}
+
+#info-course-icon {
+    color: white;
+    top: 3px;
+    font-size: 26px;
+    margin-left: 1rem;
+}
+
+#row-add-assignment {
+    margin-top: 1rem;
+}
+
+#row-add-assignment a {
+    color: white;
 }

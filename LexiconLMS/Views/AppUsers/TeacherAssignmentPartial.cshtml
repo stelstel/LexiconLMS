@@ -2,8 +2,8 @@
 
 <h2>Assignments</h2>
 
-<div class="row">
-    <div class="col-sm-2">
+<div id="ass-row-headers" class="row">
+    <div class="col-sm-3">
         @Html.DisplayNameFor(model => model.Name)
     </div>
     <div class="col-sm-3">
@@ -15,7 +15,7 @@
     <div class="col-sm-1">
         @Html.DisplayNameFor(model => model.Finished)
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         @*Nada*@
     </div>
 </div>
@@ -23,7 +23,7 @@
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
         </div>
         <div class="col-sm-3">
@@ -35,7 +35,7 @@
         <div class="col-sm-1">
             @Html.DisplayFor(modelItem => item.Finished)
         </div>
-        <div class="col-sm-3">
+        <div id="ass-col-icons" class="col-sm-2">
             <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><i class="material-icons">edit</i></a>
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"><i class="material-icons">description</i></a>
             <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><i class="material-icons">delete</i></a>

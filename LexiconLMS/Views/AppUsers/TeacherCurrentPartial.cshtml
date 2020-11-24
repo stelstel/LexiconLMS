@@ -1,71 +1,76 @@
 ﻿@model TeacherCurrentViewModel
 
-@*<div class="container cont-section" id="current">*@
-    <div class="row">
-        <div class="col-sm-12">
-            <h1>@Model.Course.Name</h1> 
-            <!--INSERT upload document link-->
-            <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">Course Document Upload</a>
-            <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">Activity Document Upload</a>
-        </div>
+<div class="row">
+    <div class="col-sm-12">
+        <h1>
+            @Model.Course.Name
+            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal"><i id="info-course-icon" class="material-icons">error_outline</i></a>
+        </h1>
     </div>
-    <div class="row">
-        <div id="col-modal" class="col-sm-12">
-            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
-        </div>
-    </div>
-
-    @if (Model.Module != null)
-    {
-        <div class="row">
-            <div class="col-sm-5">
-                <div id="card-mod-act" class="card">
-                    <div class="card-body">
-                        <h5>Current module</h5>
-                        <p class="card-text">
-                            <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name</a>
-                        </p>
-                        <h5>Current activity</h5>
-                        <p class="card-text">
-                            @if (Model.Activity.Id == 0)
-                            {
-                                @Model.Activity.Name
-                            }
-                            else
-                            {
-                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
-                            }
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-7">
-                <div id="card-hand-ins" class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Upcoming assignments</h5>
-                        <div class="row" id="ass-head-row">
-                            <div class="col col-sm-6">Assignment</div>
-                            <div class="col col-sm-4">Due time</div>
-                            <div class="col ass-col col-sm-2">Finished</div>
-                        </div>
-
-                        @foreach (var assignment in Model.Assignments)
-                        {
-                            <div class="row">
-                                <div class="col col-sm-6">
-                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
-                                </div>
-                                <div class="col col-sm-4">@assignment.EndTime</div>
-                                <div class="col ass-col col-sm-2">@Model.Finished</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-     }
+</div>
+@*<div class="row">*@
+    @*<div id="col-modal" class="col-sm-12">*@
+        @*<a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>*@
+    @*</div>*@
 @*</div>*@
+
+@if (Model.Module != null)
+{
+    <div class="row">
+        <div class="col-sm-5">
+            <div id="card-mod-act" class="card">
+                <div class="card-body">
+                    <h5>Current module</h5>
+                    <p class="card-text">
+                        <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name</a>
+                    </p>
+                    <h5>Current activity</h5>
+                    <p class="card-text">
+                        @if (Model.Activity.Id == 0)
+                        {
+                            @Model.Activity.Name
+                        }
+                        else
+                        {
+                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-7">
+            <div id="card-hand-ins" class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upcoming assignments</h5>
+                    <div class="row" id="ass-head-row">
+                        <div class="col col-sm-6">Assignment</div>
+                        <div class="col col-sm-4">Due time</div>
+                        <div class="col ass-col col-sm-2">Finished</div>
+                    </div>
+
+                    @foreach (var assignment in Model.Assignments)
+                    {
+                        <div class="row">
+                            <div class="col col-sm-6">
+                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                            </div>
+                            <div class="col col-sm-4">@assignment.EndTime</div>
+                            <div class="col ass-col col-sm-2">@Model.Finished</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!--INSERT upload course document link-->
+        <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">Course Document Upload</a>
+        <!--INSERT upload activity document link-->
+        <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">Activity Document Upload</a>
+    </div>
+}
 
 <!--See more Info-->
 <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
