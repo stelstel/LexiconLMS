@@ -13,16 +13,8 @@
     </div>
 </div>
 
-<!--Modules-->
-<div class="container cont-section" id="modules">
-    <div class="row row-activities">
-        <div class="col-sm-12">
-            <partial name="TeacherModulePartial" model="@Model.ModuleList" />
-            <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add modules</a>
-            
-        </div>
-    </div>
-</div>
+<!--Modules and Activities-->
+<partial name="TeacherModuleAndActivityPartial" model="@Model" />
 
 <!--Assignments-->
 <div class="container cont-section" id="assignments">
