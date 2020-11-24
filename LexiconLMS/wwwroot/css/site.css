@@ -130,6 +130,7 @@ thead {
 .container.cont-section {
     background: #dbdbdb;
     padding-bottom: 1.5em;
+    padding-top: 0.4em;
     margin-top: 2em;
 }
 
@@ -268,8 +269,10 @@ div#card-mod-act.card div.card-body {
     box-shadow: none;
 }
 
-#btn-upload-activity-doc {
-    margin-left: 1rem;
+@media (min-width: 576px) {
+    #btn-upload-activity-doc {
+        margin-left: 1rem;
+    }
 }
 
 
@@ -282,7 +285,7 @@ div#card-mod-act.card div.card-body {
     height: 100%;
     background: white;
     padding-bottom: 1em;
-    border-width: 3px;
+    border-width: 2px;
     border-style: solid;
     border-color: #28a745;
     border-radius: 8px;
