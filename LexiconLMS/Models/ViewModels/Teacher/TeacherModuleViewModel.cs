@@ -15,5 +15,6 @@ namespace LexiconLMS.Models.ViewModels.Teacher
 
         [DisplayName("End Time")]
         public DateTime EndTime { get; set; }
+        public bool IsCurrentModule { get; set; }
     }
 }
