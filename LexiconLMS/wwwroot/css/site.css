@@ -259,3 +259,8 @@ div#card-mod-act.card div.card-body {
 #col-activities .row {
     margin-top: 0.8em;
 }
+
+#assignments i.material-icons {
+    font-size: 1.5rem;
+    top: 0;
+}
