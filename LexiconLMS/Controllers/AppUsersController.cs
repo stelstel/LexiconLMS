@@ -33,7 +33,7 @@ namespace LexiconLMS.Controllers
             {
                 if (User.IsInRole("Teacher"))
                 {
-                    return RedirectToAction(nameof(TeacherUserIndex));
+                    return RedirectToAction(nameof(TeacherHome));
                 }
                 return RedirectToAction(nameof(Student));
             }
