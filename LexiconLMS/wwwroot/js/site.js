@@ -14,7 +14,7 @@ function addToList() {
     result.push(temp);
 
     let activity = `${temp.ActivityName} ${temp.ActivityStartTime} ${temp.ActivityEndTime}`;
-    
+
 
     document.querySelector('.activityForm').reset();
 
@@ -32,7 +32,7 @@ function addToList() {
         document.getElementById("theList").appendChild(li);             // Lägg till listpunkt till listan i sig.
     }
 
-            
+
 
     for (i = 0; i < remove.length; i++) {                           // Detta lägger till ta-bort-funktionen
         remove[i].onclick = function () {
@@ -76,6 +76,10 @@ function sendJson() {
         failure: function (response) {
             $('#result').html(response);
         }
-    }); 
+    });
 }
+
+
+
+
 

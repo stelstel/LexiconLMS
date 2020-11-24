@@ -3,7 +3,10 @@
 <div class="container cont-section" id="current">
     <div class="row">
         <div class="col-sm-12">
-            <h1>@Model.Course.Name</h1>
+            <h1>@Model.Course.Name</h1> 
+            <!--INSERT upload document link-->
+            <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">Course Document Upload</a>
+            <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">Activity Document Upload</a>
         </div>
     </div>
     <div class="row">
