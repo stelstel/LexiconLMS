@@ -32,7 +32,7 @@ namespace LexiconLMS.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Get Upload Course Document
+        // GET: Upload Course Document
         [Authorize(Roles = "Teacher")]
         [HttpGet]
         public async Task<IActionResult> UploadCourseDoc(int? id)
@@ -40,15 +40,15 @@ namespace LexiconLMS.Controllers
             var courses = await db.Courses.ToListAsync();
             var course = courses.Where(a => a.Id == id).FirstOrDefault();
 
-            var model = new UploadCourseDocViewModel
+            var model = new UploadCourseDocumentViewModel
             {
                 Course = course
             };
-           
+
             return View(model);
         }
 
-        // POST: Get Upload Course Document
+        // POST: Upload Course Document
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -77,6 +77,102 @@ namespace LexiconLMS.Controllers
             }
 
             return View(model);
+        }
+
+        // GET: Upload Module Document
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public async Task<IActionResult> UploadModuleDoc(int? id)
+        {
+            var modules = await db.Modules.ToListAsync();
+            var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+            var model = new UploadModuleDocumentViewModel
+            {
+                Module = module
+            };
+
+            return View(model);
+        }
+
+        // POST: Upload Module Document
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadModuleDoc(int? id, Document document)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = userManager.GetUserId(User);
+
+                var modules = await db.Modules.ToListAsync();
+                var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+                var model = new Document
+                {
+                    Name = document.Name,
+                    Description = document.Description,
+                    Module = module,
+                    ModuleId = module.Id,
+                    CourseId = module.CourseId,
+                    UploadTime = DateTime.Now,
+                    AppUserId = userId
+                };
+
+                db.Add(model);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(document);
+        }
+
+        // GET: Get Upload Module Document
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public async Task<IActionResult> UploadActivityDoc(int? id)
+        {
+            var courses = await db.Courses.ToListAsync();
+            var course = courses.Where(a => a.Id == id).FirstOrDefault();
+
+            var model = new UploadActivityDocumentViewModel
+            {
+                Id = id,
+                Course = course,
+            };
+
+            return View(model);
+        }
+
+        // POST: Get Upload Course Document
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadActivityDoc(int id, Document document)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = userManager.GetUserId(User);
+
+                var modules = await db.Modules.ToListAsync();
+                var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+                var model = new Document
+                {
+                    Name = document.Name,
+                    Description = document.Description,
+                    ModuleId = document.ModuleId,
+                    CourseId = id,
+                    UploadTime = DateTime.Now,
+                    AppUserId = userId,
+                };
+
+                db.Add(model);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(document);
         }
 
         // GET: Documents/Details/5

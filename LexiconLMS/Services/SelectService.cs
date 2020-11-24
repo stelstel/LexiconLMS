@@ -29,13 +29,28 @@ namespace LexiconLMS.Services
             }).ToListAsync();
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetCourse(int? id)
+        public async Task<IEnumerable<SelectListItem>> SelectModules(int? id)
         {
-            return await db.Courses.Select(n =>
+            return await db.Modules
+                .Where(n => n.CourseId == id)
+                .Select(n =>
             new SelectListItem()
             {
                 Text = n.Name,
-                Value = id.ToString()
+                Value = n.Id.ToString()
+            })
+            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<SelectListItem>> SelectActivities(int? id)
+        {
+            return await db.Activities
+                .Where(n => n.ModuleId == id)
+                .Select(n =>
+            new SelectListItem()
+            {
+                Text = n.Name,
+                Value = n.Id.ToString()
             })
             .ToListAsync();
         }

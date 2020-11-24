@@ -1,4 +1,4 @@
-﻿@model UploadCourseDocumentViewModel
+﻿@model UploadModuleDocumentViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -6,11 +6,11 @@
 
 <h1>Create</h1>
 
-<h4>Document for @Model.Course.Name</h4>
+<h4>Module Document for @Model.Module.Name</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UploadCourseDoc">
+        <form asp-action="UploadModuleDoc">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
