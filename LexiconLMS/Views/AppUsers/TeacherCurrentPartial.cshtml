@@ -8,11 +8,6 @@
         </h1>
     </div>
 </div>
-@*<div class="row">*@
-    @*<div id="col-modal" class="col-sm-12">*@
-        @*<a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>*@
-    @*</div>*@
-@*</div>*@
 
 @if (Model.Module != null)
 {
@@ -64,11 +59,13 @@
         </div>
     </div>
 
-    <div class="row">
+    <div id="doc-upload-row" class="row justify-content-center">
         <!--INSERT upload course document link-->
-        <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">Course Document Upload</a>
+        <a id="btn-upload-course-doc" class="btn btn-primary" asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">
+            <i id="info-course-icon" class="material-icons">attachment</i>Course Document Upload</a>
         <!--INSERT upload activity document link-->
-        <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">Activity Document Upload</a>
+        <a id="btn-upload-activity-doc" class="btn btn-primary" asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">
+            <i id="info-course-icon" class="material-icons">attachment</i>Activity Document Upload</a>
     </div>
 }
 
