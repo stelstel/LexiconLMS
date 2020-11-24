@@ -7,23 +7,8 @@
 <!--Current-->
 <partial name="StudentCurrentPartial" model="@Model.CurrentViewModel" />
 
-<!--Modules-->
-<div class="container cont-section" id="modules">
-    <div class="row row-modules">
-        <div class="col-sm-12">
-            <partial name="StudentModuleListPartial" model="@Model.ModuleList" />
-        </div>
-    </div>
-</div>
-
-<!--Activities-->
-<div class="container cont-section" id="activities">
-    <div class="row row-activities">
-        <div class="col-sm-12">
-            <partial name="StudentActivityListPartial" model="@Model.ActivityList" />
-        </div>
-    </div>
-</div>
+<!--Modules and Activities-->
+<partial name="StudentModuleAndActivityPartial" model="@Model" />
 
 <!--Assignments-->
 <div class="container cont-section" id="assignments">
@@ -34,3 +19,24 @@
     </div>
 </div>
 
+@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    //$(document).ready(function () {
+        itemClickEvent()   
+    //});
+
+    function itemClickEvent() {
+        console.log("Test doc read");////////////////////
+        $('.btn-module').click(function () {
+            console.log("Test 222");/////////////////////
+            $('.btn-module').each(function () {
+                console.log("Test 333");///////////////////
+                $(this).css("margin-left", "0");
+            });
+
+            $('#col-activities').hide();
+            $(this).animate({ "margin-left": '1em' });
+            $('#col-activities').slideDown("medium");
+        });   
+    }
+</script>*@

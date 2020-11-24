@@ -2,34 +2,54 @@
 
 <h2>Modules</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-        </tr>
+
+
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            <a asp-action="GetActListAjax" asp-route-id="@item.Id"
+               data-ajax="true"
+               data-ajax-method="GET"
+               data-ajax-update="div#cont-modules-and-activities"
+               data-ajax-mode="replace-with">
+                @if (item.IsCurrentModule)
+                {
+                    <div type="button" class="btn btn-success btn-module">
+                        @item.Name <br /> @item.StartTime <br />@item.EndTime
+                    </div>
+                }
+                else
+                {
+                    <div type="button" class="btn btn-dark btn-module">
+                        @item.Name <br /> @item.StartTime <br /> @item.EndTime
+                    </div>
+
+                }
+            </a>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+
+@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        itemClickEvent();
+    });
+
+    function itemClickEvent() {
+        console.log("Test doc read");////////////////////
+        $('.btn-module').click(function () {
+            console.log("Test 222");/////////////////////
+            $('.btn-module').each(function () {
+                console.log("Test 333");///////////////////
+                $(this).css("margin-left", "0");
+            });
+
+            $('#col-activities').hide();
+            $(this).animate({ "margin-left": '1em' });
+            $('#col-activities').slideDown("medium");
+            console.log("Test 444");///////////////////
+        });
+    }
+</script>*@

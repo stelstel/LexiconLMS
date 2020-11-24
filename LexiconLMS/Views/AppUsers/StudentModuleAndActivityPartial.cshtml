@@ -1,0 +1,15 @@
+﻿@model StudentViewModel
+
+
+<div class="container cont-section" id="cont-modules-and-activities">
+    <!--Modules and Activities-->
+    <div class="row row-modules">
+        <div id="col-modules" class="col-sm-4">
+            <partial name="StudentModuleListPartial" model="@Model.ModuleList" />
+        </div>
+        <div id="col-activities" class="col-sm-8">
+            <partial name="StudentActivityListPartial" model="@Model.ActivityList" />
+        </div>
+    </div>
+</div>
+

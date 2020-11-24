@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using LexiconLMS.Models.ViewModels.Student;
 using LexiconLMS.Models.ViewModels;
+using LexiconLMS.Extensions;
 using LexiconLMS.Models.ViewModels.Teacher;
 
 namespace LexiconLMS.Controllers
@@ -74,27 +75,36 @@ namespace LexiconLMS.Controllers
         {
             var userId = userManager.GetUserId(User);
             var userCourse = await GetUserCourseAsync(userId);
+            var timeNow = DateTime.Now;
 
-            var model = await db.Modules.Include(a => a.Course)
+            var modules = await db.Modules.Include(a => a.Course)
                 .Where(a => a.Course.Id == userCourse.Id)
                 .Select(a => new ModuleListViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
-                    EndTime = a.EndTime
+                    EndTime = a.EndTime,
+                    IsCurrentModule = false
                 })
+                .OrderBy(m => m.StartTime)
                 .ToListAsync();
 
-            return model;
+            var currentModuleId = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First().Id;
+
+            SetCurrentModule(modules, currentModuleId);
+            
+            return modules;
         }
 
+        //************** Makes a list out of ALL activities for a student ********************
         public async Task<List<ActivityListViewModel>> GetStudentActivityListAsync()
         {
             var userId = userManager.GetUserId(User);
             var userCourse = await GetUserCourseAsync(userId);
 
-            var model = await db.Activities.Include(a => a.ActivityType)
+            var model = await db.Activities
+                .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
                 .Where(a => a.Module.Course.Id == userCourse.Id)
@@ -109,6 +119,77 @@ namespace LexiconLMS.Controllers
                 .ToListAsync();
 
             return model;
+        }
+
+        //******************************************* GetModuleActivityListAsync *******************
+        // Makes a list out of activities belonging to a module
+        private async Task<List<ActivityListViewModel>> GetModuleActivityListAsync(int Id)
+        {
+            var model = await db.Activities
+                .Include(a => a.ActivityType)
+                .Where(a => a.Module.Id == Id)
+                .Where(a => a.ActivityType.Id != 3) // Except "Assignments"
+                .Select(a => new ActivityListViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    ActivityType = a.ActivityType.Name
+                })
+                .ToListAsync();
+          
+            return model;
+        }
+
+        //************************* GetActListAjax ******************************************
+        public async Task<IActionResult> GetActListAjax(int? Id)
+        {
+            if (Id == null) return BadRequest();
+
+            if (Request.IsAjax())
+            {
+                // Jag har modul Id (Id)
+                // Ta reda på vilket kurs Id modulen har
+                // Lista all moduler som har samma kurs id
+
+                var module = await db.Modules
+                    .FirstOrDefaultAsync(m => m.Id == Id);
+
+                var modId = module.Id;
+
+                var courseId = module.CourseId;
+
+                var modules = await db.Modules
+                    .Where(ms => ms.CourseId == courseId)
+                    .OrderBy(m => m.StartTime)
+                    .ToListAsync();
+
+                List<ModuleListViewModel> moduleList = new List<ModuleListViewModel>();
+
+                foreach (var mod in modules)
+                {
+                    var modLVM = new ModuleListViewModel();
+                    modLVM.Id = mod.Id;
+                    modLVM.Name = mod.Name;
+                    modLVM.StartTime = mod.StartTime;
+                    modLVM.EndTime = mod.EndTime;
+                    modLVM.IsCurrentModule = false;
+
+                    moduleList.Add(modLVM);
+                }
+
+                SetCurrentModule(moduleList, (int)Id);
+
+                StudentViewModel studVM = new StudentViewModel();
+
+                studVM.ModuleList = moduleList;
+                studVM.ActivityList = GetModuleActivityListAsync((int)Id).Result;
+
+                return PartialView("StudentModuleAndActivityPartial", studVM);
+            }
+
+            return BadRequest();
         }
 
         // GET: Users/Details/5
@@ -372,7 +453,16 @@ namespace LexiconLMS.Controllers
         {
             var userId = userManager.GetUserId(User);
             var moduleList = await GetStudentModuleListAsync();
-            var activityList = await GetStudentActivityListAsync();
+            var module = moduleList.Find(y => y.IsCurrentModule);
+            List<ActivityListViewModel> activityList = null;
+
+
+            if (module != null)
+            {
+                activityList = await GetModuleActivityListAsync(module.Id);
+            }
+
+            //var activityList = await GetStudentActivityListAsync();
             var assignmentList = await GetStudentAssignmentsAsync();
             var current = await Current();
 
@@ -624,6 +714,28 @@ namespace LexiconLMS.Controllers
             return course;
         }
 
+
+        //*************************************** SetCurrentModule **********************************************
+        // Params:
+        // modules,         List<ModuleListViewModel>,  containing the modules
+        // currentModuleId, int,                        containing current module Id
+
+        private List<ModuleListViewModel> SetCurrentModule(List<ModuleListViewModel> modules, int currentModuleId)
+        {
+            foreach (var mod in modules)
+            {
+                if (mod.Id == currentModuleId)
+                {
+                    mod.IsCurrentModule = true;
+                }
+                else
+                {
+                    mod.IsCurrentModule = false;
+                }
+            }
+
+            return modules;
+        }
     }
 }
 

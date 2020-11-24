@@ -15,6 +15,7 @@ namespace LexiconLMS.Models.Entities
         public DateTime StartTime { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime EndTime { get; set; }
+        //public Module CurrentModule { get; set; }
 
         // Foreign Key
         public int CourseId { get; set; }
