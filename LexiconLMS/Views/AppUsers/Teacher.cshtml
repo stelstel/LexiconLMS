@@ -18,6 +18,8 @@
     <div class="row row-activities">
         <div class="col-sm-12">
             <partial name="TeacherModulePartial" model="@Model.ModuleList" />
+            <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add modules</a>
+            
         </div>
     </div>
 </div>
@@ -27,6 +29,7 @@
     <div class="row row-activities">
         <div class="col-sm-12">
             <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
+            <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add assignments</a>
         </div>
     </div>
 </div>

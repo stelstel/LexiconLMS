@@ -13,19 +13,19 @@ namespace LexiconLMS.Controllers
 {
     public class ModulesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
         private readonly IMapper mapper;
 
         public ModulesController(ApplicationDbContext context, IMapper mapper)
         {
-            _context = context;
+            db = context;
             this.mapper = mapper;
         }
 
         // GET: Modules
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Modules.Include(c => c.Course);
+            var applicationDbContext = db.Modules.Include(c => c.Course);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -37,7 +37,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var module = await _context.Modules
+            var module = await db.Modules
                 .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (module == null)
@@ -50,10 +50,15 @@ namespace LexiconLMS.Controllers
 
         // GET: Modules/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
-            return View();
+            //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id");
+            //ViewData["CourseId"] = id;
+
+            //var model = new ModuleActivityPostViewModel { Module = new ModulePostViewModel { CourseId = (int)id } };
+            var model = new ModuleActivityCreateViewModel {CourseId = (int)id };
+
+            return View(model);
         }
 
         // POST: Modules/Create
@@ -66,8 +71,11 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
+                // TODO: perform id control comparison
+                 
+
                 var module = new Module
-                {
+                {                   
                     CourseId = viewModel.Module.CourseId,
                     Name = viewModel.Module.ModuleName,
                     Description = viewModel.Module.ModuleDescription,
@@ -75,7 +83,7 @@ namespace LexiconLMS.Controllers
                     EndTime = viewModel.Module.ModuleEndTime
                 };
 
-                _context.Add(module);
+                db.Add(module);
 
                 foreach (var item in viewModel.Data)
                 {
@@ -88,13 +96,13 @@ namespace LexiconLMS.Controllers
                         ActivityTypeId = item.ActivityTypeId,
                         Module = module
                     };
-                    _context.Add(activity);
+                    db.Add(activity);
                 }
 
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
-            //ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
+            //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
             return View(viewModel);
         }
 
@@ -106,12 +114,12 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var module = await _context.Modules.FindAsync(id);
+            var module = await db.Modules.FindAsync(id);
             if (module == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId);
+            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(module);
         }
 
@@ -131,8 +139,8 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
-                    _context.Update(module);
-                    await _context.SaveChangesAsync();
+                    db.Update(module);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -147,7 +155,7 @@ namespace LexiconLMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", module.CourseId);
+            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(module);
         }
 
@@ -159,7 +167,7 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var module = await _context.Modules
+            var module = await db.Modules
                 .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (module == null)
@@ -175,15 +183,15 @@ namespace LexiconLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var module = await _context.Modules.FindAsync(id);
-            _context.Modules.Remove(module);
-            await _context.SaveChangesAsync();
+            var module = await db.Modules.FindAsync(id);
+            db.Modules.Remove(module);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ModuleExists(int id)
         {
-            return _context.Modules.Any(e => e.Id == id);
+            return db.Modules.Any(e => e.Id == id);
         }
 
 

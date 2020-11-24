@@ -66,7 +66,7 @@ function sendJson() {
         data: {                                                                        // Set values for both arguments the Action is expecting
             viewModel: {
                 data: result,                                       
-                module : module
+                module: module
             },
             __RequestVerificationToken: token
         },
