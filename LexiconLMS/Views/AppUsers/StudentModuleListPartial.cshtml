@@ -16,13 +16,14 @@
                 @if (item.IsCurrentModule)
                 {
                     <div type="button" class="btn btn-success btn-module">
-                        @item.Name <br /> @item.StartTime <br />@item.EndTime
-                    </div>
+                        @item.Name
+                     </div>
                 }
                 else
                 {
                     <div type="button" class="btn btn-dark btn-module">
-                        @item.Name <br /> @item.StartTime <br /> @item.EndTime
+                        @item.Name
+                        @*@item.Name <br /> @item.StartTime <br /> @item.EndTime*@
                     </div>
 
                 }

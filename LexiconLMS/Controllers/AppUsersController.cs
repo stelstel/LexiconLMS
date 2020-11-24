@@ -155,8 +155,6 @@ namespace LexiconLMS.Controllers
                 var module = await db.Modules
                     .FirstOrDefaultAsync(m => m.Id == Id);
 
-                var modId = module.Id;
-
                 var courseId = module.CourseId;
 
                 var modules = await db.Modules
@@ -489,7 +487,6 @@ namespace LexiconLMS.Controllers
         // Params:
         // modules,         List<ModuleListViewModel>,  containing the modules
         // currentModuleId, int,                        containing current module Id
-
         private List<ModuleListViewModel> SetCurrentModule(List<ModuleListViewModel> modules, int currentModuleId) {
             foreach (var mod in modules)
             {
