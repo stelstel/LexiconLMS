@@ -269,8 +269,6 @@ namespace LexiconLMS.Controllers
                         }
                     }
 
-                    // TODO: give feedback on succesful update
-
                     // Don't update if password change gone wrong
                     if (ModelState.IsValid)
                     {
@@ -298,37 +296,9 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-               
+            }         
 
-                //return RedirectToAction(nameof(Index));
-            }
-
-                //if (ModelState.IsValid)
-                //{
-                //    try
-                //    {
-                //        var appUser = await db.Users.FindAsync(id);
-
-                //        db.Update(appUser);
-                //        await db.SaveChangesAsync();
-                //    }
-                //    catch (DbUpdateConcurrencyException)
-                //    {
-                //        if (!AppUserExists(appUser.Id))
-                //        {
-                //            return NotFound();
-                //        }
-                //        else
-                //        {
-                //            throw;
-                //        }
-                //    }
-                //    return RedirectToAction(nameof(Index));
-                //}
-
-                //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
-
-                return View(editUser);
+            return View(editUser);
         }
 
         [Authorize(Roles = "Teacher")]
