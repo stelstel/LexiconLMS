@@ -538,6 +538,18 @@ namespace LexiconLMS.Controllers
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
 
+            // This happens for newly created courses without any modules
+            if (course.Modules.Count == 0)
+            {
+                return new TeacherCurrentViewModel
+                {
+                    Course = course,
+                    Module = null,
+                    Activity = null,
+                    Assignments = null,
+                    Finished = null
+                };
+            }
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
