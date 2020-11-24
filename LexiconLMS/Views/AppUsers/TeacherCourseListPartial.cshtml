@@ -22,13 +22,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)
             </td>
-            <!--  TODO Removed for now. Should use asp-controller="Courses". Not implemented yet
-    <td>
-        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-    </td>
-     -->
+
+            <td>
+                <a asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+
         </tr>
         }
     </tbody>
