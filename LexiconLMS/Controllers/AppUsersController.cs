@@ -350,8 +350,6 @@ namespace LexiconLMS.Controllers
                         }
                     }
 
-                    // TODO: give feedback on succesful update
-
                     // Don't update if password change gone wrong
                     if (ModelState.IsValid)
                     {
@@ -379,37 +377,9 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-               
+            }         
 
-                //return RedirectToAction(nameof(Index));
-            }
-
-                //if (ModelState.IsValid)
-                //{
-                //    try
-                //    {
-                //        var appUser = await db.Users.FindAsync(id);
-
-                //        db.Update(appUser);
-                //        await db.SaveChangesAsync();
-                //    }
-                //    catch (DbUpdateConcurrencyException)
-                //    {
-                //        if (!AppUserExists(appUser.Id))
-                //        {
-                //            return NotFound();
-                //        }
-                //        else
-                //        {
-                //            throw;
-                //        }
-                //    }
-                //    return RedirectToAction(nameof(Index));
-                //}
-
-                //ViewData["CourseId"] = new SelectList(db.Set<Course>(), "Id", "Id", appUser.CourseId);
-
-                return View(editUser);
+            return View(editUser);
         }
 
         [Authorize(Roles = "Teacher")]
@@ -628,6 +598,18 @@ namespace LexiconLMS.Controllers
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
 
+            // This happens for newly created courses without any modules
+            if (course.Modules.Count == 0)
+            {
+                return new TeacherCurrentViewModel
+                {
+                    Course = course,
+                    Module = null,
+                    Activity = null,
+                    Assignments = null,
+                    Finished = null
+                };
+            }
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
