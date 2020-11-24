@@ -52,10 +52,7 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
-            //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id");
-            //ViewData["CourseId"] = id;
-
-            //var model = new ModuleActivityPostViewModel { Module = new ModulePostViewModel { CourseId = (int)id } };
+            
             var model = new ModuleActivityCreateViewModel {CourseId = (int)id };
 
             return View(model);
@@ -72,7 +69,7 @@ namespace LexiconLMS.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: perform id control comparison
-                 
+                // TODO: Check if redirect problem stems from ajax 
 
                 var module = new Module
                 {                   
@@ -119,8 +116,21 @@ namespace LexiconLMS.Controllers
             {
                 return NotFound();
             }
+
+            // list of acti
+
+            var activityList = await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
+
+
+            var viewModel = new ModuleEditViewModel
+            {
+                Module = module,
+                Activities = activityList
+            };
+
+
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
-            return View(module);
+            return View(viewModel);
         }
 
         // POST: Modules/Edit/5
@@ -128,7 +138,7 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime,EndTime,CourseId")] Module module)
+        public async Task<IActionResult> Edit(int id, Module module)
         {
             if (id != module.Id)
             {
