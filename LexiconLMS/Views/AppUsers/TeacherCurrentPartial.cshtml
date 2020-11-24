@@ -1,9 +1,12 @@
-﻿@model CurrentViewModel
+﻿@model TeacherCurrentViewModel
 
 <div class="container cont-section" id="current">
     <div class="row">
         <div class="col-sm-12">
-            <h1>@Model.Course.Name</h1>
+            <h1>@Model.Course.Name</h1> 
+            <!--INSERT upload document link-->
+            <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">Course Document Upload</a>
+            <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">Activity Document Upload</a>
         </div>
     </div>
     <div class="row">
@@ -13,12 +16,12 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <div id="card-mod-act" class="card">
                 <div class="card-body">
                     <h5>Current module</h5>
                     <p class="card-text">
-                        <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name<i class="material-icons play-icon">play_arrow</i></a>
+                        <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name</a>
                     </p>
                     <h5>Current activity</h5>
                     <p class="card-text">
@@ -28,14 +31,14 @@
                         }
                         else
                         {
-                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name<i class="material-icons play-icon">play_arrow</i></a>
+                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
                         }
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <div id="card-hand-ins" class="card">
                 <div class="card-body">
                     <h5 class="card-title">Upcoming assignments</h5>
@@ -52,17 +55,7 @@
                                 <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
                             </div>
                             <div class="col col-sm-4">@assignment.EndTime</div>
-                            
-                            <div class="col ass-col col-sm-2">
-                                @if (assignment.IsFinished)
-                                {
-                                    <i class="material-icons checkbox-ass">check_box</i>
-                                }
-                                else
-                                {
-                                    <i class="material-icons checkbox-ass">check_box_outline_blank</i>
-                                }
-                            </div>
+                            <div class="col ass-col col-sm-2">@Model.Finished</div>
                         </div>
                     }
                 </div>
@@ -71,6 +64,7 @@
     </div>
 </div>
 
+<!--See more Info-->
 <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -85,9 +79,9 @@
                     <h6>Description:</h6>
                     @Model.Course.Description
                     <h6 class="pt-3">Course participants:</h6>
-                    @foreach (var stud in Model.Course.AppUsers)
+                    @foreach (var student in Model.Course.AppUsers)
                     {
-                        @stud.FullName<br>
+                        <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@student.Id">@student.FullName</a><br>
                     }
                 </div>
             </div>

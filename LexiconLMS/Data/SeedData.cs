@@ -17,22 +17,22 @@ namespace LexiconLMS.Data
             // "Handle resources", "use service until the 'using' is used up"
             using var db = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
 
-            //if (db.Users.Any())
-            //{
-            //    //db.Users.RemoveRange(db.Users);
-            //    db.Roles.RemoveRange(db.Roles);
-            //    db.Courses.RemoveRange(db.Courses);
-            //    db.RoleClaims.RemoveRange(db.RoleClaims);
-            //    db.UserLogins.RemoveRange(db.UserLogins);
-            //    db.UserClaims.RemoveRange(db.UserClaims);
-            //    db.UserRoles.RemoveRange(db.UserRoles);
-            //    db.UserTokens.RemoveRange(db.UserTokens);
-            //    db.Activities.RemoveRange(db.Activities);
-            //    db.ActivityTypes.RemoveRange(db.ActivityTypes);
-            //    db.Documents.RemoveRange(db.Documents);
+            if (db.Users.Any())
+            {
+                //db.Users.RemoveRange(db.Users);
+                //db.Roles.RemoveRange(db.Roles);
+                //db.Courses.RemoveRange(db.Courses);
+                //db.RoleClaims.RemoveRange(db.RoleClaims);
+                //db.UserLogins.RemoveRange(db.UserLogins);
+                //db.UserClaims.RemoveRange(db.UserClaims);
+                //db.UserRoles.RemoveRange(db.UserRoles);
+                //db.UserTokens.RemoveRange(db.UserTokens);
+                //db.Activities.RemoveRange(db.Activities);
+                //db.ActivityTypes.RemoveRange(db.ActivityTypes);
+                //db.Documents.RemoveRange(db.Documents);
 
-            //    await db.SaveChangesAsync();
-            //}
+                //await db.SaveChangesAsync();
+            }
 
             var fake = new Faker("en");
             var random = new Random();
@@ -209,7 +209,7 @@ namespace LexiconLMS.Data
 
                     var activity = new Activity
                     {
-                        Name = activityType.Name,
+                        Name = $"{fake.Commerce.Product()} {activityType.Name}",
                         Description = fake.Lorem.Sentences(),
                         StartTime = activityStartTime,
                         EndTime = activityEndTime,
@@ -270,28 +270,27 @@ namespace LexiconLMS.Data
 
             // Seed Documents
 
-            var documents = new List<Document>();
+            //var documents = new List<Document>();
 
-            for (int i = 0; i < 30; i++)
-            {
-                // TODO: Make it so that the documents only get either a course, module or activity (and the rest are not set)
-                var document = new Document
-                {
-                    Name = fake.Company.CatchPhrase(),
-                    Description = fake.Lorem.Sentences(),
-                    UploadTime = fake.Date.Soon(),
-                    AppUserId = students[random.Next(students.Count)].Id,
-                    CourseId = courses[random.Next(courses.Count)].Id,
-                    ModuleId = modules[random.Next(modules.Count)].Id,
-                    ActivityId = activities[random.Next(activities.Count)].Id
-                };
+            //for (int i = 0; i < 30; i++)
+            //{
+            //    // TODO: Make it so that the documents only get either a course, module or activity (and the rest are not set)
+            //    var document = new Document
+            //    {
+            //        Name = fake.Company.CatchPhrase(),
+            //        Description = fake.Lorem.Sentences(),
+            //        UploadTime = fake.Date.Soon(),
+            //        AppUserId = students[random.Next(students.Count)].Id,
+            //        CourseId = courses[random.Next(courses.Count)].Id,
+            //        ModuleId = modules[random.Next(modules.Count)].Id,
+            //        ActivityId = activities[random.Next(activities.Count)].Id
+            //    };
 
-                documents.Add(document);
-            }
+            //    documents.Add(document);
+            //}
 
-            db.AddRange(documents);
-
-            await db.SaveChangesAsync();
+            //db.AddRange(documents);
+            //await db.SaveChangesAsync();
         }
     }
 }

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LexiconLMS.Models.ViewModels.Student
+namespace LexiconLMS.Models.ViewModels.Teacher
 {
-    public class CurrentViewModel
+    public class TeacherCurrentViewModel
     {
         public Activity Activity { get; set; }
         public Course Course { get; set; }
         public ICollection<Activity> Assignments { get; set; }
         public Module Module { get; set; }
-        public bool IsFinished { get; set; }
+        public string Finished { get; set; }
         public DateTime DueDate { get; set; }
     }
 }

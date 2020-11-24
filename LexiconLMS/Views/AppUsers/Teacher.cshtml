@@ -1,39 +1,35 @@
-﻿@model LexiconLMS.Models.Entities.AppUser
+﻿@model TeacherViewModel
 
 @{
     ViewData["Title"] = "Teacher";
 }
 
-<h1>Teacher (not implemented, placeholder)</h1>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Course)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Course.Id)
-        </dd>
-    </dl>
+<!--Current-->
+<div class="container cont-section" id="current">
+    <div class="row row-activities">
+        <div class="col-sm-12">
+            <partial name="TeacherCurrentPartial" model="@Model.TeacherCurrentViewModel" />
+        </div>
+    </div>
 </div>
 
+<!--Modules-->
+<div class="container cont-section" id="modules">
+    <div class="row row-activities">
+        <div class="col-sm-12">
+            <partial name="TeacherModulePartial" model="@Model.ModuleList" />
+            <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add modules</a>
+            
+        </div>
+    </div>
+</div>
+
+<!--Assignments-->
+<div class="container cont-section" id="assignments">
+    <div class="row row-activities">
+        <div class="col-sm-12">
+            <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
+            <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add assignments</a>
+        </div>
+    </div>
+</div>

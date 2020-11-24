@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using LexiconLMS.Models.ViewModels.Document;
+using Microsoft.AspNetCore.Identity;
 
 namespace LexiconLMS.Controllers
 {
     public class DocumentsController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly UserManager<AppUser> userManager;
 
-        public DocumentsController(ApplicationDbContext db)
+        public DocumentsController(ApplicationDbContext db, UserManager<AppUser> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
         }
 
         // GET: Documents
@@ -26,6 +30,149 @@ namespace LexiconLMS.Controllers
         {
             var applicationDbContext = db.Documents.Include(d => d.Activity).Include(d => d.AppUser).Include(d => d.Course).Include(d => d.Module);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Upload Course Document
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public async Task<IActionResult> UploadCourseDoc(int? id)
+        {
+            var courses = await db.Courses.ToListAsync();
+            var course = courses.Where(a => a.Id == id).FirstOrDefault();
+
+            var model = new UploadCourseDocumentViewModel
+            {
+                Course = course
+            };
+
+            return View(model);
+        }
+
+        // POST: Upload Course Document
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadCourseDoc(int? id, Document model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = userManager.GetUserId(User);
+
+                var courses = await db.Courses.ToListAsync();
+                var course = courses.Where(a => a.Id == id).FirstOrDefault();
+
+                var newModel = new Document
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Course = course,
+                    CourseId = course.Id,
+                    UploadTime = DateTime.Now,
+                    AppUserId = userId
+                };
+
+                db.Add(newModel);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
+
+        // GET: Upload Module Document
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public async Task<IActionResult> UploadModuleDoc(int? id)
+        {
+            var modules = await db.Modules.ToListAsync();
+            var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+            var model = new UploadModuleDocumentViewModel
+            {
+                Module = module
+            };
+
+            return View(model);
+        }
+
+        // POST: Upload Module Document
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadModuleDoc(int? id, Document document)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = userManager.GetUserId(User);
+
+                var modules = await db.Modules.ToListAsync();
+                var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+                var model = new Document
+                {
+                    Name = document.Name,
+                    Description = document.Description,
+                    Module = module,
+                    ModuleId = module.Id,
+                    CourseId = module.CourseId,
+                    UploadTime = DateTime.Now,
+                    AppUserId = userId
+                };
+
+                db.Add(model);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(document);
+        }
+
+        // GET: Get Upload Module Document
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public async Task<IActionResult> UploadActivityDoc(int? id)
+        {
+            var courses = await db.Courses.ToListAsync();
+            var course = courses.Where(a => a.Id == id).FirstOrDefault();
+
+            var model = new UploadActivityDocumentViewModel
+            {
+                Id = id,
+                Course = course,
+            };
+
+            return View(model);
+        }
+
+        // POST: Get Upload Course Document
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadActivityDoc(int id, Document document)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = userManager.GetUserId(User);
+
+                var modules = await db.Modules.ToListAsync();
+                var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+                var model = new Document
+                {
+                    Name = document.Name,
+                    Description = document.Description,
+                    ModuleId = document.ModuleId,
+                    CourseId = id,
+                    UploadTime = DateTime.Now,
+                    AppUserId = userId,
+                };
+
+                db.Add(model);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(document);
         }
 
         // GET: Documents/Details/5
