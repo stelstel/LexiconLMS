@@ -199,7 +199,7 @@ namespace LexiconLMS.Controllers
                     }
                 }
                 //return RedirectToAction(nameof(Index));                 // TODO, byt ut till redirect to url json.
-                return Json(new { redirectToUrl = Url.Action("Index", "Modules", new {id = module.CourseId }) });
+                return Json(new { redirectToUrl = Url.Action("Teacher", "AppUsers", new {id = module.CourseId }) });
             }
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(module);
