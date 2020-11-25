@@ -201,8 +201,6 @@ namespace LexiconLMS.Controllers
                 var module = await db.Modules
                     .FirstOrDefaultAsync(m => m.Id == Id);
 
-                var modId = module.Id;
-
                 var courseId = module.CourseId;
 
                 var modules = await db.Modules
