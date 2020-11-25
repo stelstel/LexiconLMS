@@ -5,10 +5,15 @@
 }
 
 <h1>User Accounts</h1>
+
+<div id="row-add-course" class="row justify-content-center">
+    <a asp-controller="AppUsers" asp-action="CreateUser" id="btn-teacher-add-assignment" class="btn btn-primary"><i class="material-icons">add</i>Create New User</a>
+</div>
+
 <div class="container cont-section">
     <h2>Students</h2>
     <div class="container p-3 my-3 border">
-        <table class="table">
+        <table class="table table-sm">
             <partial name="StudentListPartial" />
         </table>
     </div>
@@ -17,7 +22,7 @@
     <h2>Teachers</h2>
 
     <div class="container  p-3 my-3 border">
-        <table class="table">
+        <table class="table table-sm">
             <partial name="TeacherListPartial" />
         </table>
     </div>

@@ -165,7 +165,7 @@ namespace LexiconLMS.Controllers
             await db.SaveChangesAsync();
             //return RedirectToAction(nameof(Index));
 
-
+            var r = RouteData.Values;
             // Redirect back to the Edit View of the module
             return RedirectToAction(                    
                 "Edit",

@@ -98,11 +98,35 @@ function sendJsonToEdit() {
             },
             __RequestVerificationToken: token
         },
-        success: function () {
+        success: function (response) {                                                          // Input till successfunktionen är alltid det vi får tillbaka från servern
+            window.location.href = response.redirectToUrl;
+            console.log("stuff");
             $('#result').html('"sendJsonToEdit()" successfully called.');
+
         },
         failure: function (response) {
             $('#result').html(response);
         }
     });
 }
+
+
+
+
+
+//function AjaxGoodRedirect(urlAction) {
+//    $.ajax({
+//        type: "POST", // see http://haacked.com/archive/2009/06/24/json-hijacking.aspx 
+//        url: urlAction,
+//        data: {}, //to send data see more at http://bit.ly/mvc_ajax_jquery            
+//        datatype: "JSON",
+//        contentType: "application/json; charset=utf-8",
+//        success: function (returndata) {
+//            if (returndata.ok) window.location = returndata.newurl;
+//            else window.alert(returndata.message);
+//        }
+//    });
+//}​​
+        
+
+
