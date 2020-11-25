@@ -115,6 +115,15 @@ h1 {
     box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
 }
 
+#current h1 .upload-icon {
+    width: 19px;
+}
+
+#current h1 .info-icon {
+    width: 28px;
+    margin-left: 1rem;
+}
+
 .container h2 {
     text-align: center;
     margin: 0.6em 0;
@@ -235,6 +244,7 @@ div#card-mod-act.card div.card-body {
 }
 
 .btn-module {
+    margin-top: 15px;
     -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
     box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
@@ -310,13 +320,19 @@ div#card-mod-act.card div.card-body {
     top: 3px;
     font-size: 26px;
     margin-left: 1rem;
+    text-shadow: none;
 }
+
 
 #info-module-icon {
     color: black;
     font-size: 26px;
+    margin-left: -35px;
+    margin-top: 1.2rem;
+}
+
+#cont-student-modules-and-activities #info-module-icon {
     margin-left: -20px;
-    top: 6px;
 }
 
 #row-add-assignment {
@@ -333,7 +349,7 @@ div#card-mod-act.card div.card-body {
 
 .row-module-btn-icons {
     margin-top: 0.4rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: center;
 }
 
@@ -345,4 +361,15 @@ div#card-mod-act.card div.card-body {
 
 #col-activities .col-icons {
     text-align: center;
+}
+
+.icon-img:hover {
+    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+}
+
+#col-modules h2 .icon-img,
+.row-activities h2 .icon-img {
+    width: 28px;
 }
