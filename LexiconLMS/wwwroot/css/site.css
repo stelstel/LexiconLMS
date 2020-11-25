@@ -249,19 +249,16 @@ div#card-mod-act.card div.card-body {
 .btn-dark,
 .btn-success {
     border-radius: 30px;
-    margin-bottom: 10px;
     width: 100%;
 }
 
 #current #btn-upload-course-doc i,
-#current #btn-upload-activity-doc i,
 #assignments #btn-teacher-add-assignment i {
     top: 7px;
     margin-right: 0.5rem;
 }
 
 #btn-upload-course-doc,
-#btn-upload-activity-doc,
 #btn-teacher-add-assignment {
     padding-top: 0;
     -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
@@ -270,17 +267,10 @@ div#card-mod-act.card div.card-body {
 }
 
 #btn-upload-course-doc:hover,
-#btn-upload-activity-doc:hover,
 #btn-teacher-add-assignment:hover {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-}
-
-@media (min-width: 576px) {
-    #btn-upload-activity-doc {
-        margin-left: 1rem;
-    }
 }
 
 .row-modules {
@@ -310,7 +300,8 @@ div#card-mod-act.card div.card-body {
     top: 0;
 }
 
-#ass-col-icons{
+
+#ass-col-icons {
     text-align: center;
 }
 
@@ -319,6 +310,13 @@ div#card-mod-act.card div.card-body {
     top: 3px;
     font-size: 26px;
     margin-left: 1rem;
+}
+
+#info-module-icon {
+    color: black;
+    font-size: 26px;
+    margin-left: -20px;
+    top: 6px;
 }
 
 #row-add-assignment {
@@ -331,4 +329,20 @@ div#card-mod-act.card div.card-body {
 
 #doc-upload-row {
     margin-top: 1rem;
+}
+
+.row-module-btn-icons {
+    margin-top: 0.4rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+#assignments .ass-col-icons img,
+#col-activities .col-icons img,
+.row-module-btn-icons img {
+    width: 1.7rem;
+}
+
+#col-activities .col-icons {
+    text-align: center;
 }

@@ -35,10 +35,10 @@
         <div class="col-sm-1">
             @Html.DisplayFor(modelItem => item.Finished)
         </div>
-        <div id="ass-col-icons" class="col-sm-2">
-            <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><i class="material-icons">edit</i></a>
-            <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"><i class="material-icons">description</i></a>
-            <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><i class="material-icons">delete</i></a>
+        <div class="col-sm-2 ass-col-icons">
+            <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><img src="~/icons/edit.svg" /></a>
+            <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"><img src="~/icons/textbox.svg"/></a>
+            <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><img src="~/icons/delete.svg" /></a>
         </div>
      }
 </div>

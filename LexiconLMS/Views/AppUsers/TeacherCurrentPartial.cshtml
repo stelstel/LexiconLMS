@@ -4,7 +4,12 @@
     <div class="col-sm-12">
         <h1>
             @Model.Course.Name
-            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal"><i id="info-course-icon" class="material-icons">error_outline</i></a>
+            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">
+                <i id="info-course-icon" class="material-icons">error_outline</i>
+            </a>
+            <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">
+                <img src="~/icons/share_white.svg" />
+            </a>
         </h1>
     </div>
 </div>
@@ -58,18 +63,8 @@
             </div>
         </div>
     </div>
-
-    <div id="doc-upload-row" class="row justify-content-center">
-        <!--INSERT upload course document link-->
-        <a id="btn-upload-course-doc" class="btn btn-primary" asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">
-            <i id="info-course-icon" class="material-icons">attachment</i>Upload course document
-        </a>
-        <!--INSERT upload activity document link-->
-        <a id="btn-upload-activity-doc" class="btn btn-primary" asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">
-            <i id="info-course-icon" class="material-icons">attachment</i>Upload activity document
-        </a>
-    </div>
 }
+
 
 <!--See more Info-->
 <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
