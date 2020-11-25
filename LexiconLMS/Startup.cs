@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using LexiconLMS.Models.Entities;
 using AutoMapper;
 using LexiconLMS.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace LexiconLMS
 {
