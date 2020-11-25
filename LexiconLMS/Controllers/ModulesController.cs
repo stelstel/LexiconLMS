@@ -97,7 +97,8 @@ namespace LexiconLMS.Controllers
                 }
 
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
+                return Json(new { redirectToUrl = Url.Action("Teacher", "AppUsers", new { id = viewModel.Module.CourseId }) });
+                //return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
             //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
             return View(viewModel);
@@ -197,7 +198,8 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));                 // TODO, byt ut till redirect to url json.
+                return Json(new { redirectToUrl = Url.Action("Index", "Modules", new {id = module.CourseId }) });
             }
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(module);
