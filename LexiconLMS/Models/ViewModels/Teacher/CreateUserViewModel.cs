@@ -28,6 +28,7 @@ namespace LexiconLMS.Models.ViewModels.Teacher
         public string ConfirmPassword { get; set; }
 
         [Required]
+        [Display(Name = "Teacher")]
         public bool IsTeacher { get; set; } = true;
 
         [Display(Name = "Course")]
