@@ -160,9 +160,17 @@ namespace LexiconLMS.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var activity = await db.Activities.FindAsync(id);
+            var moduleId = activity.ModuleId;
             db.Activities.Remove(activity);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+
+
+            // Redirect back to the Edit View of the module
+            return RedirectToAction(                    
+                "Edit",
+                "Modules",
+                new { id = moduleId });
         }
 
         private bool ActivityExists(int id)

@@ -117,17 +117,22 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            // list of acti
+
+            // List of activities so it can be displayed in the Edit View
 
             var activityList = await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
 
 
             var viewModel = new ModuleEditViewModel
             {
-                Module = module,
+                ModuleId = module.Id,
+                ModuleName = module.Name,
+                ModuleDescription = module.Description,
+                ModuleStartTime = module.StartTime,
+                ModuleEndTime = module.EndTime,
                 Activities = activityList
-            };
 
+            };
 
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(viewModel);
@@ -138,19 +143,48 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Module module)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Edit(ModuleActivityPostViewModel viewModel)
         {
-            if (id != module.Id)
-            {
-                return NotFound();
-            }
+
+            //if (id != viewmodel.Module.Id)
+            //{
+            //    return NotFound();
+            //}
+
+            
+            var module = db.Modules.Find(viewModel.Module.ModuleId);
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    module.Name = viewModel.Module.ModuleName;
+                    module.Description = viewModel.Module.ModuleDescription;
+                    module.StartTime = viewModel.Module.ModuleStartTime;
+                    module.EndTime = viewModel.Module.ModuleEndTime;
+
+
                     db.Update(module);
                     await db.SaveChangesAsync();
+
+                    foreach (var item in viewModel.Data)
+                    {
+                        var activity = new Activity
+                        {
+                            Name = item.ActivityName,
+                            Description = item.ActivityDescription,
+                            StartTime = item.ActivityStartTime,
+                            EndTime = item.ActivityEndTime,
+                            ActivityTypeId = item.ActivityTypeId,
+                            Module = module
+                        };
+                        db.Add(activity);
+                    }
+
+                    await db.SaveChangesAsync();
+
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -79,3 +79,30 @@ function sendJson() {
     }); 
 }
 
+function sendJsonToEdit() {
+
+    let token = $('input[name="__RequestVerificationToken"]').val();                    // ??
+
+    let module = {};
+    $('#module').serializeArray().forEach(d => module[d.name] = d.value || '');         // Get formdata for module
+
+    $.ajax({
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        dataType: 'json',                                                               // We are sending an json-object (Modules) and an array of json-objects (Activities)
+        type: 'POST',
+        url: '/Modules/Edit',                                                           // url for the /Controller/Action
+        data: {                                                                         // Set values for both arguments the Action is expecting
+            viewModel: {
+                data: result,
+                module: module
+            },
+            __RequestVerificationToken: token
+        },
+        success: function () {
+            $('#result').html('"sendJsonToEdit()" successfully called.');
+        },
+        failure: function (response) {
+            $('#result').html(response);
+        }
+    });
+}
