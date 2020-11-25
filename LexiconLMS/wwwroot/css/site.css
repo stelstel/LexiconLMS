@@ -1,5 +1,13 @@
 ﻿/* site.css */
 
+/*
+    COLOURS:
+        Darker grey:    gray
+        Lighter grey:   #dbdbdb
+        Green:          #28a745
+        Border-grey     #666
+*/
+
 body header .navbar {
     background: #dbdbdb !important;
     border-bottom: 1px solid #666 !important;
@@ -248,7 +256,7 @@ div#card-mod-act.card div.card-body {
 #current #btn-upload-course-doc i,
 #current #btn-upload-activity-doc i,
 #assignments #btn-teacher-add-assignment i {
-    top: 6px;
+    top: 7px;
     margin-right: 0.5rem;
 }
 
@@ -274,7 +282,6 @@ div#card-mod-act.card div.card-body {
         margin-left: 1rem;
     }
 }
-
 
 .row-modules {
     margin-top: 1em;
