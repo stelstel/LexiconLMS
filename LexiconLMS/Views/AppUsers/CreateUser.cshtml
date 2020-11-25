@@ -17,16 +17,23 @@
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
+                <!--
+    <div class="form-check-inline">
+        <label class="control-label">Student</label>
+        <input type="radio" value="false" checked="checked" asp-for="IsTeacher" id="userrole" class="form-control" />
+        <span asp-validation-for="IsTeacher" class="text-danger"></span>
+    </div>
 
-                <div class="form-check-inline">
-                    <label class="control-label">Student</label>
-                    <input type="radio" value="false" checked="checked" asp-for="IsTeacher" id="userrole" class="form-control" />
-                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
-                </div>
+    <div class="form-check-inline">
+        <label class="control-label">Teacher</label>
+        <input type="radio" value="true" asp-for="IsTeacher" id="userrole" class="form-control" />
+        <span asp-validation-for="IsTeacher" class="text-danger"></span>
+    </div>
+        -->
 
-                <div class="form-check-inline">
-                    <label class="control-label">Teacher</label>
-                    <input type="radio" value="true" asp-for="IsTeacher" id="userrole" class="form-control" />
+                <div class="form-group">
+                    <label asp-for="IsTeacher" class="control-label"></label>
+                    <input asp-for="IsTeacher" class="form-control" />
                     <span asp-validation-for="IsTeacher" class="text-danger"></span>
                 </div>
 
