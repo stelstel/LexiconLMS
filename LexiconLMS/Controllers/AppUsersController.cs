@@ -631,7 +631,26 @@ namespace LexiconLMS.Controllers
             }
 
             var course = await db.Courses.FirstOrDefaultAsync(m => m.Id == id);
+
             var current = await CurrentTeacher(id);
+
+            if (current.Course.Modules.Count == 0)
+                return View(new TeacherViewModel
+                {
+                    Course = course,
+                    TeacherCurrentViewModel = new TeacherCurrentViewModel
+                    {
+                        Course = course,
+                        Module = null,
+                        Activity = null,
+                        Assignments = null,
+                        Finished = null
+                    },
+                    AssignmentList = null,
+                    ModuleList = null,
+                    ActivityList = null
+                });
+
             var assignmentList = await AssignmentListTeacher(id);
             var moduleList = await GetTeacherModuleListAsync(id);
             var activityList = new List<ActivityListViewModel>();
@@ -683,18 +702,18 @@ namespace LexiconLMS.Controllers
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
 
-            // This happens for newly created courses without any modules
+            //This happens for newly created courses without any modules
             if (course.Modules.Count == 0)
-            {
-                return new TeacherCurrentViewModel
                 {
-                    Course = course,
-                    Module = null,
-                    Activity = null,
-                    Assignments = null,
-                    Finished = null
-                };
-            }
+                    return new TeacherCurrentViewModel
+                    {
+                        Course = course,
+                        Module = null,
+                        Activity = null,
+                        Assignments = null,
+                        Finished = null
+                    };
+                }
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();

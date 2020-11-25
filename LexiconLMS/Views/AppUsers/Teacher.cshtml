@@ -14,13 +14,16 @@
 </div>
 
 <!--Modules and Activities-->
-<partial name="TeacherModuleAndActivityPartial" model="@Model" />
+@if (Model.ModuleList != null)
+{
+    <partial name="TeacherModuleAndActivityPartial" model="@Model" />
+}
 
 <!--Assignments-->
 <div class="container cont-section" id="assignments">
     <div class="row row-activities">
         <div class="col-sm-12">
-            @if (Model.Course.Modules != null)
+            @if (Model.ModuleList != null)
             {
                 <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
             }
