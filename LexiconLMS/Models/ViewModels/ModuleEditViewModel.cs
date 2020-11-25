@@ -12,9 +12,13 @@ namespace LexiconLMS.Models.ViewModels
 
         //public Module Module { get; set; }
         public int? ModuleId { get; set; }
+        [DisplayName("Name")]
         public string ModuleName { get; set; }
+        [DisplayName("Description")]
         public string ModuleDescription { get; set; }
+        [DisplayName("Start Time")]
         public DateTime ModuleStartTime { get; set; }
+        [DisplayName("End Time")]
         public DateTime ModuleEndTime { get; set; }
 
 
@@ -32,6 +36,7 @@ namespace LexiconLMS.Models.ViewModels
         public DateTime ActivityEndTime { get; set; }
         [DisplayName("Type")]
         public int ActivityTypeId { get; set; }
+        public ActivityType ActivityType { get; set; }
 
 
 

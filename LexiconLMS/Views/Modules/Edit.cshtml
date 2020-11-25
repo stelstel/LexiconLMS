@@ -114,7 +114,7 @@
                         @Html.DisplayFor(modelItem => item.EndTime)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ActivityType)
+                        @Html.DisplayFor(modelItem => item.ActivityType.Name)
                     </td>
                     <td>
                         <a class="btn-danger rounded" asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id">Remove</a>

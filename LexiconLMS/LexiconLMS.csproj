@@ -29,7 +29,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="Models\ViewModels\Teacher\" />
     <Folder Include="WireFrames\" />
-    <Folder Include="wwwroot\icons\" />
   </ItemGroup>
 
 </Project>
