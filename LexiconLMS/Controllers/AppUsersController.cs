@@ -682,7 +682,9 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> TeacherHome()
         {
-            var courses = await db.Courses.ToListAsync();
+            var courses = await db.Courses
+                .OrderBy(n => n.Name)
+                .ToListAsync();
 
             var model = new TeacherHomeViewModel
             {
