@@ -132,13 +132,18 @@ namespace LexiconLMS.Controllers
         [HttpGet]
         public async Task<IActionResult> UploadActivityDoc(int? id)
         {
+            var activities = await db.Activities.ToListAsync();
+            var activity = activities.Where(a => a.Id == id).FirstOrDefault();
+            var module = await db.Modules.Where(a => a.Id == activity.ModuleId).FirstOrDefaultAsync();
             var courses = await db.Courses.ToListAsync();
-            var course = courses.Where(a => a.Id == id).FirstOrDefault();
+            var course = courses.Where(c => c.Id == module.CourseId).FirstOrDefault();
 
             var model = new UploadActivityDocumentViewModel
             {
                 Id = id,
-                Course = course,
+                Activity = activity,
+                Module = module,
+                Course = course
             };
 
             return View(model);
@@ -153,17 +158,21 @@ namespace LexiconLMS.Controllers
             if (ModelState.IsValid)
             {
                 var userId = userManager.GetUserId(User);
+                var upload = DateTime.Now;
 
-                var modules = await db.Modules.ToListAsync();
-                var module = modules.Where(a => a.Id == id).FirstOrDefault();
+                var course = await db.Activities.Include(a => a.Module).ThenInclude(a => a.Course)
+                    .Where(a => a.Id == id)
+                    .Where(a => a.ModuleId == document.ModuleId)
+                    .Select(a => a.Module.Course).FirstOrDefaultAsync();
 
                 var model = new Document
                 {
                     Name = document.Name,
                     Description = document.Description,
                     ModuleId = document.ModuleId,
-                    CourseId = id,
-                    UploadTime = DateTime.Now,
+                    ActivityId = document.ActivityId,
+                    CourseId = course.Id,
+                    UploadTime = upload,
                     AppUserId = userId,
                 };
 

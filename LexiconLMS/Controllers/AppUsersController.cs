@@ -315,6 +315,7 @@ namespace LexiconLMS.Controllers
                 {
                     newUser.CourseId = null;
                 }
+
                 var addUser = new AppUser
                 {
                     UserName = newUser.Email,
