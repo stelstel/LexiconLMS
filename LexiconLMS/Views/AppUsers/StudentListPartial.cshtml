@@ -24,7 +24,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
+                    <a asp-action="Edit" asp-controller="AppUsers" asp-route-id="@item.AppUserId">@Html.DisplayFor(modelItem => item.FullName)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
