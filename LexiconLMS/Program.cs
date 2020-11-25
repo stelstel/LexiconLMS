@@ -31,7 +31,7 @@ namespace LexiconLMS
 
                 try
                 {
-                   //SeedData.InitializeAsync(services, adminPW).Wait();
+                    SeedData.InitializeAsync(services, adminPW).Wait();
                 }
                 catch (Exception e)
                 {

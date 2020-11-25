@@ -27,6 +27,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Models\ViewModels\Teacher\" />
+    <Folder Include="WireFrames\" />
   </ItemGroup>
 
 </Project>

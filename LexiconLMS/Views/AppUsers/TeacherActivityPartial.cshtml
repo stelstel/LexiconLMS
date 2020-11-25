@@ -19,6 +19,7 @@
 
 @foreach (var item in Model)
 {
+    <!--Edit/Details etc-->
     <div class="row">
         <div class="col-sm-3">
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
@@ -34,4 +35,3 @@
         </div>
     </div>
 }
-

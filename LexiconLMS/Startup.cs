@@ -44,7 +44,7 @@ namespace LexiconLMS
             services.AddRazorPages();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. Use this method to configur the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -70,7 +70,7 @@ namespace LexiconLMS
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=AppUsers}/{action=TeacherHome}/{id?}");
+                    pattern: "{controller=AppUsers}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

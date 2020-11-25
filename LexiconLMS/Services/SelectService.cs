@@ -29,6 +29,32 @@ namespace LexiconLMS.Services
             }).ToListAsync();
         }
 
+        public async Task<IEnumerable<SelectListItem>> SelectModules(int? id)
+        {
+            return await db.Modules
+                .Where(n => n.CourseId == id)
+                .Select(n =>
+            new SelectListItem()
+            {
+                Text = n.Name,
+                Value = n.Id.ToString()
+            })
+            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<SelectListItem>> SelectActivities(int? id)
+        {
+            return await db.Activities
+                .Where(n => n.ModuleId == id)
+                .Select(n =>
+            new SelectListItem()
+            {
+                Text = n.Name,
+                Value = n.Id.ToString()
+            })
+            .ToListAsync();
+        }
+
         public async Task<IEnumerable<SelectListItem>> SelectActivityTypes()
         {
             return await db.ActivityTypes.Select(n =>
@@ -37,6 +63,36 @@ namespace LexiconLMS.Services
                 Text = n.Name,
                 Value = n.Id.ToString()
             }).ToListAsync();
+        }
+
+        // List of courses. Insert a "----" with empty value as first course.
+        // The empty course is selected
+        public async Task<IEnumerable<SelectListItem>> SelectCourseSetEmptyDefault()
+        {
+            var selectList = await db.Courses
+                .Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                })
+                .ToListAsync();
+
+            selectList.Insert(0, new SelectListItem { Text = "---", Value = string.Empty, Selected = true });
+            return selectList;
+        }
+
+        // List of courses including an empty as the first one.
+        // Pre-select the course given as argument
+        public async Task<IEnumerable<SelectListItem>> SelectCourseSetSelected(int? selected)
+        {
+            var selectList = await SelectCourseSetEmptyDefault();
+            if (selected == null)
+            {
+                return selectList;
+            }
+            var theSelected = selectList.Where(s => s.Value == selected.ToString()).FirstOrDefault();
+            theSelected.Selected = true;
+            return selectList;
         }
     }
 }

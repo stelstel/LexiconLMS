@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<LexiconLMS.Models.ViewModels.AppUserListViewModel>
+@inject UserManager<AppUser> UserManager
 
 <thead>
     <tr>
@@ -18,22 +19,29 @@
     {
         @if (item.IsTeacher)
         {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FullName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        @if (User.IsInRole("Teacher"))
-        {
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AppUserId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AppUserId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AppUserId">Delete</a>
-            </td>
-        }
-    </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                @if (User.IsInRole("Teacher"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.AppUserId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.AppUserId">Details</a> |
+                        @if (UserManager.GetUserId(User).Equals(item.AppUserId))
+                        {
+                            <a>Delete</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.AppUserId">Delete</a>
+                        }
+                    </td>
+                }
+            </tr>
         }
     }
 </tbody>

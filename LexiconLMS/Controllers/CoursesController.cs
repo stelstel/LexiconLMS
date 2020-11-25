@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LexiconLMS.Data;
 using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using LexiconLMS.Models.ViewModels.Teacher;
 
 namespace LexiconLMS.Controllers
 {
@@ -46,6 +47,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Courses/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             return View();
@@ -56,18 +58,27 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartTime")] Course course)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Create(CreateCourseViewModel courseModel)
         {
             if (ModelState.IsValid)
             {
+                var course = new Course
+                {
+                    Name = courseModel.Name,
+                    Description = courseModel.Description,
+                    StartTime = courseModel.StartTime
+                };
+
                 db.Add(course);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("TeacherHome", "AppUsers");
             }
-            return View(course);
+            return View();
         }
 
         // GET: Courses/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,6 +99,8 @@ namespace LexiconLMS.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartTime")] Course course)
         {
             if (id != course.Id)
@@ -113,12 +126,14 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("TeacherHome", "AppUsers");
             }
             return View(course);
         }
 
         // GET: Courses/Delete/5
+        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,12 +154,14 @@ namespace LexiconLMS.Controllers
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await db.Courses.FindAsync(id);
             db.Courses.Remove(course);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("TeacherHome", "AppUsers");
         }
 
         private bool CourseExists(int id)
