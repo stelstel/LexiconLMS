@@ -10,6 +10,9 @@ using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels.Document;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace LexiconLMS.Controllers
 {
@@ -17,11 +20,13 @@ namespace LexiconLMS.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<AppUser> userManager;
+        private readonly IWebHostEnvironment web;
 
-        public DocumentsController(ApplicationDbContext db, UserManager<AppUser> userManager)
+        public DocumentsController(ApplicationDbContext db, UserManager<AppUser> userManager, IWebHostEnvironment web)
         {
             this.db = db;
             this.userManager = userManager;
+            this.web = web;
         }
 
         // GET: Documents
@@ -52,7 +57,7 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadCourseDoc(int? id, Document model)
+        public async Task<IActionResult> UploadCourseDoc(int? id, Document model, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -61,9 +66,23 @@ namespace LexiconLMS.Controllers
                 var courses = await db.Courses.ToListAsync();
                 var course = courses.Where(a => a.Id == id).FirstOrDefault();
 
+                string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(file.FileName);
+
+                using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
                 var newModel = new Document
                 {
-                    Name = model.Name,
+                    Name = fileName.Split(".")[0],
                     Description = model.Description,
                     Course = course,
                     CourseId = course.Id,
@@ -99,18 +118,32 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadModuleDoc(int? id, Document document)
+        public async Task<IActionResult> UploadModuleDoc(int? id, Document document, IFormFile file)
         {
             if (ModelState.IsValid)
             {
                 var userId = userManager.GetUserId(User);
 
-                var modules = await db.Modules.ToListAsync();
+                var modules = await db.Modules.Include(m => m.Course).ToListAsync();
                 var module = modules.Where(a => a.Id == id).FirstOrDefault();
+
+                string path = Path.Combine(web.WebRootPath, $"uploads/{module.Course.Name}/{module.Name}");
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(file.FileName);
+
+                using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
 
                 var model = new Document
                 {
-                    Name = document.Name,
+                    Name = fileName.Split(".")[0],
                     Description = document.Description,
                     Module = module,
                     ModuleId = module.Id,
@@ -153,7 +186,7 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadActivityDoc(int id, Document document)
+        public async Task<IActionResult> UploadActivityDoc(int id, Document document, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -165,9 +198,27 @@ namespace LexiconLMS.Controllers
                     .Where(a => a.ModuleId == document.ModuleId)
                     .Select(a => a.Module.Course).FirstOrDefaultAsync();
 
+                var module = await db.Modules.Where(m => m.Id == document.ModuleId).FirstOrDefaultAsync();
+
+                var activity = await db.Activities.Where(a => a.Id == id).FirstOrDefaultAsync();
+
+                string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{module.Name}/Activities/{activity.Name}");
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(file.FileName);
+
+                using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
                 var model = new Document
                 {
-                    Name = document.Name,
+                    Name = fileName.Split(".")[0],
                     Description = document.Description,
                     ModuleId = document.ModuleId,
                     ActivityId = document.ActivityId,

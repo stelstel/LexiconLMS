@@ -11,7 +11,6 @@ namespace LexiconLMS.Models.ViewModels.Document
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime UploadTime { get; set; }
-
         public string AppUserId { get; set; }
         public int? CourseId { get; set; }
 
