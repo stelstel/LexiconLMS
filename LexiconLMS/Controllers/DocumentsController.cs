@@ -103,12 +103,13 @@ namespace LexiconLMS.Controllers
         [HttpGet]
         public async Task<IActionResult> UploadModuleDoc(int? id)
         {
-            var modules = await db.Modules.ToListAsync();
+            var modules = await db.Modules.Include(m => m.Course).ToListAsync();
             var module = modules.Where(a => a.Id == id).FirstOrDefault();
 
             var model = new UploadModuleDocumentViewModel
             {
-                Module = module
+                Module = module,
+                Course = module.Course
             };
 
             return View(model);
