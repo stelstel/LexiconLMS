@@ -11,12 +11,12 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UploadActivityDoc">
+        <form asp-action="UploadActivityDoc" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <label for="Document">Document</label>
+            <div class="custom-file" style="margin-bottom:10px">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+                <input type="file" class="custom-file-input" id="customFile" name="file">
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
@@ -25,13 +25,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="ModuleId" class="control-label"></label>
-                <select asp-for="ModuleId" asp-items="@await service.SelectModules(Model.Id)" class="form-control" id="Module"></select>
+                <select asp-for="ModuleId" asp-items="@await service.SelectedModule(Model.Module.Id)" class="form-control"></select>
                 <span asp-validation-for="ModuleId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActivityId" class="control-label"></label>
-                <select asp-for="ActivityId" asp-items="@await service.SelectActivities(Model.ModuleId)" class="form-control" id="Activity"></select>
-                <span asp-validation-for="ActivityId" class="text-danger"></span>
+                <label asp-for="Id" class="control-label"></label>
+                <select asp-for="ActivityId" asp-items="@await service.SelectedActivity(Model.Activity.Id)" class="form-control"></select>
+                <span asp-validation-for="ModuleId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

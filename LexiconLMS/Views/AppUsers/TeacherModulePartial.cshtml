@@ -4,26 +4,33 @@
 
 @foreach (var item in Model)
 {
-    <div class="row">
-        <div class="col-sm-12">
-            <a asp-action="GetTeacherActivityAjax" asp-route-id="@item.Id"
-               data-ajax="true"
-               data-ajax-method="GET"
-               data-ajax-update="div#cont-modules-and-activities"
-               data-ajax-mode="replace-with">
-                @if (item.IsCurrentModule)
-                {
-                    <div type="button" class="btn btn-success btn-module">
-                        @item.Name <br /> @item.StartTime <br />@item.EndTime
-                    </div>
-                }
-                else
-                {
-                    <div type="button" class="btn btn-dark btn-module">
-                        @item.Name <br /> @item.StartTime <br /> @item.EndTime
-                    </div>
-                }
-            </a>
-        </div>
+<div class="row">
+    <div>
+        <a asp-controller="Documents" asp-action="UploadModuleDoc" asp-route-id="@item.Id">Upload</a> |
+        <!--Make this an info button somewhere else-->
+        <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+        <a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+        <a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
     </div>
+    <div class="col-sm-12">
+        <a asp-action="GetTeacherActivityAjax" asp-route-id="@item.Id"
+           data-ajax="true"
+           data-ajax-method="GET"
+           data-ajax-update="div#cont-modules-and-activities"
+           data-ajax-mode="replace-with">
+            @if (item.IsCurrentModule)
+            {
+                <div type="button" class="btn btn-success btn-module">
+                    @item.Name
+                </div>
+            }
+            else
+            {
+                <div type="button" class="btn btn-dark btn-module">
+                    @item.Name
+                </div>
+            }
+        </a>
+    </div>
+</div>
 }

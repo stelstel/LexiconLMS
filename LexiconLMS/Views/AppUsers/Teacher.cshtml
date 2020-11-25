@@ -14,17 +14,22 @@
 </div>
 
 <!--Modules and Activities-->
-<partial name="TeacherModuleAndActivityPartial" model="@Model" />
+@if (Model.ModuleList != null)
+{
+    <partial name="TeacherModuleAndActivityPartial" model="@Model" />
+}
 
 <!--Assignments-->
 <div class="container cont-section" id="assignments">
     <div class="row row-activities">
         <div class="col-sm-12">
-            @if (Model.Course.Modules != null)
+            @if (Model.ModuleList != null)
             {
                 <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
             }
-            <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add assignments</a>
         </div>
+    </div>
+    <div id="row-add-assignment" class="row justify-content-center">
+        <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id" id="btn-teacher-add-assignment" class="btn btn-primary"><i class="material-icons">post_add</i>Add assignment</a>
     </div>
 </div>

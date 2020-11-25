@@ -1,22 +1,16 @@
 ﻿@model TeacherCurrentViewModel
 
-<div class="container cont-section" id="current">
-    <div class="row">
-        <div class="col-sm-12">
-            <h1>@Model.Course.Name</h1> 
-            <!--INSERT upload document link-->
-            <a asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">Course Document Upload</a>
-            <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">Activity Document Upload</a>
-        </div>
+<div class="row">
+    <div class="col-sm-12">
+        <h1>
+            @Model.Course.Name
+            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal"><i id="info-course-icon" class="material-icons">error_outline</i></a>
+        </h1>
     </div>
-    <div class="row">
-        <div id="col-modal" class="col-sm-12">
-            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
-        </div>
-    </div>
+</div>
 
-    @if (Model.Module != null)
-    {
+@if (Model.Module != null)
+{
     <div class="row">
         <div class="col-sm-5">
             <div id="card-mod-act" class="card">
@@ -64,8 +58,18 @@
             </div>
         </div>
     </div>
-    }
-</div>
+
+    <div id="doc-upload-row" class="row justify-content-center">
+        <!--INSERT upload course document link-->
+        <a id="btn-upload-course-doc" class="btn btn-primary" asp-controller="Documents" asp-action="UploadCourseDoc" asp-route-id="@Model.Course.Id">
+            <i id="info-course-icon" class="material-icons">attachment</i>Upload course document
+        </a>
+        <!--INSERT upload activity document link-->
+        <a id="btn-upload-activity-doc" class="btn btn-primary" asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@Model.Course.Id">
+            <i id="info-course-icon" class="material-icons">attachment</i>Upload activity document
+        </a>
+    </div>
+}
 
 <!--See more Info-->
 <div class="modal fade" id="courseDescModal" tabindex="-1" role="dialog" aria-labelledby="courseDescModalLabel" aria-hidden="true">
