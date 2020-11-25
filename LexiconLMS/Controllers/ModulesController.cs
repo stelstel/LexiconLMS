@@ -121,8 +121,8 @@ namespace LexiconLMS.Controllers
 
             // List of activities so it can be displayed in the Edit View
 
-            var activityList = await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
-
+            var activityList = await db.Activities.Include(t => t.ActivityType).Where(a => a.ModuleId == id).ToListAsync();
+            var activityTypeList = activityList.Select(a => a.ActivityType).FirstOrDefault();
 
             var viewModel = new ModuleEditViewModel
             {
@@ -131,7 +131,8 @@ namespace LexiconLMS.Controllers
                 ModuleDescription = module.Description,
                 ModuleStartTime = module.StartTime,
                 ModuleEndTime = module.EndTime,
-                Activities = activityList
+                Activities = activityList,
+                ActivityType = activityTypeList
 
             };
 
