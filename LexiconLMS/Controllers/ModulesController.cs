@@ -126,6 +126,7 @@ namespace LexiconLMS.Controllers
 
             var viewModel = new ModuleEditViewModel
             {
+                CourseId = module.CourseId,
                 ModuleId = module.Id,
                 ModuleName = module.Name,
                 ModuleDescription = module.Description,
