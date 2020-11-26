@@ -70,7 +70,8 @@ function sendJson() {
             },
             __RequestVerificationToken: token
         },
-        success: function () {
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
             $('#result').html('"sendJson()" successfully called.');
         },
         failure: function (response) {
