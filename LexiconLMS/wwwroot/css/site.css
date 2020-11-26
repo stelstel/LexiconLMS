@@ -2,10 +2,12 @@
 
 /*
     COLOURS:
-        Darker grey:    gray
-        Lighter grey:   #dbdbdb
-        Green:          #28a745
-        Border-grey     #666
+        Green:              #28a745
+
+        Lighter grey:       #dbdbdb
+        Border-grey         #666
+        line:hover grey     #888
+        Darker grey:        gray
 */
 
 body header .navbar {
@@ -127,6 +129,7 @@ h1 {
 .container h2 {
     text-align: center;
     margin: 0.6em 0;
+    margin-top: 2.4rem;
 }
 
 #col-modal {
@@ -323,12 +326,28 @@ div#card-mod-act.card div.card-body {
     text-shadow: none;
 }
 
-
+#add-module-icon,
 #info-module-icon {
     color: black;
     font-size: 26px;
     margin-left: -35px;
     margin-top: 1.2rem;
+}
+
+#add-module-icon {
+    vertical-align: bottom;
+}
+
+#icon-add-assignment,
+#add-module-icon {
+    width: 1.5rem;
+}
+
+#div-add-module {
+    z-index: 10;
+    left: 100px;
+    top: 4.8rem;
+    position: relative;
 }
 
 #cont-student-modules-and-activities #info-module-icon {
@@ -370,6 +389,39 @@ div#card-mod-act.card div.card-body {
 }
 
 #col-modules h2 .icon-img,
-.row-activities h2 .icon-img {
+.row-activities h2 .icon-img,
+.row-assignments h2 .icon-img {
     width: 28px;
 }
+
+.row-assignments .row:nth-child(even) {
+    background: #eee;
+}
+
+/* On hover, except content row 1 command row 3 */
+.row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover {
+    background: #888;
+    color: white;
+    text-shadow: 1px 1px 2px #000;
+}
+
+/* On hover, except content row 1 command row 3 */
+.row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover a {
+    color: white;
+}
+
+/* On hover, except content row 2 */
+#col-activities .row:not(:nth-child(2)):hover {
+    background: #dbdbdb;
+}
+
+.row-assignments h2 {
+    margin-top: 0;
+}
+
+.row-assignments .row-add-assignment {
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+}
+
