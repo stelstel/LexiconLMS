@@ -69,23 +69,6 @@ namespace LexiconLMS.Services
             }).ToListAsync();
         }
 
-        // List of courses. Insert a "----" with empty value as first course.
-        // The empty course is selected
-        //public async Task<IEnumerable<SelectListItem>> SelectCourseSetEmptyDefault()
-        //{
-        //    var selectList = await db.Courses
-        //        .Select(c => new SelectListItem
-        //        {
-        //            Text = c.Name,
-        //            Value = c.Id.ToString()
-        //        })
-        //        .ToListAsync();
-
-        //    selectList.Insert(0, new SelectListItem { Text = "---", Value = string.Empty, Selected = true });
-        //    return selectList;
-        //}
-
-        // List of courses including an empty as the first one.
         // Pre-select the course given as argument
         public async Task<IEnumerable<SelectListItem>> SelectCourseSetSelected(int? selected)
         {
