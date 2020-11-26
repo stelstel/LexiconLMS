@@ -8,7 +8,7 @@ namespace LexiconLMS.Services
     {
         Task<IEnumerable<SelectListItem>> SelectCourses();
         Task<IEnumerable<SelectListItem>> SelectActivityTypes();
-        Task<IEnumerable<SelectListItem>> SelectCourseSetEmptyDefault();
+        //Task<IEnumerable<SelectListItem>> SelectCourseSetEmptyDefault();
         Task<IEnumerable<SelectListItem>> SelectCourseSetSelected(int? selected);
         Task<IEnumerable<SelectListItem>> SelectedModule(int? id);
         Task<IEnumerable<SelectListItem>> SelectedActivity(int? id);
