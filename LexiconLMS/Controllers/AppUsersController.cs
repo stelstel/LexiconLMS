@@ -353,6 +353,12 @@ namespace LexiconLMS.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
+                if (ModelState.IsValid)
+                {
+                    ViewBag.Result = "User created successfully!";
+                    ViewBag.Email = newUser.Email;
+                }
             }
             return View();
         }

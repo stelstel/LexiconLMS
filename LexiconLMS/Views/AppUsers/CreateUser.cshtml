@@ -7,7 +7,7 @@
 
 <h1>Add User</h1>
 
-<div class="container cont-section" >
+<div class="container cont-section">
     <div class="row">
         <div class="col-md-4">
             <form asp-action="CreateUser">
@@ -18,18 +18,18 @@
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <!--
-    <div class="form-check-inline">
-        <label class="control-label">Student</label>
-        <input type="radio" value="false" checked="checked" asp-for="IsTeacher" id="userrole" class="form-control" />
-        <span asp-validation-for="IsTeacher" class="text-danger"></span>
-    </div>
+                <div class="form-check-inline">
+                    <label class="control-label">Student</label>
+                    <input type="radio" value="false" checked="checked" asp-for="IsTeacher" id="userrole" class="form-control" />
+                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
+                </div>
 
-    <div class="form-check-inline">
-        <label class="control-label">Teacher</label>
-        <input type="radio" value="true" asp-for="IsTeacher" id="userrole" class="form-control" />
-        <span asp-validation-for="IsTeacher" class="text-danger"></span>
-    </div>
-        -->
+                <div class="form-check-inline">
+                    <label class="control-label">Teacher</label>
+                    <input type="radio" value="true" asp-for="IsTeacher" id="userrole" class="form-control" />
+                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
+                </div>
+                    -->
 
                 <div class="form-group">
                     <label asp-for="IsTeacher" class="control-label"></label>
@@ -71,8 +71,39 @@
             </form>
         </div>
     </div>
-    </div>
+</div>
 
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<div class="modal fade" id="appUserCreateResultModal" tabindex="-1" role="dialog" aria-labelledby="aModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aModalLabel">@ViewBag.Email</h5>
+            </div>
+            <div class="modal-body">
+                @ViewBag.Result
+            </div>
+            <div class="modal-footer">
+                <a asp-action="TeacherUserIndex">To User Account List</a>
+                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    if (ViewBag.Result != null)
+    {
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $("#appUserCreateResultModal").modal('show');
+            });
+        </script>
     }
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
