@@ -17,6 +17,9 @@
 @if (Model.ModuleList != null)
 {
     <partial name="TeacherModuleAndActivityPartial" model="@Model" />
+    <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">Add Modules and Activities
+            @*<img src="~/icons/plus.svg" style="width:7rem;">*@
+    </a>
 }
 
 <!--Assignments-->
