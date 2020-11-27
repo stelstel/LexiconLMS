@@ -79,23 +79,41 @@ namespace LexiconLMS.Controllers
                 .StartTime;
         }
  
-        private bool IsModuleTimeSpanFree(int courseId, DateTime startTime, DateTime endTime)
+        private bool IsModuleTimeCorrect(int courseId, DateTime startTime, DateTime endTime, int? thisModuleId)
         {
+            // Module starttime must be < module endtime
+            if (endTime < startTime)
+            {
+                return false;
+            }
+            //  Module ModuleStartTime must be >= course start time  
+            if (startTime < GetCourseStartTime(courseId))
+            {
+                return false;
+            }
+
+           
             var modules = db.Modules
                 .Where(m => m.CourseId == courseId)
                 .ToList();
 
+            // TODO: when Edit Module: don't include *this* module in the check
             foreach (var module in modules)
             {
-                if ((startTime >= module.StartTime && startTime < module.EndTime)
-                    ||  (endTime > module.StartTime && endTime <= module.EndTime))
+                if (module.Id != thisModuleId)
                 {
-                    return false;
+                    if ((startTime >= module.StartTime && startTime < module.EndTime)
+                        || (endTime > module.StartTime && endTime <= module.EndTime))
+                    {
+                        return false;
+                    }
                 }
             }
 
             return true;
         }
+
+
 
         // POST: Modules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -110,25 +128,8 @@ namespace LexiconLMS.Controllers
                 // TODO: perform id control comparison
                 // TODO: Check if redirect problem stems from ajax 
 
-                // Module time validations
-                // TODO: move all validations of start and stop times to a function
-
-                // Module starttime must be < module endtime
-                if (viewModel.Module.ModuleEndTime < viewModel.Module.ModuleStartTime)
-                {
-                    // TODO: how do we get error feedback?
-                    return View(viewModel);
-                }
-
-                //  Module ModuleStartTime must be >= course start time  
-                if (viewModel.Module.ModuleStartTime < GetCourseStartTime(viewModel.Module.CourseId))
-                {
-                    // TODO: how do we get error feedback?
-                    return View(viewModel);
-                }
-
-                // Check module not is in same timespan as existing module for this course
-                if (!IsModuleTimeSpanFree(viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime))
+                // Check module not is in same timespan as existing module for this course.. Also validate other things for start and end time
+                if (!IsModuleTimeCorrect(viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, null))
                 {
                     // TODO: how do we get error feedback?
                     return View(viewModel);
@@ -226,10 +227,16 @@ namespace LexiconLMS.Controllers
             //if (id != viewmodel.Module.Id)
             //{
             //    return NotFound();
-            //}
 
-            
+
             var module = db.Modules.Find(viewModel.Module.ModuleId);
+            
+            // Validate start and end time
+            if (!IsModuleTimeCorrect(module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, viewModel.Module.ModuleId))
+            {
+                // TODO: how do we get error feedback?
+                return View(viewModel);
+            }
 
             if (ModelState.IsValid)
             {
@@ -244,22 +251,25 @@ namespace LexiconLMS.Controllers
                     db.Update(module);
                     await db.SaveChangesAsync();
 
-                    foreach (var item in viewModel.Data)
+                    // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
+                    if (viewModel.Data != null)
                     {
-                        var activity = new Activity
+                        foreach (var item in viewModel.Data)
                         {
-                            Name = item.ActivityName,
-                            Description = item.ActivityDescription,
-                            StartTime = item.ActivityStartTime,
-                            EndTime = item.ActivityEndTime,
-                            ActivityTypeId = item.ActivityTypeId,
-                            Module = module
-                        };
-                        db.Add(activity);
+                            var activity = new Activity
+                            {
+                                Name = item.ActivityName,
+                                Description = item.ActivityDescription,
+                                StartTime = item.ActivityStartTime,
+                                EndTime = item.ActivityEndTime,
+                                ActivityTypeId = item.ActivityTypeId,
+                                Module = module
+                            };
+                            db.Add(activity);
+                        }
+
+                        await db.SaveChangesAsync();
                     }
-
-                    await db.SaveChangesAsync();
-
 
                 }
                 catch (DbUpdateConcurrencyException)
