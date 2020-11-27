@@ -22,14 +22,7 @@
                     </p>
                     <h5>Current activity</h5>
                     <p class="card-text">
-                        @if (Model.Activity.Id == 0)
-                        {
-                            @Model.Activity.Name
-                        }
-                        else
-                        {
-                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name<i class="material-icons play-icon">play_arrow</i></a>
-                        }
+                        <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name<i class="material-icons play-icon">play_arrow</i></a>
                     </p>
                 </div>
             </div>
@@ -45,16 +38,17 @@
                         <div class="col ass-col col-sm-2">Finished</div>
                     </div>
 
-                    @foreach (var assignment in Model.Assignments)
+                    @foreach (var item in Model.Assignments)
                     {
                         <div class="row">
                             <div class="col col-sm-6">
-                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a> |
+                                <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id">Upload</a> |
                             </div>
-                            <div class="col col-sm-4">@assignment.EndTime</div>
-                            
+                            <div class="col col-sm-4">@item.DueTime</div>
+
                             <div class="col ass-col col-sm-2">
-                                @if (assignment.IsFinished)
+                                @if (item.IsFinished.Equals(true))
                                 {
                                     <i class="material-icons checkbox-ass">check_box</i>
                                 }

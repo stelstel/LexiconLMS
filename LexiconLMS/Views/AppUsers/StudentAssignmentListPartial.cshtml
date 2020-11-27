@@ -20,7 +20,8 @@
 {
 <div class="row">
     <div class="col-sm-4">
-        <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+        <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a> |
+        <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id">Upload</a> |
     </div>
     <div class="col-sm-3">
         @Html.DisplayFor(modelItem => item.StartTime)
@@ -29,7 +30,7 @@
         @Html.DisplayFor(modelItem => item.EndTime)
     </div>
     <div id="ass-finished" class="col-sm-2">
-            @if (item.IsFinished)
+            @if (item.IsFinished.Equals(true))
             {
                 <i class="material-icons checkbox-ass">check_box</i>
             }
