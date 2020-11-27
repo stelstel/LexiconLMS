@@ -79,6 +79,23 @@ namespace LexiconLMS.Controllers
                 .StartTime;
         }
  
+        private bool IsModuleTimeSpanFree(int courseId, DateTime startTime, DateTime endTime)
+        {
+            var modules = db.Modules
+                .Where(m => m.CourseId == courseId)
+                .ToList();
+
+            foreach (var module in modules)
+            {
+                if ((startTime >= module.StartTime && startTime < module.EndTime)
+                    ||  (endTime > module.StartTime && endTime <= module.EndTime))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         // POST: Modules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -86,16 +103,36 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel)
+        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel)  //  viewModel skapas med json data (Torbjörn fattar nu)
         {
             if (ModelState.IsValid)
             {
                 // TODO: perform id control comparison
                 // TODO: Check if redirect problem stems from ajax 
 
-                // TODO: time checks:
-                // -  Module ModuleStartTime must be >= course start time  
-                // -  Module ModuleStartTime and ModuleEndTime time span must not overlap any existing module
+                // Module time validations
+                // TODO: move all validations of start and stop times to a function
+
+                // Module starttime must be < module endtime
+                if (viewModel.Module.ModuleEndTime < viewModel.Module.ModuleStartTime)
+                {
+                    // TODO: how do we get error feedback?
+                    return View(viewModel);
+                }
+
+                //  Module ModuleStartTime must be >= course start time  
+                if (viewModel.Module.ModuleStartTime < GetCourseStartTime(viewModel.Module.CourseId))
+                {
+                    // TODO: how do we get error feedback?
+                    return View(viewModel);
+                }
+
+                // Check module not is in same timespan as existing module for this course
+                if (!IsModuleTimeSpanFree(viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime))
+                {
+                    // TODO: how do we get error feedback?
+                    return View(viewModel);
+                }
 
                 var module = new Module
                 {                   
@@ -114,6 +151,8 @@ namespace LexiconLMS.Controllers
                 // - ActivityEndTime must be <= ModuleEndTime
                 // - ActivityStartTime and ActivityEndTime time span must not overlap any other activity in this module
 
+
+                // TODO: what if viewModel.Data == null (no activities added)
                 foreach (var item in viewModel.Data)
                 {
                     var activity = new Activity
