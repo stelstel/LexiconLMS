@@ -45,10 +45,14 @@ namespace LexiconLMS.Controllers
         {
             var userId = userManager.GetUserId(User);
             var userCourse = await GetUserCourseAsync(userId);
+            var timeNow = DateTime.Now;
+
+            var documents = await db.Documents.Where(a => a.AppUserId == userId).Select(a => a.ActivityId).ToListAsync();
 
             var model = await db.Activities.Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .ThenInclude(a => a.Course)
+                .Include(a => a.Documents)
                 .Where(a => a.Module.Course == userCourse && a.ActivityType.Name == "Assignment")
                 .Select(a => new AssignmentListViewModel
                 {
@@ -56,7 +60,7 @@ namespace LexiconLMS.Controllers
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
-                    IsFinished = false
+                    IsFinished = documents.Contains(a.Id)
                 })
                 .ToListAsync();
 
@@ -173,7 +177,6 @@ namespace LexiconLMS.Controllers
                 .Include(a => a.ActivityType)
                 .Where(a => a.Module.Id == id)
                 .OrderBy(a => a.StartTime)
-                //.Where(a => a.ActivityType.Id != 3) // Except "Assignments"
                 .Select(a => new ActivityListViewModel
                 {
                     Id = a.Id,
@@ -462,7 +465,7 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-            }         
+            }
 
             return View(editUser);
         }
@@ -507,17 +510,16 @@ namespace LexiconLMS.Controllers
         public async Task<IActionResult> Student()
         {
             var userId = userManager.GetUserId(User);
+            var timeNow = DateTime.Now;
             var moduleList = await GetStudentModuleListAsync();
             var module = moduleList.Find(y => y.IsCurrentModule);
             List<ActivityListViewModel> activityList = null;
-
 
             if (module != null)
             {
                 activityList = await GetModuleActivityListAsync(module.Id);
             }
 
-            //var activityList = await GetStudentActivityListAsync();
             var assignmentList = await GetStudentAssignmentsAsync();
             var current = await Current();
 
@@ -531,7 +533,7 @@ namespace LexiconLMS.Controllers
 
             var model = new StudentViewModel
             {
-                AssignmentList = assignmentList,
+                AssignmentList = assignmentList.OrderBy(t => Math.Abs((t.EndTime - timeNow).Ticks)),
                 ModuleList = moduleList,
                 ActivityList = activityList,
                 AppUser = appUser,
@@ -545,55 +547,37 @@ namespace LexiconLMS.Controllers
         {
             var userId = userManager.GetUserId(User);
 
-            var userCourse = await db.Users.Include(a => a.Course)
-                .ThenInclude(c => c.AppUsers)
+            var user = await db.Users.Include(a => a.Course)
+                .ThenInclude(a => a.Modules)
+                .ThenInclude(a => a.Activities)
+                .ThenInclude(a => a.ActivityType)
+                .Include(a => a.Documents)
                 .Where(a => a.Id == userId)
-                .Select(a => a.Course)
                 .FirstOrDefaultAsync();
 
             var timeNow = DateTime.Now;
 
-            var modules = await db.Modules.Include(a => a.Course)
-               .Where(a => a.Course.Id == userCourse.Id)
-               .ToListAsync();
+            var module = user.Course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+            var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+            var documents = await db.Documents.Where(a => a.AppUserId == userId).Select(a => a.ActivityId).ToListAsync();
 
-            var currentModule = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-
-            var activities = await db.Activities
-               .Where(a => a.ModuleId == currentModule.Id)
-               .ToListAsync();
-
-            var currentActivity = new Activity();
-
-            if (activities.Count > 0)
-                currentActivity = activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-            else
-                currentActivity.Name = "No current activities";
-
-            var assignments = await db.Activities.Include(a => a.ActivityType)
-                .Include(a => a.Module)
-                .ThenInclude(a => a.Course)
-                .Where(a => a.Module.Course.Id == userCourse.Id && a.ActivityType.Name == "Assignment")
-                .ToListAsync();
-
-            var currentAssignment = new List<Activity>();
-
-            if (assignments.Count > 0)
-            {
-                assignments.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks));
-
-                for (int i = 0; i < assignments.Count && i < 3; i++)
+            var assignments = module.Activities.Where(a => a.ActivityType.Id == 3)
+                .OrderBy(t => Math.Abs((t.EndTime - timeNow).Ticks)).Take(3)
+                .Select(a => new CurrentAssignmentsViewModel
                 {
-                    currentAssignment.Add(assignments[i]);
-                }
-            }
+                    Id = a.Id,
+                    Name = a.Name,
+                    DueTime = a.EndTime,
+                    IsFinished = documents.Contains(a.Id)
+                })
+                .ToList();
 
             var model = new CurrentViewModel
             {
-                Course = userCourse,
-                Module = currentModule,
-                Activity = currentActivity,
-                Assignments = currentAssignment
+                Course = user.Course,
+                Module = module,
+                Activity = activity,
+                Assignments = assignments,
             };
 
             return model;
@@ -713,16 +697,16 @@ namespace LexiconLMS.Controllers
 
             //This happens for newly created courses without any modules
             if (course.Modules.Count == 0)
+            {
+                return new TeacherCurrentViewModel
                 {
-                    return new TeacherCurrentViewModel
-                    {
-                        Course = course,
-                        Module = null,
-                        Activity = null,
-                        Assignments = null,
-                        Finished = null
-                    };
-                }
+                    Course = course,
+                    Module = null,
+                    Activity = null,
+                    Assignments = null,
+                    Finished = null
+                };
+            }
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
