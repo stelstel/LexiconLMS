@@ -12,17 +12,15 @@
     <div class="col-md-4">
         <form asp-action="DownloadCourseDoc" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
             <!--Fix this label, it's a last-resort resolution-->
             <label for="Document">Document</label>
+            
             <div class="custom-file" style="margin-bottom:10px">
                 <label class="custom-file-label" for="customFile">Choose file</label>
                 <input type="file" class="custom-file-input" id="customFile" name="file" value="@Model.DirectoryPath">
             </div>
-            @*<div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>*@
+           
             <div class="form-group">
                 <input type="submit" value="Download" class="btn btn-primary" />
             </div>
@@ -30,10 +28,18 @@
     </div>
 </div>
 
-<div>
-    <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Course.Id">Go Back</a>
+<div class="row">
+    @foreach (var document in Model.documentList)
+    {
+        <p>@document</p>
+    }
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+
+    @*<div>
+            <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Course.Id">Go Back</a>
+        </div>*@
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

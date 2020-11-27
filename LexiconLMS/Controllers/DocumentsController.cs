@@ -14,6 +14,7 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
 
 namespace LexiconLMS.Controllers
 {
@@ -395,10 +396,14 @@ namespace LexiconLMS.Controllers
             var course = courses.Where(a => a.Id == id).FirstOrDefault();
             var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
 
+            // ICollection<string> docList = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+            ICollection<string> fileList = Directory.GetFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly);
+
             var model = new DownloadCourseDocumentViewModel
             {
                 Course = course,
-                DirectoryPath = directoryPath
+                DirectoryPath = directoryPath,
+                fileList = fileList
             };
 
             return View(model);
@@ -412,49 +417,22 @@ namespace LexiconLMS.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var userId = userManager.GetUserId(User);
 
                 var courses = await db.Courses.ToListAsync();
                 var course = courses.Where(a => a.Id == id).FirstOrDefault();
-                var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/") + file.FileName;
-
-                //----------------------------------------
+                var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file.FileName}");
                 var memory = new MemoryStream();
-                using (var stream = new FileStream(directoryPath, FileMode.Open))
+
+                using (var stream = new FileStream(filePath, FileMode.Open))
                 {
                     await stream.CopyToAsync(memory);
                 }
+
                 memory.Position = 0;
-                return File(memory, GetContType(directoryPath), Path.GetFileName(directoryPath));
-                //----------------------------------------
 
-                //string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
-
-                //if (!Directory.Exists(path))
-                //{
-                //    Directory.CreateDirectory(path);
-                //}
-
-                //string fileName = Path.GetFileName(file.FileName);
-
-                //using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
-                //{
-                //    file.CopyTo(stream);
-                //}
-
-                //var newModel = new Document
-                //{
-                //    Name = fileName.Split(".")[0],
-                //    Description = model.Description,
-                //    Course = course,
-                //    CourseId = course.Id,
-                //    UploadTime = DateTime.Now,
-                //    AppUserId = userId
-                //};
-
-                //db.Add(newModel);
-                //await db.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index));
+                return File(memory, GetContType(filePath), Path.GetFileName(filePath));
             }
 
             return View(model);
