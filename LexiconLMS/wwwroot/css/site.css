@@ -10,6 +10,7 @@
         Darker grey:        gray
 */
 
+
 body header .navbar {
     background: #dbdbdb !important;
     border-bottom: 1px solid #666 !important;
@@ -343,10 +344,14 @@ div#card-mod-act.card div.card-body {
     width: 1.5rem;
 }
 
+#assignments #icon-add-assignment {
+    margin-top: -4px;
+}
+
 #div-add-module {
     z-index: 10;
     left: 100px;
-    top: 4.8rem;
+    top: 4.9rem;
     position: relative;
 }
 
@@ -407,7 +412,7 @@ div#card-mod-act.card div.card-body {
 
 /* On hover, except content row 1 command row 3 */
 .row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover a {
-    color: white;
+    color: white; /*  Remove?? */
 }
 
 /* On hover, except content row 2 */
@@ -423,5 +428,9 @@ div#card-mod-act.card div.card-body {
     text-align: center;
     margin-top: 1rem;
     margin-bottom: 0.3rem;
+}
+
+#cont-modules-and-activities {
+    margin-top: -0.7rem;
 }
 
