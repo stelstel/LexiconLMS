@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LexiconLMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201126081258_init")]
-    partial class init
+    [Migration("20201127131431_RemoveFinishedFromActivity")]
+    partial class RemoveFinishedFromActivity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,9 +36,6 @@ namespace LexiconLMS.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("bit");
 
                     b.Property<int>("ModuleId")
                         .HasColumnType("int");
@@ -188,6 +185,9 @@ namespace LexiconLMS.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsFinished")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ModuleId")
                         .HasColumnType("int");

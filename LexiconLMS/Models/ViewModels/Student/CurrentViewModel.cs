@@ -10,9 +10,7 @@ namespace LexiconLMS.Models.ViewModels.Student
     {
         public Activity Activity { get; set; }
         public Course Course { get; set; }
-        public ICollection<Activity> Assignments { get; set; }
+        public ICollection<CurrentAssignmentsViewModel> Assignments { get; set; }
         public Module Module { get; set; }
-        public bool IsFinished { get; set; }
-        public DateTime DueDate { get; set; }
     }
 }
