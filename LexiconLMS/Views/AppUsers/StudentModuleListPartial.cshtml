@@ -5,7 +5,7 @@
 @foreach (var item in Model)
 {
 <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-8">
         <a asp-action="GetActListAjax" asp-route-id="@item.Id"
            data-ajax="true"
            data-ajax-method="GET"
@@ -21,15 +21,17 @@
             {
                 <div type="button" class="btn btn-dark btn-module">
                     @item.Name
-                    @*@item.Name <br /> @item.StartTime <br /> @item.EndTime*@
                 </div>
             }
         </a>
     </div>
-    <div class="col-sm-2">
-        <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">
-            <img id="info-module-icon" class="icon-img" src="~/icons/info_black.svg" />
-        </a>
+        <div class="col-sm-4">
+            <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">
+                <img id="info-module-icon" class="icon-img" src="~/icons/info_black.svg" />
+            </a>
+            <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">
+                <img id="download-module-doc-icon" class="icon-img" src="~/icons/share.svg" />
+            </a>
+        </div>
     </div>
-</div>
 }

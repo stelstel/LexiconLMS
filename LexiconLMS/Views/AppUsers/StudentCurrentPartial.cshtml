@@ -3,15 +3,20 @@
 <div class="container cont-section" id="current">
     <div class="row">
         <div class="col-sm-12">
-            <h1>@Model.Course.Name</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div id="col-modal" class="col-sm-12">
-            <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">See more info</a>
-        </div>
-    </div>
+            <h1>
+                @Model.Course.Name
+                <a href="#courseDescModal" data-toggle="modal" data-target="#courseDescModal">
+                    <img class="info-icon icon-img" src="~/icons/info_white.svg" />
+                </a>
 
+                <a asp-controller="Documents" asp-action="DownloadCourseDoc" asp-route-id="@Model.Course.Id">
+                    <img id="download-module-doc-icon" class="icon-img" src="~/icons/share.svg" />
+                </a>
+
+            </h1>
+        </div>
+    </div>
+    
     <div class="row">
         <div class="col-sm-4">
             <div id="card-mod-act" class="card">
