@@ -152,19 +152,22 @@ namespace LexiconLMS.Controllers
                 // - ActivityStartTime and ActivityEndTime time span must not overlap any other activity in this module
 
 
-                // TODO: what if viewModel.Data == null (no activities added)
-                foreach (var item in viewModel.Data)
+                // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
+                if (viewModel.Data != null)
                 {
-                    var activity = new Activity
+                    foreach (var item in viewModel.Data)
                     {
-                        Name = item.ActivityName,
-                        Description = item.ActivityDescription,
-                        StartTime = item.ActivityStartTime,
-                        EndTime = item.ActivityEndTime,
-                        ActivityTypeId = item.ActivityTypeId,
-                        Module = module
-                    };
-                    db.Add(activity);
+                        var activity = new Activity
+                        {
+                            Name = item.ActivityName,
+                            Description = item.ActivityDescription,
+                            StartTime = item.ActivityStartTime,
+                            EndTime = item.ActivityEndTime,
+                            ActivityTypeId = item.ActivityTypeId,
+                            Module = module
+                        };
+                        db.Add(activity);
+                    }
                 }
 
                 await db.SaveChangesAsync();
