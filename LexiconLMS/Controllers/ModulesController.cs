@@ -8,6 +8,7 @@ using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels;
 using AutoMapper;
+using System;
 
 namespace LexiconLMS.Controllers
 {
@@ -52,11 +53,32 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
-            
-            var model = new ModuleActivityCreateViewModel {CourseId = (int)id };
+            if (id is null || !CourseExists((int) id))
+            {
+                return NotFound();
+            }
+
+            var moduleDefaultStartTime = GetCourseStartTime((int)id).AddHours(8);
+
+            var model = new ModuleActivityCreateViewModel
+            {
+                CourseId = (int)id,
+                ModuleStartTime = moduleDefaultStartTime,
+                ModuleEndTime = moduleDefaultStartTime.AddHours(1),
+                ActivityStartTime = moduleDefaultStartTime,
+                ActivityEndTime = moduleDefaultStartTime.AddMinutes(10)
+            };
 
             return View(model);
         }
+
+        private DateTime GetCourseStartTime(int courseId)
+        {
+            return db.Courses
+                .FirstOrDefault(c => c.Id == courseId)
+                .StartTime;
+        }
+ 
 
         // POST: Modules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -71,6 +93,10 @@ namespace LexiconLMS.Controllers
                 // TODO: perform id control comparison
                 // TODO: Check if redirect problem stems from ajax 
 
+                // TODO: time checks:
+                // -  Module ModuleStartTime must be >= course start time  
+                // -  Module ModuleStartTime and ModuleEndTime time span must not overlap any existing module
+
                 var module = new Module
                 {                   
                     CourseId = viewModel.Module.CourseId,
@@ -81,6 +107,12 @@ namespace LexiconLMS.Controllers
                 };
 
                 db.Add(module);
+
+                // TODO: time checks
+                // (for each activity)
+                // - ActivityStartTime must be >= ModuleStartTime
+                // - ActivityEndTime must be <= ModuleEndTime
+                // - ActivityStartTime and ActivityEndTime time span must not overlap any other activity in this module
 
                 foreach (var item in viewModel.Data)
                 {
@@ -241,8 +273,9 @@ namespace LexiconLMS.Controllers
             return db.Modules.Any(e => e.Id == id);
         }
 
-
-        
-
+        private bool CourseExists(int id)
+        {
+            return db.Courses.Any(e => e.Id == id);
+        }
     }
 }
