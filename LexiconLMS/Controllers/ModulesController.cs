@@ -46,7 +46,38 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            return View(module);
+            // All activities in the module.
+            var activities = await db.Activities.Where(a => a.ModuleId == module.Id).ToListAsync();
+
+            // All activity Ids in the module.
+            var activityIds = await db.Activities.Where(a => a.ModuleId == module.Id).Select(i => i.Id).ToListAsync();
+
+            // All documents in the module.
+            var documents = await db.Documents.Where(d => d.ModuleId == module.Id).Include(a => a.Activity).ToListAsync();
+
+            // All documents in the activities in the module.
+            foreach (var doc in await db.Documents.Include(a => a.Activity).ToListAsync())            
+            {
+                foreach (var i in activityIds)
+                {
+                    if (doc.ActivityId == i)
+                    {
+                        if (!documents.Contains(doc))
+                        {
+                            documents.Add(doc);
+                        }
+                        
+                    }
+                } 
+            }
+
+            var viewmodel = new ModuleDetailsViewModel
+            {
+                Module = module,
+                Documents = documents
+            };
+
+            return View(viewmodel);
         }
 
         // GET: Modules/Create
@@ -172,13 +203,16 @@ namespace LexiconLMS.Controllers
 
             var viewModel = new ModuleEditViewModel
             {
+                CourseId = module.CourseId,
                 ModuleId = module.Id,
                 ModuleName = module.Name,
                 ModuleDescription = module.Description,
                 ModuleStartTime = module.StartTime,
                 ModuleEndTime = module.EndTime,
                 Activities = activityList,
-                ActivityType = activityTypeList
+                ActivityType = activityTypeList,
+                ActivityStartTime = DateTime.Now,
+                ActivityEndTime = DateTime.Now
 
             };
 

@@ -689,6 +689,7 @@ namespace LexiconLMS.Controllers
             var timeNow = DateTime.Now;
 
             var course = await db.Courses.Include(c => c.AppUsers)
+                .Include(c => c.Documents)
                 .Include(c => c.Modules)
                 .ThenInclude(c => c.Activities)
                 .ThenInclude(c => c.ActivityType)
@@ -707,20 +708,33 @@ namespace LexiconLMS.Controllers
                     Finished = null
                 };
             }
-            var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
+            var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
+            var documents = await db.Documents.Include(a => a.Activity)
+                .Where(a => a.IsFinished == true)
+                .Where(a => a.CourseId == course.Id)
+                .Select(a => a.ActivityId)
+                .ToListAsync();
+
+            var students = course.AppUsers.Count();
+
             var assignments = module.Activities.Where(c => c.ActivityType.Name == "Assignment")
-                .OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).ToList();
+                .OrderBy(t => Math.Abs((t.EndTime - timeNow).Ticks))
+                .Select(a => new TeacherAssignmentsViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    DueTime = a.EndTime,
+                    Finished = documents.Where(d => d.Value == a.Id).Count() * 100 / students
+                })
+                .ToList();
 
             if (assignments.Count < 3)
                 assignments = assignments.Take(assignments.Count).ToList();
             else
                 assignments = assignments.Take(3).ToList();
-
-            // Percentage of the students that is finished - NOT IMPLEMENTED
-            double finished = 0.0;
 
             var model = new TeacherCurrentViewModel
             {
@@ -728,7 +742,6 @@ namespace LexiconLMS.Controllers
                 Module = module,
                 Activity = activity,
                 Assignments = assignments,
-                Finished = $"{finished} %"
             };
 
             return model;
@@ -736,20 +749,19 @@ namespace LexiconLMS.Controllers
 
         public async Task<List<TeacherAssignmentListViewModel>> AssignmentListTeacher(int? id)
         {
-            // Percentage of the students that is finished - NOT IMPLEMENTED
-            var finished = 0.0;
+            var students = db.Courses.Find(id).AppUsers.Count();
 
-            var assignments = await db.Activities.Include(a => a.ActivityType).Include(a => a.Module).ThenInclude(a => a.Course)
-                .Where(a => a.ActivityType.Name == "Assignment" && a.Module.Course.Id == id)
-                .OrderBy(a => a.StartTime)
+            var assignments = await db.Activities
+                .Where(a => a.ActivityType.Name == "Assignment" && a.Module.CourseId == id)
                 .Select(a => new TeacherAssignmentListViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
-                    Finished = $"{finished} %",
+                    Finished = a.Documents.Where(d => d.IsFinished.Equals(true)).Count() * 100 / students
                 })
+                .OrderBy(v => v.StartTime)
                 .ToListAsync();
 
             return assignments;

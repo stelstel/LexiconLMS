@@ -11,6 +11,7 @@ namespace LexiconLMS.Models.ViewModels
     {
 
         //public Module Module { get; set; }
+        public int CourseId { get; set; }
         public int? ModuleId { get; set; }
         [DisplayName("Name")]
         public string ModuleName { get; set; }
