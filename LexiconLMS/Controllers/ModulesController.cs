@@ -101,13 +101,13 @@ namespace LexiconLMS.Controllers
                 .Where(m => m.CourseId == courseId)
                 .ToList();
 
-            // TODO: when Edit Module: don't include *this* module in the check
             foreach (var module in modules)
             {
                 if (module.Id != thisModuleId)
                 {
-                    if ((startTime >= module.StartTime && startTime < module.EndTime)
-                        || (endTime > module.StartTime && endTime <= module.EndTime))
+                    if ((startTime < module.StartTime && endTime > module.EndTime)        // timespan over existing module
+                        || (startTime >= module.StartTime && startTime < module.EndTime)  // startTime within existing module
+                        || (endTime > module.StartTime && endTime <= module.EndTime))     // endTime within existing module
                     {
                         return false;
                     }
@@ -135,11 +135,9 @@ namespace LexiconLMS.Controllers
                 // Check module not is in same timespan as existing module for this course. Also validate other things for start and end time
                 if (!IsModuleTimeCorrect(viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, null))
                 {
-                    // TODO: how do we get error feedback?
                     TempData["ValidationError"] = "Start or end time for module invalid.";
                     return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
-                    //return RedirectToAction("Create", new { id = viewModel.Module.CourseId });
-                    //return View(model);
+                    // TODO: Create view is reset with default values!
                 }
 
                 var module = new Module
@@ -200,6 +198,10 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
+            if (TempData["ValidationError"] != null)
+            {
+                ModelState.AddModelError("", TempData["ValidationError"] as string);
+            }
 
             // List of activities so it can be displayed in the Edit View
 
@@ -241,8 +243,8 @@ namespace LexiconLMS.Controllers
             // Validate start and end time
             if (!IsModuleTimeCorrect(module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, viewModel.Module.ModuleId))
             {
-                // TODO: how do we get error feedback?
-                return View(viewModel);
+                TempData["ValidationError"] = "Start or end time for module invalid.";
+                return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
             }
 
             if (ModelState.IsValid)
