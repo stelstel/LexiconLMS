@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels;
 using AutoMapper;
 using System;
+using System.Collections.Generic;
 
 namespace LexiconLMS.Controllers
 {
@@ -104,7 +105,6 @@ namespace LexiconLMS.Controllers
                 ActivityStartTime = moduleDefaultStartTime,
                 ActivityEndTime = moduleDefaultStartTime.AddMinutes(10)
             };
-
             return View(model);
         }
 
@@ -144,18 +144,22 @@ namespace LexiconLMS.Controllers
 
                 db.Add(module);
 
-                // TODO: time checks
-                // (for each activity)
-                // - ActivityStartTime must be >= ModuleStartTime
-                // - ActivityEndTime must be <= ModuleEndTime
-                // - ActivityStartTime and ActivityEndTime time span must not overlap any other activity in this module
-
+                if (IsActivityOverlap(viewModel.Data))
+                {
+                    TempData["ValidationError"] = "Activity start and end times overlap";
+                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = module.Id }) });
+                }
 
                 // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
                 if (viewModel.Data != null)
                 {
                     foreach (var item in viewModel.Data)
                     {
+                        if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
+                        {
+                            TempData["ValidationError"] = errorMessage;
+                            return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = module.Id }) });
+                        }
                         var activity = new Activity
                         {
                             Name = item.ActivityName,
@@ -171,7 +175,6 @@ namespace LexiconLMS.Controllers
 
                 await db.SaveChangesAsync();
                 return Json(new { redirectToUrl = Url.Action("Teacher", "AppUsers", new { id = viewModel.Module.CourseId }) });
-                //return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
             //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
             return View(viewModel);
@@ -228,12 +231,6 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(ModuleActivityPostViewModel viewModel)
         {
-
-            //if (id != viewmodel.Module.Id)
-            //{
-            //    return NotFound();
-
-
             var module = db.Modules.Find(viewModel.Module.ModuleId);
 
             // Validate start and end time
@@ -253,15 +250,25 @@ namespace LexiconLMS.Controllers
                     module.StartTime = viewModel.Module.ModuleStartTime;
                     module.EndTime = viewModel.Module.ModuleEndTime;
 
-
                     db.Update(module);
                     await db.SaveChangesAsync();
+
+                    if (IsActivityOverlap(viewModel.Data))
+                    {
+                        TempData["ValidationError"] = "Activity start and end times overlap";
+                        return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+                    }
 
                     // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
                     if (viewModel.Data != null)
                     {
                         foreach (var item in viewModel.Data)
                         {
+                            if (!IsActivityTimeCorrect(ref errorMessage, viewModel.Module.ModuleId, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
+                            {
+                                TempData["ValidationError"] = errorMessage;
+                                return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+                            }
                             var activity = new Activity
                             {
                                 Name = item.ActivityName,
@@ -289,7 +296,6 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                //return RedirectToAction(nameof(Index));                 // TODO, byt ut till redirect to url json.
                 return Json(new { redirectToUrl = Url.Action("Teacher", "AppUsers", new {id = module.CourseId }) });
             }
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
@@ -333,6 +339,12 @@ namespace LexiconLMS.Controllers
                 .FirstOrDefault(c => c.Id == courseId)
                 .StartTime;
         }
+        private DateTime GetModuleStartTime(int moduleId)
+        {
+            return db.Modules
+                .FirstOrDefault(m => m.Id == moduleId)
+                .StartTime;
+        }
 
         private bool IsModuleTimeCorrect(ref string errorMessage, int courseId, DateTime startTime, DateTime endTime, int? thisModuleId)
         {
@@ -370,6 +382,65 @@ namespace LexiconLMS.Controllers
             }
 
             return true;
+        }
+
+        private bool IsActivityTimeCorrect(ref string errorMessage, int? moduleId, DateTime moduleStartTime, DateTime startTime, DateTime endTime)
+        {
+            // TODO all this could be in IsActivityOverlap where we have sorted it. No need for the loop below either.
+
+            // activity starttime must be < module endtime
+            if (endTime < startTime)
+            {
+                errorMessage = "Activity end time is before its start time";
+                return false;
+            }
+            //  Activity start time must be >= module start time  
+
+            if (startTime < moduleStartTime)
+            {
+                errorMessage = $"Activity start time is before module start time ({moduleStartTime}) ";
+                return false;
+            }
+
+           
+            if (moduleId != null)  // moduleId is null when creating a new module
+            {
+                var activities = db.Activities
+                    .Where(a => a.ModuleId == moduleId)
+                    .ToList();
+
+                foreach (var activity in activities)
+                {
+                    if ((startTime < activity.StartTime && endTime > activity.EndTime)        // timespan over existing activity
+                        || (startTime >= activity.StartTime && startTime < activity.EndTime)  // startTime within existing activity
+                        || (endTime > activity.StartTime && endTime <= activity.EndTime))     // endTime within existing activity
+                    {
+                        errorMessage = $"Activity time span interferes with activity '{activity.Name}'";
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsActivityOverlap(IEnumerable<ActivityPostViewModel> viewModelData)
+        {
+            if (viewModelData.Count<ActivityPostViewModel>() < 2) return false;  // no need if count < 2
+            {
+                var length = viewModelData.Count<ActivityPostViewModel>();
+                var sortedData = viewModelData.OrderBy(s => s.ActivityStartTime).ToArray<ActivityPostViewModel>();
+
+                for (var i = 1; i < length; i++)
+                {
+                    if (sortedData[i - 1].ActivityEndTime > sortedData[i].ActivityStartTime)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
 
