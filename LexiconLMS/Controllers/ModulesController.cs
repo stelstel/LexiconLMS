@@ -58,6 +58,10 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
+            if (TempData["ValidationError"] != null)
+            {
+                ModelState.AddModelError("", TempData["ValidationError"] as string);
+            }
             var moduleDefaultStartTime = GetCourseStartTime((int)id).AddHours(8);
 
             var model = new ModuleActivityCreateViewModel
@@ -121,18 +125,21 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel)  //  viewModel skapas med json data (Torbjörn fattar nu)
+        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel) 
         {
             if (ModelState.IsValid)
             {
                 // TODO: perform id control comparison
                 // TODO: Check if redirect problem stems from ajax 
 
-                // Check module not is in same timespan as existing module for this course.. Also validate other things for start and end time
+                // Check module not is in same timespan as existing module for this course. Also validate other things for start and end time
                 if (!IsModuleTimeCorrect(viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, null))
                 {
                     // TODO: how do we get error feedback?
-                    return View(viewModel);
+                    TempData["ValidationError"] = "Start or end time for module invalid.";
+                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
+                    //return RedirectToAction("Create", new { id = viewModel.Module.CourseId });
+                    //return View(model);
                 }
 
                 var module = new Module
