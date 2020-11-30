@@ -32,16 +32,20 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="row custom-file">
+        @{
+            int counter = 0;
+        }
+
         @foreach (var file in Model.fileList)
         {
-            TempData["fil"] = @file;
+            TempData["fil-" + @counter] = @file;
             <li id="customFile" name="file"><a onclick="this.closest('form').submit();return false;" href="@file">@file</a></li>
         }
     </div>
 </form>
 
     <script>
-        
+           
     </script>
 
     @section Scripts {
