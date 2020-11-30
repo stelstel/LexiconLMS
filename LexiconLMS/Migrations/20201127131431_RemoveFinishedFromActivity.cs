@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LexiconLMS.Migrations
 {
-    public partial class init : Migration
+    public partial class RemoveFinishedFromActivity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -222,7 +222,6 @@ namespace LexiconLMS.Migrations
                     Description = table.Column<string>(nullable: true),
                     StartTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
-                    IsFinished = table.Column<bool>(nullable: false),
                     ModuleId = table.Column<int>(nullable: false),
                     ActivityTypeId = table.Column<int>(nullable: false)
                 },
@@ -252,6 +251,7 @@ namespace LexiconLMS.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     UploadTime = table.Column<DateTime>(nullable: false),
+                    IsFinished = table.Column<bool>(nullable: true),
                     AppUserId = table.Column<string>(nullable: true),
                     CourseId = table.Column<int>(nullable: true),
                     ModuleId = table.Column<int>(nullable: true),

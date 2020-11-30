@@ -1,0 +1,34 @@
+﻿@model StudentUploadViewModel
+
+<h1>Upload Assignment</h1>
+
+<h4>Upload Assignment for @Model.Activity.Name</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="StudentUpload" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <label for="Document">Document</label>
+            <div class="custom-file" style="margin-bottom:10px">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+                <input type="file" class="custom-file-input" id="customFile" name="file">
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Course.Id">Go Back</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
