@@ -60,8 +60,9 @@ namespace LexiconLMS.Controllers
 
             if (TempData["ValidationError"] != null)
             {
-                ModelState.AddModelError("", TempData["ValidationError"] as string);
+                ModelState.AddModelError("", (string)TempData["ValidationError"]);
             }
+
             var moduleDefaultStartTime = GetCourseStartTime((int)id).AddHours(8);
 
             var model = new ModuleActivityCreateViewModel
@@ -76,48 +77,7 @@ namespace LexiconLMS.Controllers
             return View(model);
         }
 
-        private DateTime GetCourseStartTime(int courseId)
-        {
-            return db.Courses
-                .FirstOrDefault(c => c.Id == courseId)
-                .StartTime;
-        }
- 
-        private bool IsModuleTimeCorrect(int courseId, DateTime startTime, DateTime endTime, int? thisModuleId)
-        {
-            // Module starttime must be < module endtime
-            if (endTime < startTime)
-            {
-                return false;
-            }
-            //  Module ModuleStartTime must be >= course start time  
-            if (startTime < GetCourseStartTime(courseId))
-            {
-                return false;
-            }
-
-           
-            var modules = db.Modules
-                .Where(m => m.CourseId == courseId)
-                .ToList();
-
-            foreach (var module in modules)
-            {
-                if (module.Id != thisModuleId)
-                {
-                    if ((startTime < module.StartTime && endTime > module.EndTime)        // timespan over existing module
-                        || (startTime >= module.StartTime && startTime < module.EndTime)  // startTime within existing module
-                        || (endTime > module.StartTime && endTime <= module.EndTime))     // endTime within existing module
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-
+  
 
         // POST: Modules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -133,11 +93,13 @@ namespace LexiconLMS.Controllers
                 // TODO: Check if redirect problem stems from ajax 
 
                 // Check module not is in same timespan as existing module for this course. Also validate other things for start and end time
-                if (!IsModuleTimeCorrect(viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, null))
+
+                var errorMessage = "";
+                if (!IsModuleTimeCorrect(ref errorMessage, viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, null))
                 {
-                    TempData["ValidationError"] = "Start or end time for module invalid.";
+                    TempData["ValidationError"] = errorMessage;
                     return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
-                    // TODO: Create view is reset with default values!
+                    // TODO: Create view is reset with default values. Can that be fixed?
                 }
 
                 var module = new Module
@@ -199,8 +161,8 @@ namespace LexiconLMS.Controllers
             }
 
             if (TempData["ValidationError"] != null)
-            {
-                ModelState.AddModelError("", TempData["ValidationError"] as string);
+            {        
+                ModelState.AddModelError("", (string) TempData["ValidationError"]);
             }
 
             // List of activities so it can be displayed in the Edit View
@@ -239,11 +201,12 @@ namespace LexiconLMS.Controllers
 
 
             var module = db.Modules.Find(viewModel.Module.ModuleId);
-            
+
             // Validate start and end time
-            if (!IsModuleTimeCorrect(module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, viewModel.Module.ModuleId))
-            {
-                TempData["ValidationError"] = "Start or end time for module invalid.";
+            var errorMessage = "";
+            if (!IsModuleTimeCorrect(ref errorMessage, module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, viewModel.Module.ModuleId))
+            {                
+                TempData["ValidationError"] = errorMessage;
                 return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
             }
 
@@ -328,6 +291,53 @@ namespace LexiconLMS.Controllers
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+        private DateTime GetCourseStartTime(int courseId)
+        {
+            return db.Courses
+                .FirstOrDefault(c => c.Id == courseId)
+                .StartTime;
+        }
+
+        private bool IsModuleTimeCorrect(ref string errorMessage, int courseId, DateTime startTime, DateTime endTime, int? thisModuleId)
+        {
+            // Module starttime must be < module endtime
+            if (endTime < startTime)
+            {
+                errorMessage = "Module end time is before its start time";
+                return false;
+            }
+            //  Module ModuleStartTime must be >= course start time  
+            var courseStartTime = GetCourseStartTime(courseId);
+            if (startTime < courseStartTime)
+            {
+                errorMessage = $"Module start time is before course start time ({courseStartTime}) ";
+                return false;
+            }
+
+            var modules = db.Modules
+                .Where(m => m.CourseId == courseId)
+                .ToList();
+
+            foreach (var module in modules)
+            {
+                if (module.Id != thisModuleId)
+                {
+                    if ((startTime < module.StartTime && endTime > module.EndTime)        // timespan over existing module
+                        || (startTime >= module.StartTime && startTime < module.EndTime)  // startTime within existing module
+                        || (endTime > module.StartTime && endTime <= module.EndTime))     // endTime within existing module
+                    {
+                        errorMessage = $"Module time span interferes with module '{module.Name}'";
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
 
         private bool ModuleExists(int id)
         {
