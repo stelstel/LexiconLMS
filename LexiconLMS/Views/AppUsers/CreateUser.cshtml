@@ -5,6 +5,23 @@
     ViewData["Title"] = "Add User";
 }
 
+<script type="text/javascript">
+
+    function buttonValue(e) {
+
+        var c = document.getElementById("course");
+
+        // If Teacher = true - hide Course
+        if (e.value === 'true') {
+            c.style.display = "none";
+
+        // If Teacher = false - show Course
+        } else if (e.value === 'false') {
+            c.style.display = "block";
+        }
+    }
+</script>
+
 <h1>Add User</h1>
 
 <div class="container cont-section">
@@ -12,31 +29,6 @@
         <div class="col-md-4">
             <form asp-action="CreateUser">
                 <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <!--
-                <div class="form-check-inline">
-                    <label class="control-label">Student</label>
-                    <input type="radio" value="false" checked="checked" asp-for="IsTeacher" id="userrole" class="form-control" />
-                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="control-label">Teacher</label>
-                    <input type="radio" value="true" asp-for="IsTeacher" id="userrole" class="form-control" />
-                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
-                </div>
-                    -->
-
-                <div class="form-group">
-                    <label asp-for="IsTeacher" class="control-label"></label>
-                    <input asp-for="IsTeacher" class="form-control" />
-                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
-                </div>
-
                 <div class="form-group">
                     <label asp-for="FirstName" class="control-label"></label>
                     <input asp-for="FirstName" class="form-control" />
@@ -47,24 +39,38 @@
                     <input asp-for="LastName" class="form-control" />
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
+                <div class="form-check-inline">
+                    <label asp-for="IsTeacher" class="form-check-label">
+                        <input asp-for="IsTeacher" type="radio" class="form-check-input" value="true" onclick="buttonValue(this)">Teacher
+                    </label>
+                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
+                </div>
+                <div class="form-check-inline mb-3">
+                    <label asp-for="IsTeacher" class="form-check-label">
+                        <input asp-for="IsTeacher" type="radio" class="form-check-input" value="false" onclick="buttonValue(this)">Student
+                    </label>
+                    <span asp-validation-for="IsTeacher" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="Password" class="control-label"></label>
                     <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-
                 <div class="form-group">
                     <label asp-for="ConfirmPassword" class="control-label"></label>
                     <input asp-for="ConfirmPassword" class="form-control" />
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
-
-                <div class="form-group">
+                <div class="form-group" id="course" style="display:none">
                     <label asp-for="CourseId" class="control-label"></label>
                     <select asp-for="CourseId" class="form-control" asp-items="@await courseSelect.SelectCourses()"></select>
                     <span asp-validation-for="CourseId" class="text-danger"></span>
                 </div>
-
                 <div class="form-group">
                     <input type="submit" value="Create User" class="btn btn-primary" />
                 </div>

@@ -41,9 +41,12 @@
                     @foreach (var item in Model.Assignments)
                     {
                         <div class="row">
-                            <div class="col col-sm-6">
-                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a> |
-                                <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id">Upload</a> |
+                            <div class="col col-sm-6 ass-col-icons">
+                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                @if (item.IsFinished.Equals(false))
+                                {
+                                    <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img src="~/icons/share.svg"/></a>
+                                }
                             </div>
                             <div class="col col-sm-4">@item.DueTime</div>
 
