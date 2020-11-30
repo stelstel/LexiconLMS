@@ -749,35 +749,20 @@ namespace LexiconLMS.Controllers
 
         public async Task<List<TeacherAssignmentListViewModel>> AssignmentListTeacher(int? id)
         {
-            var documents = await db.Documents.Include(a => a.Activity)
-                .Where(a => a.IsFinished == true)
-                .Where(a => a.CourseId == id)
-                .Select(a => a.ActivityId)
-                .ToListAsync();
+            var students = db.Courses.Find(id).AppUsers.Count();
 
-            var students = await db.Courses.Include(a => a.AppUsers)
-                .Where(a => a.Id == id)
-                .Select(a => a.AppUsers.Count())
-                .FirstOrDefaultAsync();
-
-            var assignments = await db.Activities.Include(c => c.ActivityType).Include(c => c.Module).ThenInclude(c => c.Course).ThenInclude(c => c.AppUsers)
-                .Where(c => c.Module.Course.Id == id)
-                .Where(c => c.ActivityType.Name == "Assignment")
-                .OrderBy(c => c.StartTime)
+            var assignments = await db.Activities
+                .Where(a => a.ActivityType.Name == "Assignment" && a.Module.CourseId == id)
                 .Select(a => new TeacherAssignmentListViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
-                    //Finished = documents.Where(d => d.Value == a.Id).Count()
+                    Finished = a.Documents.Where(d => d.IsFinished.Equals(true)).Count() * 100 / students
                 })
+                .OrderBy(v => v.StartTime)
                 .ToListAsync();
-
-            foreach (var item in assignments)
-            {
-                item.Finished = documents.Where(d => d.Value == item.Id).Count() * 100 / students;
-            }
 
             return assignments;
         }
