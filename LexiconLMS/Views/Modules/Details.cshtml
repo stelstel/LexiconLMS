@@ -1,4 +1,4 @@
-﻿@model LexiconLMS.Models.Entities.Module
+﻿@model LexiconLMS.Models.ViewModels.ModuleDetailsViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
@@ -14,49 +14,113 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Module.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Module.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Module.Description)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Module.Description)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
+            @Html.DisplayNameFor(model => model.Module.StartTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
+            @Html.DisplayFor(model => model.Module.StartTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
+            @Html.DisplayNameFor(model => model.Module.EndTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
+            @Html.DisplayFor(model => model.Module.EndTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Course)
+            @Html.DisplayNameFor(model => model.Module.Course)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Course.Name)
+            @Html.DisplayFor(model => model.Module.Course.Name)
         </dd>
     </dl>
 </div>
+
+
 @if (User.IsInRole("Teacher"))
 {
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.CourseId">Go Back</a>
+        <a asp-action="Edit" asp-route-id="@Model.Module.Id">Edit</a> |
+        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Module.CourseId">Go Back</a>
     </div>
 }
 else if (User.IsInRole("Student"))
 {
     <div>
-        <a asp-controller="AppUsers" asp-action="Index">Go Back</a>
+        <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Module.CourseId">Go Back</a>
     </div>
 }
 
 
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].UploadTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].AppUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].Course)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].Module)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Documents[0].Activity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Documents)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UploadTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppUser.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Module.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Activity.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

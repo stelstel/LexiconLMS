@@ -151,7 +151,9 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
+
             return View(activity);
+            
         }
 
         // POST: Activities/Delete/5
@@ -163,10 +165,7 @@ namespace LexiconLMS.Controllers
             var moduleId = activity.ModuleId;
             db.Activities.Remove(activity);
             await db.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
-
-            var r = RouteData.Values;
-            // Redirect back to the Edit View of the module
+            
             return RedirectToAction(                    
                 "Edit",
                 "Modules",
@@ -177,5 +176,6 @@ namespace LexiconLMS.Controllers
         {
             return db.Activities.Any(e => e.Id == id);
         }
+
     }
 }

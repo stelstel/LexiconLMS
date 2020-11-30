@@ -112,6 +112,31 @@ function sendJsonToEdit() {
 }
 
 
+//document.getElementById("delAct").addEventListener("click", function () {
+//    $(function () {
+//        $("#resultModal").modal('show');
+//    });
+//});
+
+
+//$('#activityCell').on('click', function (event) {
+//    event.preventDefault();
+//    let a = $(event.target).closest('a')[0];
+//    let activityId = $(a).data('activityid');
+//    console.log(activityId);
+//})
+
+$(document).ready(function () {
+
+    $('.activitycells').click(function () {
+        let target = $(this).data('activityid');
+        $("#resultModal").modal('show');
+        console.log(target);
+        document.getElementById('test').innerHTML = target;
+        let link = "/Activities/Delete/" + target;
+        $('#deleteact').attr('href', link);
+    });
+});
 
 
 

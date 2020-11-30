@@ -1,0 +1,13 @@
+
+
+
+Vad ska vi sluta göra?
+	* - 
+
+Vad ska vi fortsätta göra?
+	* Everything: minimum 3 meetings per day, alot of communication, search for solutions together
+
+Vad ska vi börja göra?
+ 	* Add more comments
+	* Rensa gammal kod
+	* Ta hjälp lite tidigare
