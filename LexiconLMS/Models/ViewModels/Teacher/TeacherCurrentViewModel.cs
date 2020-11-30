@@ -8,7 +8,7 @@ namespace LexiconLMS.Models.ViewModels.Teacher
 {
     public class TeacherCurrentViewModel
     {
-        public Activity Activity { get; set; }
+        public Entities.Activity Activity { get; set; }
         public Course Course { get; set; }
         public ICollection<TeacherAssignmentsViewModel> Assignments { get; set; }
         public Module Module { get; set; }

@@ -13,6 +13,7 @@ using LexiconLMS.Models.ViewModels.Student;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using LexiconLMS.Models.ViewModels.Activity;
 
 namespace LexiconLMS.Controllers
 {
@@ -128,7 +129,50 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            return View(activity);
+            //var students = new List<AppUser>();
+
+            //// List of students that have uploaded a document
+            //var uploaders = await db.Users
+            //    .Where(u => u.Documents != null)
+            //    .ToListAsync();
+
+            //// List of all documents that belong to an activity and are finished
+            //var documents = await db.Documents
+            //    .Where(d => d.ActivityId == activity.Id)
+            //    .Where(f => f.IsFinished == true)
+            //    .ToListAsync();
+
+            //if (uploaders != null && documents != null)
+            //{
+            //    foreach (var uploader in uploaders)
+            //    {
+            //        foreach (var doc in uploader.Documents) // Nullcheck?
+            //        {
+            //            if (documents.Contains(doc))
+            //            {
+            //                students.Add(uploader);
+            //            }
+            //        }
+            //    }
+            //}
+
+            // This solves all? Test
+            var students = await db.Documents
+                .Where(d => d.ActivityId == activity.Id)
+                .Where(f => f.IsFinished == true)
+                .Select(s => s.AppUser)
+                .ToListAsync();
+
+
+
+            // If activity assignment and has document and document isfinished, add uploader of document to list 
+            var viewmodel = new ActivityDetailsViewModel
+            {
+                Activity = activity,
+                Students = students
+            };
+
+            return View(viewmodel);
         }
 
         // GET: Activities/Create

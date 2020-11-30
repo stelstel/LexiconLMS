@@ -62,10 +62,8 @@ else if (User.IsInRole("Student"))
 }
 
 
+<h4>Module Documents</h4>
 
-@*<table>
-    <thead>*@
-@*<tr>*@
 <div class="row">
     <div class="col-sm">
         @Html.DisplayNameFor(model => model.Documents[0].Name)
@@ -91,9 +89,6 @@ else if (User.IsInRole("Student"))
     <div class="col-sm">
     </div>
 </div>
-    @*</tr>
-        </thead>*@
-    @*<tbody>*@
     @foreach (var item in Model.Documents)
         {
     <div class="row">
@@ -130,7 +125,5 @@ else if (User.IsInRole("Student"))
             </a>
         </div>
      </div>
-}
+        }
 
-    @*</tbody>
-        </table>*@

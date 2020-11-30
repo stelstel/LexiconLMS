@@ -14,7 +14,7 @@ namespace LexiconLMS.Models.ViewModels.Document
         public int ModuleId { get; set; }
         public int ActivityId { get; set; }
         public DateTime UploadTime { get; set; }
-        public Activity Activity { get; set; }
+        public Entities.Activity Activity { get; set; }
         public Course Course { get; set; }
         public Module Module { get; set; }
     }

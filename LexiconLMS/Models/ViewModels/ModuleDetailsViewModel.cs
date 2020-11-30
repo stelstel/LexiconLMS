@@ -9,7 +9,7 @@ namespace LexiconLMS.Models.ViewModels
 
         public Module Module { get; set; }
         public List<Entities.Document> Documents { get; set; }
-        public Activity Activity { get; set; }
+        public Entities.Activity Activity { get; set; }
         public AppUser AppUser { get; set; }
     }
 }

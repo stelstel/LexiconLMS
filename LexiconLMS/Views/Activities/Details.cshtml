@@ -1,4 +1,4 @@
-﻿@model LexiconLMS.Models.Entities.Activity
+﻿@model LexiconLMS.Models.ViewModels.Activity.ActivityDetailsViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
@@ -14,52 +14,74 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Activity.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Activity.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Activity.Description)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Activity.Description)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
+            @Html.DisplayNameFor(model => model.Activity.StartTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
+            @Html.DisplayFor(model => model.Activity.StartTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
+            @Html.DisplayNameFor(model => model.Activity.EndTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
+            @Html.DisplayFor(model => model.Activity.EndTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Module)
+            @Html.DisplayNameFor(model => model.Activity.Module)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Module.Name)
+            @Html.DisplayFor(model => model.Activity.Module.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ActivityType)
+            @Html.DisplayNameFor(model => model.Activity.ActivityType)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ActivityType.Name)
+            @Html.DisplayFor(model => model.Activity.ActivityType.Name)
         </dd>
     </dl>
 </div>
 @if (User.IsInRole("Teacher"))
 {
+
+    <h4>Assignment Completion</h4>
+
+    if (Model.Activity.ActivityType.Name == "Assignment")
+    {
+        <div class="row">
+            <div class="col">
+                Uploaders
+            </div>
+        </div>
+
+        @foreach (var user in Model.Students)
+        {
+            <div class="row">
+                <div class="col">
+                    @Html.DisplayFor(modelItem => user.FullName)
+                </div>
+            </div>
+        }
+    }
+
+
     <div>
-        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Module.CourseId">Go Back</a>
+        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
     </div>
 }
 else if (User.IsInRole("Student"))
 {
     <div>
-        <a asp-controller="AppUsers" asp-action="Index">Go Back</a>
+        <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
     </div>
 }

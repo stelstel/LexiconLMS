@@ -19,6 +19,7 @@ namespace LexiconLMS.Models.Entities
         [DisplayName("End Time")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime EndTime { get; set; }
+
         // Foreign Keys
         public int ModuleId { get; set; }
         public int ActivityTypeId { get; set; }
