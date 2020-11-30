@@ -49,14 +49,14 @@
                         <div class="col ass-col col-sm-2">Finished</div>
                     </div>
 
-                    @foreach (var assignment in Model.Assignments)
+                    @foreach (var item in Model.Assignments)
                     {
                         <div class="row">
                             <div class="col col-sm-6">
-                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
                             </div>
-                            <div class="col col-sm-4">@assignment.EndTime</div>
-                            <div class="col ass-col col-sm-2">@Model.Finished</div>
+                            <div class="col col-sm-4">@item.DueTime</div>
+                            <div class="col ass-col col-sm-2">@item.Finished %</div>
                         </div>
                     }
                 </div>
