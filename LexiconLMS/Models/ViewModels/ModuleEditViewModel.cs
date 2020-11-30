@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,8 +33,10 @@ namespace LexiconLMS.Models.ViewModels
         [DisplayName("Description")]
         public string ActivityDescription { get; set; }
         [DisplayName("Start Time")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-ddTHH:mm}")]
         public DateTime ActivityStartTime { get; set; }
         [DisplayName("End Time")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-ddTHH:mm}")]
         public DateTime ActivityEndTime { get; set; }
         [DisplayName("Type")]
         public int ActivityTypeId { get; set; }
