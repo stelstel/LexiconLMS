@@ -14,6 +14,7 @@ namespace LexiconLMS.Models.ViewModels.Document
         public string AppUserId { get; set; }
         public int? CourseId { get; set; }
         public string DirectoryPath { get; set; }
+        
         public ICollection<string> fileList { get; set; }
 
         public AppUser AppUser { get; set; }

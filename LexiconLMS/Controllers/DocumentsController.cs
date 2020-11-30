@@ -396,7 +396,13 @@ namespace LexiconLMS.Controllers
             var course = courses.Where(a => a.Id == id).FirstOrDefault();
             var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
 
-            // ICollection<string> docList = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+            ICollection<Document> docs = await db.Documents
+                .Where(d => d.Course == course)
+                //.Where(d => d.ModuleId == null)
+                //.Where(d => d.ActivityId == null)
+                .ToListAsync();
+
+            // ONLY course documents. NOT module or activity documents (SearchOption.AllDirectories to see the rest)
             ICollection<string> fileList = Directory.GetFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly);
 
             var model = new DownloadCourseDocumentViewModel
@@ -413,8 +419,10 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Student, Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DownloadCourseDoc(int? id, Document model, IFormFile file)
+        public async Task<IActionResult> DownloadCourseDoc(int? id, /*Document model, IFormFile file*/ string file)
         {
+            var fil = TempData["fil"];
+
             if (ModelState.IsValid)
             {
 
@@ -422,7 +430,7 @@ namespace LexiconLMS.Controllers
 
                 var courses = await db.Courses.ToListAsync();
                 var course = courses.Where(a => a.Id == id).FirstOrDefault();
-                var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file.FileName}");
+                var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
                 var memory = new MemoryStream();
 
                 using (var stream = new FileStream(filePath, FileMode.Open))
@@ -435,7 +443,8 @@ namespace LexiconLMS.Controllers
                 return File(memory, GetContType(filePath), Path.GetFileName(filePath));
             }
 
-            return View(model);
+            //return View(model);
+            return null;
         }
 
         [HttpGet]

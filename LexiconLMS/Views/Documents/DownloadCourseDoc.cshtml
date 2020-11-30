@@ -8,17 +8,17 @@
 
 <h4>Document for @Model.Course.Name</h4>
 <hr />
-<div class="row">
+<!--<div class="row">
     <div class="col-md-4">
-        <form asp-action="DownloadCourseDoc" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form id="form-download" asp-action="DownloadCourseDoc" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>-->
             
             <!--Fix this label, it's a last-resort resolution-->
-            <label for="Document">Document</label>
+            <!--<label for="Document">Document</label>
             
             <div class="custom-file" style="margin-bottom:10px">
                 <label class="custom-file-label" for="customFile">Choose file</label>
-                <input type="file" class="custom-file-input" id="customFile" name="file" value="@Model.DirectoryPath">
+                <input type="file" class="custom-file-input" id="customFile" name="file">
             </div>
            
             <div class="form-group">
@@ -26,19 +26,23 @@
             </div>
         </form>
     </div>
-</div>
+</div>-->
 
-<div class="row">
-    @foreach (var document in Model.documentList)
-    {
-        <p>@document</p>
-    }
-</div>
+<form asp-action="DownloadCourseDoc" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+    <div class="row custom-file">
+        @foreach (var file in Model.fileList)
+        {
+            TempData["fil"] = @file;
+            <li id="customFile" name="file"><a onclick="this.closest('form').submit();return false;" href="@file">@file</a></li>
+        }
+    </div>
+</form>
 
-    @*<div>
-            <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Course.Id">Go Back</a>
-        </div>*@
+    <script>
+        
+    </script>
 
     @section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
