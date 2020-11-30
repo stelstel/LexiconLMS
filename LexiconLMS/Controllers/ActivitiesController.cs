@@ -233,18 +233,25 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: Activities/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[HttpPost, ActionName("Delete")]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
+
             var activity = await db.Activities.FindAsync(id);
             var moduleId = activity.ModuleId;
+            var documents = await db.Documents.Where(d => d.ActivityId == id).ToListAsync();
+
+            foreach (var item in documents)
+            {
+                db.Documents.Remove(item);
+            }
+
             db.Activities.Remove(activity);
             await db.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
-
-            var r = RouteData.Values;
-            // Redirect back to the Edit View of the module
+            
             return RedirectToAction(
                 "Edit",
                 "Modules",

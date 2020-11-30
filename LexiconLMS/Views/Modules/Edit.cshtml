@@ -77,8 +77,6 @@
                     <input asp-for="ActivityEndTime" class="form-control" />
                     <span asp-validation-for="ActivityEndTime" class="text-danger"></span>
                 </div>
-
-
             </div>
 
             <div class="col-md-8">
@@ -92,8 +90,6 @@
                     <label for="exampleFormControlSelect2">Module activities</label>
                     <div id="theList" class="rounded bg-light"></div>
                 </div>
-
-
             </div>
 
             <div class="form-group">
@@ -146,7 +142,7 @@
                     </td>
                     <td >
                         <a class="activitycells" data-activityid="@item.Id">
-                            <img src="~/icons/delete.svg" />
+                            <img id="deleteicon" src="~/icons/delete.svg" />
                         </a>
                         
                     </td>
@@ -177,12 +173,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="aModalLabel">TEST TEST </h5>
+                <h5 class="modal-title" id="aModalLabel">Delete activity?</h5>
             </div>
             <div class="modal-body">
-                <a id="deleteact" method="post" @*asp-controller="Activities" asp-action="Delete" asp-route-id="target"*@> Delete? </a>
-                @* Generate href dynmically to get href=Activities/Delete/{target} *@
-                <p id="test"></p>
+                <p>Connected documents will also be deleted.</p>
+                <a class="btn btn-danger" id="deleteact" method="post">Delete</a>
+                @*<button type="button" id="deleteact" class="btn btn-danger" method="post">Delete</button>*@
+                
 
             </div>
             <div class="modal-footer">
