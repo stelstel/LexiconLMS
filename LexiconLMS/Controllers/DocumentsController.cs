@@ -244,7 +244,7 @@ namespace LexiconLMS.Controllers
                 new { id = course.Id }); ;
             }
 
-            return View(document);
+            return View();
         }
 
         // GET: Documents/Details/5
