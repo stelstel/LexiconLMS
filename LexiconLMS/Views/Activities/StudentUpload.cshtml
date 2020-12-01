@@ -1,12 +1,22 @@
 ﻿@model StudentUploadViewModel
 
+<script>
+    function validateForm() {
+        var x = document.forms["uploadForm"]["file"].value;
+        if (x == "") {
+            alert("Please upload a document");
+            return false;
+        }
+    }
+</script>
+
 <h1>Upload Assignment</h1>
 
 <h4>Upload Assignment for @Model.Activity.Name</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="StudentUpload" method="post" enctype="multipart/form-data">
+        <form name="uploadForm" asp-action="StudentUpload" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <label for="Document">Document</label>
             <div class="custom-file" style="margin-bottom:10px">
