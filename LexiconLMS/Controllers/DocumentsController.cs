@@ -387,7 +387,7 @@ namespace LexiconLMS.Controllers
             return db.Documents.Any(e => e.Id == id);
         }
 
-        // GET: Upload Course Document
+        // GET: Download Course Document
         [Authorize(Roles = "Student")]
         [HttpGet]
         public async Task<IActionResult> DownloadCourseDoc(int? id)
@@ -420,19 +420,18 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> DownloadCourseDoc(int id, /*Document model, IFormFile file*/ string file)
-        public async Task<IActionResult> DownloadCourseDoc(int id, IFormFile file)
+        public async Task<IActionResult> DownloadCourseDoc(int id, Document model, IFormFile file)
         {
             //var fil = TempData["fil"];
 
             if (ModelState.IsValid)
             {
-
                 var userId = userManager.GetUserId(User);
 
                 var courses = await db.Courses.ToListAsync();
                 var course = courses.Where(a => a.Id == id).FirstOrDefault();
-                //var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
-                var filePath = Path.Combine(web.WebRootPath, file.ToString());
+                var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
+                //var filePath = Path.Combine(web.WebRootPath, file.ToString());
 
                 var memory = new MemoryStream();
 

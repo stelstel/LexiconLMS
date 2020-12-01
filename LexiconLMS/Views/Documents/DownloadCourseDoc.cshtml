@@ -20,22 +20,20 @@
 
         @foreach (var file in Model.fileList)
         {
-            TempData["fil-" + @counter] = @file;
-            <li id="customFile" name="file"><a onclick="this.closest('form').submit();return false;" href="@file">@file</a></li>
-            < a asp - controller = "Product" asp - action = "GetProduct" asp - route - id = "10" > ProductName </ a >
-
+            //TempData["fil-" + @counter] = @file;
+            <li id="customFile" name="file"><a href="@file">@file</a></li>
         }
     </div>
 </form>
 
-<ul>
-@foreach (var file in Model.fileList)
-{
-    <li>
-        <a asp-action="DownloadCourseDoc" asp-route-file="@file">@file</a>
-    </li>
-}
-</ul>
+@*<ul>
+    @foreach (var file in Model.fileList)
+    {
+        <li>
+            <a asp-controller="Documents" asp-action="DownloadCourseDoc" asp-route-file="@file">@file</a>
+        </li>
+    }
+</ul>*@
 
 
 @section Scripts {
