@@ -403,7 +403,7 @@ namespace LexiconLMS.Controllers
                 .ToListAsync();
 
             // ONLY course documents. NOT module or activity documents (SearchOption.AllDirectories to see the rest)
-            ICollection<string> fileList = Directory.GetFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly);
+            ICollection<string> fileList = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
 
             var model = new DownloadCourseDocumentViewModel
             {
