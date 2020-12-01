@@ -33,6 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="Models\ViewModels\Teacher\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 

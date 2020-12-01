@@ -348,3 +348,7 @@ healthchecksdb
 /LexiconLMS/Migrations/20201124131515_Init10.cs
 /LexiconLMS/Migrations/20201125145138_Init13.cs
 /LexiconLMS/Migrations/20201125145138_Init13.Designer.cs
+/LexiconLMS/Migrations/20201125161102_Init14.cs
+/LexiconLMS/Migrations/20201125161102_Init14.Designer.cs
+/LexiconLMS/Migrations/20201201150533_Init16.cs
+/LexiconLMS/Migrations/20201201150533_Init16.Designer.cs

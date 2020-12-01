@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
 
 namespace LexiconLMS.Controllers
 {
@@ -87,7 +89,9 @@ namespace LexiconLMS.Controllers
                     Course = course,
                     CourseId = course.Id,
                     UploadTime = DateTime.Now,
-                    AppUserId = userId
+                    AppUserId = userId,
+                    FilePath = $"~/uploads/{course.Name}/{fileName}"
+                    //FilePath = $"{path}/{fileName}"
                 };
 
                 db.Add(newModel);
@@ -394,6 +398,85 @@ namespace LexiconLMS.Controllers
         private bool DocumentExists(int id)
         {
             return db.Documents.Any(e => e.Id == id);
+        }
+
+        // GET: Download Course Document
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> DownloadCourseDoc(int? id)
+        {
+            var courses = await db.Courses.ToListAsync();
+            var course = courses.Where(a => a.Id == id).FirstOrDefault();
+            //var directoryPath = $"/uploads/{course.Name}";////////////////////
+            var directoryPath = Path.Combine(Environment.CurrentDirectory, $"uploads/{course.Name}");
+            //var folderPath = Server.MapPath($"~/uploads/{course.name}");
+            //var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
+
+
+            ICollection<Document> docs = await db.Documents
+                .Where(d => d.Course == course)
+                //.Where(d => d.ModuleId == null)
+                //.Where(d => d.ActivityId == null)
+                .ToListAsync();
+
+            // ONLY course documents. NOT module or activity documents (SearchOption.AllDirectories to see the rest)
+            ICollection<string> fileList = Directory.GetFiles($"/uploads/{course.Name}", "*.*", SearchOption.AllDirectories);
+            //string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
+
+            var model = new DownloadCourseDocumentViewModel
+            {
+                Course = course,
+                DirectoryPath = directoryPath,
+                fileList = fileList
+            };
+
+            return View(model);
+        }
+
+        //// POST: Download Course Document
+        //[Authorize(Roles = "Student, Teacher")]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        ////public async Task<IActionResult> DownloadCourseDoc(int id, /*Document model, IFormFile file*/ string file)
+        //public async Task<IActionResult> DownloadCourseDoc(int id, Document model, IFormFile file)
+        //{
+        //    //var fil = TempData["fil"];
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        var userId = userManager.GetUserId(User);
+
+        //        var courses = await db.Courses.ToListAsync();
+        //        var course = courses.Where(a => a.Id == id).FirstOrDefault();
+        //        var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
+        //        //var filePath = Path.Combine(web.WebRootPath, file.ToString());
+
+        //        var memory = new MemoryStream();
+
+        //        using (var stream = new FileStream(filePath, FileMode.Open))
+        //        {
+        //            await stream.CopyToAsync(memory);
+        //        }
+
+        //        memory.Position = 0;
+
+        //        return File(memory, GetContType(filePath), Path.GetFileName(filePath));
+        //    }
+
+        //    //return View(model);
+        //    return null;
+        //}
+
+        [HttpGet]
+        public string GetContType(string fileName)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+            if (!provider.TryGetContentType(fileName, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
         }
     }
 }

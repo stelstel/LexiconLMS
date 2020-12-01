@@ -6,16 +6,16 @@
     <div class="col-sm-3">
         @Html.DisplayNameFor(model => model.Name)
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
         @Html.DisplayNameFor(model => model.StartTime)
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
         @Html.DisplayNameFor(model => model.EndTime)
     </div>
     <div class="col-sm-2">
         @Html.DisplayNameFor(model => model.ActivityType)
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-1">
     </div>
 </div>
 
@@ -26,18 +26,18 @@
         <div class="col-sm-3">
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             @Html.DisplayFor(modelItem => item.StartTime)
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             @Html.DisplayFor(modelItem => item.EndTime)
         </div>
         <div class="col-sm-2">
             @Html.DisplayFor(modelItem => item.ActivityType)
         </div>
-        <div class="col-sm-3 col-icons">
+        <div class="col-sm-1 col-icons">
             <a asp-controller="Documents" asp-action="UploadActivityDoc" asp-route-id="@item.Id">
-                <img src="~/icons/share.svg" />   
+                <img class="icon-img" src="~/icons/share.svg" />   
             </a>
             @*<a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id">
                 <img src="~/icons/edit.svg"  />
