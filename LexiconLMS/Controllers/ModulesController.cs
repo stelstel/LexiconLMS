@@ -54,7 +54,10 @@ namespace LexiconLMS.Controllers
             var activityIds = await db.Activities.Where(a => a.ModuleId == module.Id).Select(i => i.Id).ToListAsync();
 
             // All documents in the module.
-            var documents = await db.Documents.Where(d => d.ModuleId == module.Id).Include(a => a.Activity).ToListAsync();
+            var documents = await db.Documents.Where(d => d.ModuleId == module.Id)
+                .Include(a => a.Activity)
+                .Include(u => u.AppUser)
+                .ToListAsync();
 
             // All documents in the activities in the module.
             foreach (var doc in await db.Documents.Include(a => a.Activity).ToListAsync())            

@@ -27,7 +27,7 @@ namespace LexiconLMS.Models.ViewModels
 
 
 
-        public List<Activity> Activities { get; set; }
+        public List<Entities.Activity> Activities { get; set; }
 
 
         [DisplayName("Name")]

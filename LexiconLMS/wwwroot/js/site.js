@@ -111,48 +111,13 @@ function sendJsonToEdit() {
     });
 }
 
-
-//document.getElementById("delAct").addEventListener("click", function () {
-//    $(function () {
-//        $("#resultModal").modal('show');
-//    });
-//});
-
-
-//$('#activityCell').on('click', function (event) {
-//    event.preventDefault();
-//    let a = $(event.target).closest('a')[0];
-//    let activityId = $(a).data('activityid');
-//    console.log(activityId);
-//})
-
+// Show modal and redirect to Activities/DeleteConfirmed/id
 $(document).ready(function () {
 
     $('.activitycells').click(function () {
         let target = $(this).data('activityid');
         $("#resultModal").modal('show');
-        console.log(target);
-        document.getElementById('test').innerHTML = target;
-        let link = "/Activities/Delete/" + target;
+        let link = "/Activities/DeleteConfirmed/" + target;
         $('#deleteact').attr('href', link);
     });
 });
-
-
-
-//function AjaxGoodRedirect(urlAction) {
-//    $.ajax({
-//        type: "POST", // see http://haacked.com/archive/2009/06/24/json-hijacking.aspx 
-//        url: urlAction,
-//        data: {}, //to send data see more at http://bit.ly/mvc_ajax_jquery            
-//        datatype: "JSON",
-//        contentType: "application/json; charset=utf-8",
-//        success: function (returndata) {
-//            if (returndata.ok) window.location = returndata.newurl;
-//            else window.alert(returndata.message);
-//        }
-//    });
-//}​​
-        
-
-

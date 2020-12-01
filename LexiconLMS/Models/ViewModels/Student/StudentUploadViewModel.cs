@@ -19,6 +19,6 @@ namespace LexiconLMS.Models.ViewModels.Student
         public AppUser Student { get; set; }
         public Course Course { get; set; }
         public Module Module { get; set; }
-        public Activity Activity { get; set; }
+        public Entities.Activity Activity { get; set; }
     }
 }

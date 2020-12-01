@@ -92,7 +92,11 @@ namespace LexiconLMS.Controllers
 
                 db.Add(newModel);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                "Teacher",
+                "AppUsers",
+                new { id = course.Id });
             }
 
             return View(model);
@@ -155,7 +159,11 @@ namespace LexiconLMS.Controllers
 
                 db.Add(model);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                "Teacher",
+                "AppUsers",
+                new { id = module.CourseId });
             }
 
             return View(document);
@@ -230,7 +238,10 @@ namespace LexiconLMS.Controllers
 
                 db.Add(model);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                "Teacher",
+                "AppUsers",
+                new { id = course.Id }); ;
             }
 
             return View(document);

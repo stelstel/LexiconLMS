@@ -346,3 +346,15 @@ div#card-mod-act.card div.card-body {
 #col-activities .col-icons {
     text-align: center;
 }
+
+
+#detailsicon,
+#editicon
+{
+    width: 2rem;
+}
+
+#deleteicon {
+    width: 2.4rem;
+}
+
