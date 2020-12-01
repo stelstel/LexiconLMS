@@ -621,17 +621,15 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            var course = await db.Courses.FirstOrDefaultAsync(m => m.Id == id);
-
             var current = await CurrentTeacher(id);
+            var currentCourse = current.Course;
 
             if (current.Course.Modules.Count == 0)
                 return View(new TeacherViewModel
                 {
-                    Course = course,
-                    TeacherCurrentViewModel = new TeacherCurrentViewModel
+                    Current = new TeacherCurrentViewModel
                     {
-                        Course = course,
+                        Course = current.Course,
                         Module = null,
                         Activity = null,
                         Assignments = null,
@@ -644,17 +642,15 @@ namespace LexiconLMS.Controllers
 
             var assignmentList = await AssignmentListTeacher(id);
             var moduleList = await GetTeacherModuleListAsync(id);
-            var activityList = new List<ActivityListViewModel>();
-
             var module = moduleList.Find(y => y.IsCurrentModule);
+            var activityList = new List<ActivityListViewModel>();
 
             if (module != null)
                 activityList = await GetModuleActivityListAsync(module.Id);
 
             var model = new TeacherViewModel
             {
-                Course = course,
-                TeacherCurrentViewModel = current,
+                Current = current,
                 AssignmentList = assignmentList,
                 ModuleList = moduleList,
                 ActivityList = activityList
@@ -686,55 +682,33 @@ namespace LexiconLMS.Controllers
 
         public async Task<TeacherCurrentViewModel> CurrentTeacher(int? id)
         {
-            var timeNow = DateTime.Now;
-
-            var course = await db.Courses.Include(c => c.AppUsers)
-                .Include(c => c.Documents)
-                .Include(c => c.Modules)
-                .ThenInclude(c => c.Activities)
-                .ThenInclude(c => c.ActivityType)
-                .Where(c => c.Id == id)
-                .FirstOrDefaultAsync();
-
-            //This happens for newly created courses without any modules
-            if (course.Modules.Count == 0)
-            {
-                return new TeacherCurrentViewModel
-                {
-                    Course = course,
-                    Module = null,
-                    Activity = null,
-                    Assignments = null,
-                    Finished = null
-                };
-            }
-
-            var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-            var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
-
-            var documents = await db.Documents.Include(a => a.Activity)
-                .Where(a => a.IsFinished == true)
-                .Where(a => a.CourseId == course.Id)
-                .Select(a => a.ActivityId)
-                .ToListAsync();
+            var course = db.Courses.Include(a => a.AppUsers)
+                .Include(a => a.Modules)
+                .ThenInclude(a => a.Activities)
+                .FirstOrDefault(a => a.Id == id);
 
             var students = course.AppUsers.Count();
 
-            var assignments = module.Activities.Where(c => c.ActivityType.Name == "Assignment")
-                .OrderBy(t => Math.Abs((t.EndTime - timeNow).Ticks))
+            //This happens for newly created courses without any modules
+            if (course.Modules.Count == 0)
+                return new TeacherCurrentViewModel { Course = course, Module = null, Activity = null, Assignments = null, Finished = null };
+
+            var timeNow = DateTime.Now;
+            var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+            var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            var assignments = await db.Activities.Where(c => c.ActivityType.Name == "Assignment" && c.Module.CourseId == id)
+                .OrderBy(a => a.StartTime)
                 .Select(a => new TeacherAssignmentsViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,
                     DueTime = a.EndTime,
-                    Finished = documents.Where(d => d.Value == a.Id).Count() * 100 / students
+                    Finished = a.Documents.Where(d => d.IsFinished.Equals(true)).Count() * 100 / students
                 })
-                .ToList();
+                .ToListAsync();
 
-            if (assignments.Count < 3)
-                assignments = assignments.Take(assignments.Count).ToList();
-            else
-                assignments = assignments.Take(3).ToList();
+            assignments = assignments.Count < 3 ? assignments.Take(assignments.Count).ToList() : assignments.Take(3).ToList();
 
             var model = new TeacherCurrentViewModel
             {

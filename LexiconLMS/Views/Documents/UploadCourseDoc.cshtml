@@ -6,11 +6,21 @@
 
 <h1>Create</h1>
 
+<script>
+    function validateForm() {
+        var x = document.forms["uploadForm"]["file"].value;
+        if (x == "") {
+            alert("Please upload a document");
+            return false;
+        }
+    }
+</script>
+
 <h4>Document for @Model.Course.Name</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UploadCourseDoc" method="post" enctype="multipart/form-data">
+        <form name="uploadForm" asp-action="UploadCourseDoc" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <label for="Document">Document</label>
             <div class="custom-file" style="margin-bottom:10px">

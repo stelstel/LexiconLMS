@@ -233,7 +233,7 @@ namespace LexiconLMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(document);
+            return View();
         }
 
         // GET: Documents/Details/5
