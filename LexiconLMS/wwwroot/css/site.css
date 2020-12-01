@@ -358,3 +358,27 @@ div#card-mod-act.card div.card-body {
     width: 2.4rem;
 }
 
+
+#courseindex tr:nth-child(even){
+    background: #eee
+}
+
+#userindex tr:nth-child(even) {
+    background: #eee
+}
+
+#studentuploadassignment{
+    width: 2rem
+}
+
+#studentuploadsbottom {
+    width: 1.3rem
+}
+
+#loginicon {
+    width: 8rem
+}
+
+.lpcontent{
+    margin-top: 10rem
+}

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<TeacherAssignmentListViewModel>
 
-<h2>Assignments</h2>
+<h2>All Course Assignments</h2>
 
 <div id="ass-row-headers" class="row">
     <div class="col-sm-3">
@@ -36,9 +36,9 @@
             @Html.DisplayFor(modelItem => item.Finished) %
         </div>
         <div class="col-sm-2 ass-col-icons">
-            <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><img src="~/icons/edit.svg" /></a>
-            <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"><img src="~/icons/textbox.svg"/></a>
-            <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><img src="~/icons/delete.svg" /></a>
+            @*<a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><img src="~/icons/edit.svg" /></a>*@
+            @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"><img src="~/icons/info.svg"/></a>*@
+            @*<a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><img src="~/icons/delete.svg" /></a>*@
         </div>
      }
 </div>

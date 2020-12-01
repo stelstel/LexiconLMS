@@ -10,7 +10,10 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Module</h4>
+    <h4>Module<a asp-controller="Documents" asp-action="Edit" asp-route-id="@Model.Module.Id">
+    <img src="/icons/edit.svg" alt="Edit" style="width:1.4rem"/>
+</a></h4>
+    
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -47,19 +50,7 @@
 </div>
 
 
-@if (User.IsInRole("Teacher"))
-{
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.Module.Id">Edit</a> |
-        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Module.CourseId">Go Back</a>
-    </div>
-}
-else if (User.IsInRole("Student"))
-{
-    <div>
-        <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Module.CourseId">Go Back</a>
-    </div>
-}
+
 
 
 <h4>Module Documents</h4>
@@ -89,8 +80,8 @@ else if (User.IsInRole("Student"))
     <div class="col-sm">
     </div>
 </div>
-    @foreach (var item in Model.Documents)
-        {
+@foreach (var item in Model.Documents)
+{
     <div class="row">
         <div class="col-sm">
             @Html.DisplayFor(modelItem => item.Name)
@@ -124,6 +115,22 @@ else if (User.IsInRole("Student"))
                 <img id="deleteicon" src="/icons/delete.svg" alt="Delete" />
             </a>
         </div>
-     </div>
-        }
+    </div>
+}
 
+<br />
+<hr />
+
+
+@if (User.IsInRole("Teacher"))
+{
+    <div>
+        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Module.CourseId">Go Back</a>
+    </div>
+}
+else if (User.IsInRole("Student"))
+{
+    <div>
+        <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Module.CourseId">Go Back</a>
+    </div>
+}

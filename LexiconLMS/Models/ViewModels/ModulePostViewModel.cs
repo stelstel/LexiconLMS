@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace LexiconLMS.Models.ViewModels
 {
@@ -11,7 +10,9 @@ namespace LexiconLMS.Models.ViewModels
         public int? ModuleId { get; set; }
         public string ModuleName { get; set; }
         public string ModuleDescription { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime ModuleStartTime { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime ModuleEndTime { get; set; }
     }
 }
