@@ -124,11 +124,14 @@ namespace LexiconLMS.Controllers
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (activity == null)
             {
                 return NotFound();
             }
 
+
+            // Get all students that have uploaded a document to an Activity of type 'Assignment'
             var students = await db.Documents
                 .Where(d => d.ActivityId == activity.Id)
                 .Where(f => f.IsFinished == true)
