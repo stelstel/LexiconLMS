@@ -1,7 +1,6 @@
 ﻿
 let remove = document.getElementsByClassName("remove");         // This classname is "activated" when one clicks addToList()
 
-
 let result = []
 
 function addToList() {
@@ -13,22 +12,29 @@ function addToList() {
     formData.forEach(d => temp[d.name] = d.value || '');
     result.push(temp);
 
-    let activity = `${temp.ActivityName} ${temp.ActivityStartTime} ${temp.ActivityEndTime}`;
+    //let activity = `${temp.ActivityName} ${temp.ActivityStartTime} ${temp.ActivityEndTime} `;
+    let activity = `${temp.ActivityName}  `;
+ 
     
 
     document.querySelector('.activityForm').reset();
 
     if (form === '') {                                                  // Kolla om någon input skrivits in.
-        alert("Tomt inputfält!");
+        alert("Empty input!");
     } else {
-        let li = document.createElement("LI");                        // Skapa ny <li>-nod.
+        let li = document.createElement("ul");                          // Skapa ny <li>-nod.
         let elementText = document.createTextNode(activity);            // Tillsätt inputvärde till en ny text-nod.
-        li.appendChild(elementText);                                  // Lägg till text/barn-nod till nya <li>-noden. 
-        let xButton = document.createElement("button");                 // Skapa x-knapp.
-        let x = document.createTextNode("\u00D7");                      // Skapa variabel med x-symbol.
-        xButton.className = "remove";                                   // Ge x-knappen ett klassnamn.
-        xButton.appendChild(x);                                         // Lägg till x-symbolen till x-knappen.
-        li.appendChild(xButton);                                        // Lägg till x-knappnoden till <li>
+        li.appendChild(elementText);                                    // Lägg till text/barn-nod till nya <li>-noden. 
+        //let xButton = document.createElement("button");                 // Skapa x-knapp.
+        //let x = document.createTextNode("\u00D7");                      // Skapa variabel med x-symbol.
+        let x = document.createElement("img")
+        x.src = "/icons/delete.svg";
+        x.id = "deleteicon";
+        x.className = "remove";
+        //xButton.className = "remove";                                   // Ge x-knappen ett klassnamn.
+        //xButton.appendChild(x);                                         // Lägg till x-symbolen till x-knappen.
+        //li.appendChild(xButton);                                        // Lägg till x-knappnoden till <li>
+        li.appendChild(x);                                        // Lägg till x-knappnoden till <li>
         document.getElementById("theList").appendChild(li);             // Lägg till listpunkt till listan i sig.
     }
 

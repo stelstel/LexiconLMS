@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace LexiconLMS.Models.ViewModels
 {
@@ -17,6 +16,7 @@ namespace LexiconLMS.Models.ViewModels
         [DisplayName("Name")]
         public string ModuleName { get; set; }
         [DisplayName("Description")]
+        
         public string ModuleDescription { get; set; }
         [DisplayName("Start Time")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-ddTHH:mm}")]
