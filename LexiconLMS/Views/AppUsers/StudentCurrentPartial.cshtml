@@ -43,10 +43,10 @@
                         <div class="row">
                             <div class="col col-sm-6 ass-col-icons">
                                 <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-                                @if (item.IsFinished.Equals(false))
+                                @*@if (item.IsFinished.Equals(false))
                                 {
-                                    <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img src="~/icons/share.svg"/></a>
-                                }
+                                    <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img id="studentuploadassignment" src="~/icons/share.svg"/></a>
+                                }*@
                             </div>
                             <div class="col col-sm-4">@item.DueTime</div>
 
@@ -57,7 +57,8 @@
                                 }
                                 else
                                 {
-                                    <i class="material-icons checkbox-ass">check_box_outline_blank</i>
+                                    @*<i class="material-icons checkbox-ass">check_box_outline_blank</i>*@
+                                    <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img id="studentuploadassignment" src="~/icons/share.svg" /></a>
                                 }
                             </div>
                         </div>

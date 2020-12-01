@@ -366,3 +366,15 @@ div#card-mod-act.card div.card-body {
 #userindex tr:nth-child(even) {
     background: #eee
 }
+
+#studentuploadassignment{
+    width: 2rem
+}
+
+#loginicon{
+    width: 8rem
+}
+
+.lpcontent{
+    margin-top: 10rem
+}

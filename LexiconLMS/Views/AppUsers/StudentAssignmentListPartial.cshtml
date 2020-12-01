@@ -21,10 +21,10 @@
     <div class="row">
         <div class="col-sm-4">
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-            @if (item.IsFinished.Equals(false))
+            @*@if (item.IsFinished.Equals(false))
             {
                 <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img src="~/icons/share.svg" /></a>
-            }
+            }*@
         </div>
         <div class="col-sm-3">
             @Html.DisplayFor(modelItem => item.StartTime)
@@ -39,7 +39,8 @@
             }
             else
             {
-                <i class="material-icons checkbox-ass">check_box_outline_blank</i>
+                @*<i class="material-icons checkbox-ass">check_box_outline_blank</i>*@
+                <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img id="studentuploadassignment" src="~/icons/share.svg" /></a>
             }
         </div>
     </div>
