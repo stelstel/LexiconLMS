@@ -147,7 +147,7 @@ namespace LexiconLMS.Controllers
                 if (IsActivityOverlap(viewModel.Data))
                 {
                     TempData["ValidationError"] = "Activity start and end times overlap";
-                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = module.Id }) });
+                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
                 }
 
                 // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
