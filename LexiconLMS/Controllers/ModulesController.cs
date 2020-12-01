@@ -355,6 +355,11 @@ namespace LexiconLMS.Controllers
                 errorMessage = "Module end time is before its start time";
                 return false;
             }
+            if (endTime == startTime)
+            {
+                errorMessage = "Module end time is equal to its start time";
+                return false;
+            }
             //  Module ModuleStartTime must be >= course start time  
             var courseStartTime = GetCourseStartTime(courseId);
             if (startTime < courseStartTime)
@@ -388,6 +393,12 @@ namespace LexiconLMS.Controllers
         private bool IsActivityTimeCorrect(ref string errorMessage, int? moduleId, DateTime moduleStartTime, DateTime startTime, DateTime endTime)
         {
             // TODO all this could be in IsActivityOverlap where we have sorted it. No need for the loop below either.
+
+            if (endTime == startTime)
+            {
+                errorMessage = "Activity end time is equal to its start time";
+                return false;
+            }
 
             // activity starttime must be < module endtime
             if (endTime < startTime)
@@ -426,6 +437,7 @@ namespace LexiconLMS.Controllers
             return true;
         }
 
+        // Test if there are any time overlaps in the viewModel.Data
         private bool IsActivityOverlap(IEnumerable<ActivityPostViewModel> viewModelData)
         {
             if (viewModelData.Count<ActivityPostViewModel>() < 2) return false;  // no need if count < 2
