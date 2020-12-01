@@ -106,7 +106,7 @@ namespace LexiconLMS.Controllers
                 ModuleStartTime = moduleDefaultStartTime,
                 ModuleEndTime = moduleDefaultStartTime.AddHours(1),
                 ActivityStartTime = moduleDefaultStartTime,
-                ActivityEndTime = moduleDefaultStartTime.AddMinutes(10)
+                ActivityEndTime = moduleDefaultStartTime
             };
             return View(model);
         }
@@ -147,21 +147,19 @@ namespace LexiconLMS.Controllers
 
                 db.Add(module);
 
-                if (IsActivityOverlap(viewModel.Data))
-                {
-                    TempData["ValidationError"] = "Activity start and end times overlap";
-                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = module.Id }) });
-                }
-
-                // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
                 if (viewModel.Data != null)
                 {
+                    if (IsActivityOverlap(viewModel.Data))
+                    {
+                        TempData["ValidationError"] = "Activity start and end times overlap";
+                        return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
+                    }
                     foreach (var item in viewModel.Data)
                     {
                         if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
                         {
                             TempData["ValidationError"] = errorMessage;
-                            return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = module.Id }) });
+                            return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
                         }
                         var activity = new Activity
                         {
@@ -206,6 +204,7 @@ namespace LexiconLMS.Controllers
 
             var activityList = await db.Activities.Include(t => t.ActivityType).Where(a => a.ModuleId == id).ToListAsync();
             var activityTypeList = activityList.Select(a => a.ActivityType).FirstOrDefault();
+            var activityDefaultStartTime = module.StartTime;
 
             var viewModel = new ModuleEditViewModel
             {
@@ -217,8 +216,8 @@ namespace LexiconLMS.Controllers
                 ModuleEndTime = module.EndTime,
                 Activities = activityList,
                 ActivityType = activityTypeList,
-                ActivityStartTime = DateTime.Now,
-                ActivityEndTime = DateTime.Now
+                ActivityStartTime = activityDefaultStartTime,
+                ActivityEndTime = activityDefaultStartTime
 
             };
 
@@ -256,15 +255,13 @@ namespace LexiconLMS.Controllers
                     db.Update(module);
                     await db.SaveChangesAsync();
 
-                    if (IsActivityOverlap(viewModel.Data))
-                    {
-                        TempData["ValidationError"] = "Activity start and end times overlap";
-                        return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
-                    }
-
-                    // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
                     if (viewModel.Data != null)
                     {
+                        if (IsActivityOverlap(viewModel.Data))
+                        {
+                            TempData["ValidationError"] = "Activity start and end times overlap";
+                            return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+                        }
                         foreach (var item in viewModel.Data)
                         {
                             if (!IsActivityTimeCorrect(ref errorMessage, viewModel.Module.ModuleId, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
@@ -335,12 +332,13 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        // Returns start time for a courses rounded down to midnight
         private DateTime GetCourseStartTime(int courseId)
         {
-            return db.Courses
+            var d =  db.Courses
                 .FirstOrDefault(c => c.Id == courseId)
                 .StartTime;
+            return new DateTime(d.Year, d.Month, d.Day, 0, 0, 0);
         }
         private DateTime GetModuleStartTime(int moduleId)
         {
@@ -355,6 +353,11 @@ namespace LexiconLMS.Controllers
             if (endTime < startTime)
             {
                 errorMessage = "Module end time is before its start time";
+                return false;
+            }
+            if (endTime == startTime)
+            {
+                errorMessage = "Module end time is equal to its start time";
                 return false;
             }
             //  Module ModuleStartTime must be >= course start time  
@@ -390,6 +393,12 @@ namespace LexiconLMS.Controllers
         private bool IsActivityTimeCorrect(ref string errorMessage, int? moduleId, DateTime moduleStartTime, DateTime startTime, DateTime endTime)
         {
             // TODO all this could be in IsActivityOverlap where we have sorted it. No need for the loop below either.
+
+            if (endTime == startTime)
+            {
+                errorMessage = "Activity end time is equal to its start time";
+                return false;
+            }
 
             // activity starttime must be < module endtime
             if (endTime < startTime)
@@ -428,6 +437,7 @@ namespace LexiconLMS.Controllers
             return true;
         }
 
+        // Test if there are any time overlaps in the viewModel.Data
         private bool IsActivityOverlap(IEnumerable<ActivityPostViewModel> viewModelData)
         {
             if (viewModelData.Count<ActivityPostViewModel>() < 2) return false;  // no need if count < 2
