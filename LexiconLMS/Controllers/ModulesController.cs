@@ -156,7 +156,7 @@ namespace LexiconLMS.Controllers
                     }
                     foreach (var item in viewModel.Data)
                     {
-                        if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
+                        if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, item.ActivityStartTime, item.ActivityEndTime))
                         {
                             TempData["ValidationError"] = errorMessage;
                             return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
@@ -264,7 +264,7 @@ namespace LexiconLMS.Controllers
                         }
                         foreach (var item in viewModel.Data)
                         {
-                            if (!IsActivityTimeCorrect(ref errorMessage, viewModel.Module.ModuleId, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
+                            if (!IsActivityTimeCorrect(ref errorMessage, viewModel.Module.ModuleId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, item.ActivityStartTime, item.ActivityEndTime))
                             {
                                 TempData["ValidationError"] = errorMessage;
                                 return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
@@ -390,7 +390,7 @@ namespace LexiconLMS.Controllers
             return true;
         }
 
-        private bool IsActivityTimeCorrect(ref string errorMessage, int? moduleId, DateTime moduleStartTime, DateTime startTime, DateTime endTime)
+        private bool IsActivityTimeCorrect(ref string errorMessage, int? moduleId, DateTime moduleStartTime, DateTime moduleEndTime, DateTime startTime, DateTime endTime)
         {
             // TODO all this could be in IsActivityOverlap where we have sorted it. No need for the loop below either.
 
@@ -408,13 +408,12 @@ namespace LexiconLMS.Controllers
             }
             //  Activity start time must be >= module start time  
 
-            if (startTime < moduleStartTime)
+            if (startTime < moduleStartTime || endTime > moduleEndTime)
             {
-                errorMessage = $"Activity start time is before module start time ({moduleStartTime}) ";
+                errorMessage = $"Activity not within module time span ({moduleStartTime} - {moduleEndTime}) ";
                 return false;
             }
-
-           
+          
             if (moduleId != null)  // moduleId is null when creating a new module
             {
                 var activities = db.Activities
