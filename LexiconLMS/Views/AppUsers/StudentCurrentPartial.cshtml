@@ -23,21 +23,11 @@
                 <div class="card-body">
                     <h5>Current module</h5>
                     <p class="card-text">
-                        @*<a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name<i class="material-icons play-icon">play_arrow</i></a>*@
                         <a asp-controller="Modules" asp-action="Details" asp-route-id="@Model.Module.Id">@Model.Module.Name</a>
-
                     </p>
                     <h5>Current activity</h5>
                     <p class="card-text">
-                        @if (Model.Activity.Id == 0)
-                        {
-                            @Model.Activity.Name
-                        }
-                        else
-                        {
-                            @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name<i class="material-icons play-icon">play_arrow</i></a>*@
-                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
-                        }
+                        <a asp-controller="Activities" asp-action="Details" asp-route-id="@Model.Activity.Id">@Model.Activity.Name</a>
                     </p>
                 </div>
             </div>
@@ -53,22 +43,27 @@
                         <div class="col ass-col col-sm-2">Finished</div>
                     </div>
 
-                    @foreach (var assignment in Model.Assignments)
+                    @foreach (var item in Model.Assignments)
                     {
                         <div class="row">
-                            <div class="col col-sm-6">
-                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@assignment.Id">@assignment.Name</a>
+                            <div class="col col-sm-6 ass-col-icons">
+                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                @*@if (item.IsFinished.Equals(false))
+                                {
+                                    <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img id="studentuploadassignment" src="~/icons/share.svg"/></a>
+                                }*@
                             </div>
-                            <div class="col col-sm-4">@assignment.EndTime</div>
-                            
+                            <div class="col col-sm-4">@item.DueTime</div>
+
                             <div class="col ass-col col-sm-2">
-                                @if (assignment.IsFinished)
+                                @if (item.IsFinished.Equals(true))
                                 {
                                     <i class="material-icons checkbox-ass">check_box</i>
                                 }
                                 else
                                 {
-                                    <i class="material-icons checkbox-ass">check_box_outline_blank</i>
+                                    @*<i class="material-icons checkbox-ass">check_box_outline_blank</i>*@
+                                    <a asp-controller="Activities" asp-action="StudentUpload" asp-route-id="@item.Id"><img id="studentuploadassignment" src="~/icons/share.svg" /></a>
                                 }
                             </div>
                         </div>

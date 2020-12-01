@@ -19,8 +19,6 @@ namespace LexiconLMS.Models.Entities
         [DisplayName("End Time")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime EndTime { get; set; }
-        [DisplayName("Is Finished")]
-        public bool IsFinished { get; set; }
 
         // Foreign Keys
         public int ModuleId { get; set; }

@@ -1,5 +1,4 @@
-﻿@*@model LexiconLMS.Models.Entities.Module*@
-@model LexiconLMS.Models.ViewModels.ModuleEditViewModel
+﻿@model LexiconLMS.Models.ViewModels.ModuleEditViewModel
 @inject LexiconLMS.Services.ISelectService service
 
 @{
@@ -12,27 +11,16 @@
 <form id="module">
     <div class="row">
         <div class="col-md-4">
-
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<input type="hidden" asp-for="Module.Id" />*@
-
             <div class="form-group">
                 <input type="hidden" asp-for="ModuleId" class="form-control" />
             </div>
-
-
 
             <div class="form-group">
                 <label asp-for="ModuleName" class="control-label"></label>
                 <input asp-for="ModuleName" class="form-control" />
                 <span asp-validation-for="ModuleName" class="text-danger"></span>
             </div>
-
-            @*<div class="form-group">
-            <label asp-for="Module.Description" class="control-label"></label>
-            <input asp-for="Module.Description" class="form-control" />
-            <span asp-validation-for="Module.Description" class="text-danger"></span>
-        </div>*@
 
             <div class="form-group">
                 <label asp-for="ModuleStartTime" class="control-label"></label>
@@ -44,26 +32,6 @@
                 <input asp-for="ModuleEndTime" class="form-control" />
                 <span asp-validation-for="ModuleEndTime" class="text-danger"></span>
             </div>
-
-            @*<div class="form-group">
-            <label asp-for="CourseId" class="control-label"></label>
-            <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-            <span asp-validation-for="CourseId" class="text-danger"></span>
-        </div>*@
-
-
-
-
-
-            @*<div class="form-group">
-                <input type="submit" value="Save changes" class="btn btn-primary" />
-            </div>*@
-
-
-
-
-
-
         </div>
 
         <div class="col-md-8">
@@ -77,8 +45,64 @@
 </form>
 
 <hr />
+<h4>Add Activities</h4>
+<form class="activityForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h4>Current Module Activities</h4>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+
+                <div class="form-group">
+                    <label asp-for="ActivityTypeId" class="control-label"></label>
+                    <select asp-for="ActivityTypeId" asp-items="@await service.SelectActivityTypes()" class="form-control"></select>
+                    <span asp-validation-for="ActivityTypeId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ActivityName" class="control-label"></label>
+                    <input asp-for="ActivityName" class="form-control" />
+                    <span asp-validation-for="ActivityName" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="ActivityStartTime" class="control-label"></label>
+                    <input asp-for="ActivityStartTime" class="form-control" />
+                    <span asp-validation-for="ActivityStartTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ActivityEndTime" class="control-label"></label>
+                    <input asp-for="ActivityEndTime" class="form-control" />
+                    <span asp-validation-for="ActivityEndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="ActivityDescription" class="control-label"></label><br />
+                    <textarea asp-for="ActivityDescription" class="form-control" rows="4">Add activity description here...</textarea>
+                    <span asp-validation-for="ActivityDescription" class="text-danger"></span>
+                </div>
+
+                <div class="form-group bg-light border">
+                    <label for="exampleFormControlSelect2">Module activities</label>
+                    <div id="theList" class="rounded bg-light"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input onclick="addToList()" type="button" value="Add to Module" class="btn btn-primary" />
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<h4>Current Activities</h4>
 
 
 <div class="row">
@@ -116,8 +140,11 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.ActivityType.Name)
                     </td>
-                    <td>
-                        <a class="btn-danger rounded" asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id">Remove</a>
+                    <td >
+                        <a class="activitycells" data-activityid="@item.Id">
+                            <img id="deleteicon" src="~/icons/delete.svg" />
+                        </a>
+                        
                     </td>
                 </tr>
             }
@@ -127,65 +154,6 @@
 </div>
 
 
-<hr />
-<h4>Add New Activities</h4>
-<form class="activityForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-
-                <div class="form-group">
-                    <label asp-for="ActivityTypeId" class="control-label"></label>
-                    <select asp-for="ActivityTypeId" asp-items="@await service.SelectActivityTypes()" class="form-control"></select>
-                    <span asp-validation-for="ActivityTypeId" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="ActivityName" class="control-label"></label>
-                    <input asp-for="ActivityName" class="form-control" />
-                    <span asp-validation-for="ActivityName" class="text-danger"></span>
-                </div>
-
-
-                <div class="form-group">
-                    <label asp-for="ActivityStartTime" class="control-label"></label>
-                    <input asp-for="ActivityStartTime" class="form-control" />
-                    <span asp-validation-for="ActivityStartTime" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="ActivityEndTime" class="control-label"></label>
-                    <input asp-for="ActivityEndTime" class="form-control" />
-                    <span asp-validation-for="ActivityEndTime" class="text-danger"></span>
-                </div>
-
-
-            </div>
-
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label asp-for="ActivityDescription" class="control-label"></label><br />
-                    <textarea asp-for="ActivityDescription" class="form-control" rows="4">Add activity description here...</textarea>
-                    <span asp-validation-for="ActivityDescription" class="text-danger"></span>
-                </div>
-
-                <div class="form-group bg-light border">
-                    <label for="exampleFormControlSelect2">Module activities</label>
-                    <div id="theList" class="rounded bg-light"></div>
-                </div>
-
-
-            </div>
-
-            <div class="form-group">
-                <input onclick="addToList()" type="button" value="Add to Module" class="btn btn-primary" />
-            </div>
-
-        </div>
-    </div>
-</form>
 
 <div class="form-group">
     <input onclick="sendJsonToEdit()" type="button" value="Save Changes" class="btn btn-primary" />
@@ -194,8 +162,34 @@
 
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.CourseId">Back to Course</a>
 </div>
+
+
+@*--------------------Delete Modal----------------*@
+
+<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="aModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aModalLabel">Delete activity?</h5>
+            </div>
+            <div class="modal-body">
+                <p>Connected documents will also be deleted.</p>
+                <a class="btn btn-danger" id="deleteact" method="post">Delete</a>
+                @*<button type="button" id="deleteact" class="btn btn-danger" method="post">Delete</button>*@
+                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

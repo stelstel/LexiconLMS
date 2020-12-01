@@ -1,11 +1,10 @@
 ﻿@model IEnumerable<TeacherModuleViewModel>
 
-<h2>
-    Modules
-    @*<a asp-controller="Modules" asp-action="Create" asp-route-id="@Model">
-        <img class="icon-img" src="~/icons/plus.svg" />
-    </a>*@
-</h2>
+    <div class="row">
+        <div class="col-sm-10 ml-1">
+            <h2>Modules</h2>
+        </div>
+    </div>
 
 @foreach (var item in Model)
 {

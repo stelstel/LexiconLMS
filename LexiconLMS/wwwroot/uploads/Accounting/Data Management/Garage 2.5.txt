@@ -1,0 +1,6 @@
+* Create all the new entities
+* Try Seeding Data
+* Make member registration view
+* Make vehicle reg view
+* Make membership validation
+* PowerTools/dgml för att testa ER

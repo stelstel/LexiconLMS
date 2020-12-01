@@ -1,4 +1,4 @@
-﻿@model LexiconLMS.Models.Entities.Module
+﻿@model LexiconLMS.Models.ViewModels.ModuleDetailsViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
@@ -10,53 +10,127 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Module</h4>
+    <h4>Module<a asp-controller="Documents" asp-action="Edit" asp-route-id="@Model.Module.Id">
+    <img src="/icons/edit.svg" alt="Edit" style="width:1.4rem"/>
+</a></h4>
+    
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Module.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Module.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Module.Description)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Module.Description)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
+            @Html.DisplayNameFor(model => model.Module.StartTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
+            @Html.DisplayFor(model => model.Module.StartTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
+            @Html.DisplayNameFor(model => model.Module.EndTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
+            @Html.DisplayFor(model => model.Module.EndTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Course)
+            @Html.DisplayNameFor(model => model.Module.Course)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Course.Name)
+            @Html.DisplayFor(model => model.Module.Course.Name)
         </dd>
     </dl>
 </div>
+
+
+
+
+
+<h4>Module Documents</h4>
+
+<div class="row">
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].Name)
+    </div>
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].Description)
+    </div>
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].UploadTime)
+    </div>
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].AppUser)
+    </div>
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].Course)
+    </div>
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].Module)
+    </div>
+    <div class="col-sm">
+        @Html.DisplayNameFor(model => model.Documents[0].Activity)
+    </div>
+    <div class="col-sm">
+    </div>
+</div>
+@foreach (var item in Model.Documents)
+{
+    <div class="row">
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.Name)
+        </div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.Description)
+        </div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.UploadTime)
+        </div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.AppUser.FullName)
+        </div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.Course.Name)
+        </div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.Module.Name)
+        </div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.Activity.Name)
+        </div>
+        <div class="col-sm">
+            <a asp-controller="Documents" asp-action="Edit" asp-route-id="@item.Id">
+                <img id="editicon" src="/icons/edit.svg" alt="Edit" />
+            </a>
+            <a asp-controller="Documents" asp-action="Details" asp-route-id="@item.Id">
+                <img id="detailsicon" src="/icons/info.svg" alt="Details" />
+            </a>
+            <a asp-controller="Documents" asp-action="Delete" asp-route-id="@item.Id">
+                <img id="deleteicon" src="/icons/delete.svg" alt="Delete" />
+            </a>
+        </div>
+    </div>
+}
+
+<br />
+<hr />
+
+
 @if (User.IsInRole("Teacher"))
 {
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.CourseId">Go Back</a>
+        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Module.CourseId">Go Back</a>
     </div>
 }
 else if (User.IsInRole("Student"))
 {
     <div>
-        <a asp-controller="AppUsers" asp-action="Index">Go Back</a>
+        <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Module.CourseId">Go Back</a>
     </div>
 }
-
-

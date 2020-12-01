@@ -4,25 +4,27 @@
     ViewData["Title"] = "User Accounts";
 }
 
-<h1>User Accounts</h1>
 
 <div id="row-add-course" class="row justify-content-center">
-    <a asp-controller="AppUsers" asp-action="CreateUser" id="btn-teacher-add-assignment" class="btn btn-primary"><i class="material-icons">add</i>Create New User</a>
+    <h1>User Accounts</h1>
+    <div class="col-sm-2 justify-content-center" style="top: 25px">
+        <a asp-controller="AppUsers" asp-action="CreateUser" id="btn-teacher-add-assignment" class="btn btn-primary" style="border-radius: 50%"><i class="material-icons" style="top: 5px">add</i></a>
+    </div>
 </div>
 
 <div class="container cont-section">
     <h2>Students</h2>
     <div class="container p-3 my-3 border">
-        <table class="table table-sm">
+        <table id="userindex" class="table table-sm">
             <partial name="StudentListPartial" />
         </table>
     </div>
- </div>
+</div>
 <div class="container cont-section">
     <h2>Teachers</h2>
 
     <div class="container  p-3 my-3 border">
-        <table class="table table-sm">
+        <table id="userindex" class="table table-sm">
             <partial name="TeacherListPartial" />
         </table>
     </div>

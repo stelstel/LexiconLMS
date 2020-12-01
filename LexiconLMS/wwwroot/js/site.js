@@ -70,7 +70,8 @@ function sendJson() {
             },
             __RequestVerificationToken: token
         },
-        success: function () {
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
             $('#result').html('"sendJson()" successfully called.');
         },
         failure: function (response) {
@@ -110,23 +111,13 @@ function sendJsonToEdit() {
     });
 }
 
+// Show modal and redirect to Activities/DeleteConfirmed/id
+$(document).ready(function () {
 
-
-
-
-//function AjaxGoodRedirect(urlAction) {
-//    $.ajax({
-//        type: "POST", // see http://haacked.com/archive/2009/06/24/json-hijacking.aspx 
-//        url: urlAction,
-//        data: {}, //to send data see more at http://bit.ly/mvc_ajax_jquery            
-//        datatype: "JSON",
-//        contentType: "application/json; charset=utf-8",
-//        success: function (returndata) {
-//            if (returndata.ok) window.location = returndata.newurl;
-//            else window.alert(returndata.message);
-//        }
-//    });
-//}​​
-        
-
-
+    $('.activitycells').click(function () {
+        let target = $(this).data('activityid');
+        $("#resultModal").modal('show');
+        let link = "/Activities/DeleteConfirmed/" + target;
+        $('#deleteact').attr('href', link);
+    });
+});

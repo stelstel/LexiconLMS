@@ -8,6 +8,7 @@ using LexiconLMS.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels;
 using AutoMapper;
+using System;
 
 namespace LexiconLMS.Controllers
 {
@@ -45,15 +46,56 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
-            return View(module);
+            // All activities in the module.
+            var activities = await db.Activities.Where(a => a.ModuleId == module.Id).ToListAsync();
+
+            // All activity Ids in the module.
+            var activityIds = await db.Activities.Where(a => a.ModuleId == module.Id).Select(i => i.Id).ToListAsync();
+
+            // All documents in the module.
+            var documents = await db.Documents.Where(d => d.ModuleId == module.Id)
+                .Include(a => a.Activity)
+                .Include(u => u.AppUser)
+                .ToListAsync();
+
+            // All documents in the activities in the module.
+            foreach (var doc in await db.Documents.Include(a => a.Activity).ToListAsync())            
+            {
+                foreach (var i in activityIds)
+                {
+                    if (doc.ActivityId == i)
+                    {
+                        if (!documents.Contains(doc))
+                        {
+                            documents.Add(doc);
+                        }
+                        
+                    }
+                } 
+            }
+
+            var viewmodel = new ModuleDetailsViewModel
+            {
+                Module = module,
+                Documents = documents
+            };
+
+            return View(viewmodel);
         }
 
         // GET: Modules/Create
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
-            
-            var model = new ModuleActivityCreateViewModel {CourseId = (int)id };
+
+            var model = new ModuleActivityCreateViewModel
+            {
+                CourseId = (int)id,
+                ModuleStartTime = DateTime.Now,
+                ModuleEndTime = DateTime.Now,
+                ActivityStartTime = DateTime.Now,
+                ActivityEndTime = DateTime.Now
+            };
 
             return View(model);
         }
@@ -126,13 +168,16 @@ namespace LexiconLMS.Controllers
 
             var viewModel = new ModuleEditViewModel
             {
+                CourseId = module.CourseId,
                 ModuleId = module.Id,
                 ModuleName = module.Name,
                 ModuleDescription = module.Description,
                 ModuleStartTime = module.StartTime,
                 ModuleEndTime = module.EndTime,
                 Activities = activityList,
-                ActivityType = activityTypeList
+                ActivityType = activityTypeList,
+                ActivityStartTime = DateTime.Now,
+                ActivityEndTime = DateTime.Now
 
             };
 

@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="WireFrames\**" />
+    <Content Remove="WireFrames\**" />
+    <EmbeddedResource Remove="WireFrames\**" />
+    <None Remove="WireFrames\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\AppUsers\Index - Copy.cshtml" />
     <Content Remove="Views\AppUsers\Index1.cshtml" />
   </ItemGroup>
@@ -27,7 +34,7 @@
 
   <ItemGroup>
     <Folder Include="Models\ViewModels\Teacher\" />
-    <Folder Include="WireFrames\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

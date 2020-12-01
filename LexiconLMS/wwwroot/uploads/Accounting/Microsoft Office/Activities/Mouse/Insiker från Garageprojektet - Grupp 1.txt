@@ -1,0 +1,14 @@
+Vad som gjordes bra:
+* Tre korta effektiva möten per dag.
+* Ingen hade ett stort ego.
+* Alla hjälptes åt när någon fastnat.
+
+
+
+Vad som behöver förbättras:
+* Mer kommentarer i koden.
+* Generell refaktorering efter att projektet "avslutats".
+* Commita och pusha oftare.
+* Lägg in fler funktioner:
+	* Dropdownlist of famous models and option to add other brand.
+	* etc.
