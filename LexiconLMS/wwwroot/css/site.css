@@ -351,7 +351,7 @@ div#card-mod-act.card div.card-body {
 #detailsicon,
 #editicon
 {
-    width: 2rem;
+    width: 1.8rem;
 }
 
 #deleteicon {
@@ -385,4 +385,8 @@ div#card-mod-act.card div.card-body {
 
 #btn-create{
     width: 2rem
+}
+
+.remove{
+    border-radius: 30%
 }
