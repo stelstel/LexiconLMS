@@ -419,9 +419,10 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Student, Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DownloadCourseDoc(int id /*Document model, IFormFile file string file*/)
+        //public async Task<IActionResult> DownloadCourseDoc(int id, /*Document model, IFormFile file*/ string file)
+        public async Task<IActionResult> DownloadCourseDoc(int id, IFormFile file)
         {
-            var fil = TempData["fil"];
+            //var fil = TempData["fil"];
 
             if (ModelState.IsValid)
             {
@@ -430,7 +431,9 @@ namespace LexiconLMS.Controllers
 
                 var courses = await db.Courses.ToListAsync();
                 var course = courses.Where(a => a.Id == id).FirstOrDefault();
-                var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{fil}");
+                //var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
+                var filePath = Path.Combine(web.WebRootPath, file.ToString());
+
                 var memory = new MemoryStream();
 
                 using (var stream = new FileStream(filePath, FileMode.Open))
