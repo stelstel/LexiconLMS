@@ -103,7 +103,7 @@ namespace LexiconLMS.Controllers
                 ModuleStartTime = moduleDefaultStartTime,
                 ModuleEndTime = moduleDefaultStartTime.AddHours(1),
                 ActivityStartTime = moduleDefaultStartTime,
-                ActivityEndTime = moduleDefaultStartTime.AddMinutes(10)
+                ActivityEndTime = moduleDefaultStartTime
             };
             return View(model);
         }
@@ -203,6 +203,7 @@ namespace LexiconLMS.Controllers
 
             var activityList = await db.Activities.Include(t => t.ActivityType).Where(a => a.ModuleId == id).ToListAsync();
             var activityTypeList = activityList.Select(a => a.ActivityType).FirstOrDefault();
+            var activityDefaultStartTime = module.StartTime;
 
             var viewModel = new ModuleEditViewModel
             {
@@ -214,8 +215,8 @@ namespace LexiconLMS.Controllers
                 ModuleEndTime = module.EndTime,
                 Activities = activityList,
                 ActivityType = activityTypeList,
-                ActivityStartTime = DateTime.Now,
-                ActivityEndTime = DateTime.Now
+                ActivityStartTime = activityDefaultStartTime,
+                ActivityEndTime = activityDefaultStartTime
 
             };
 
