@@ -382,3 +382,7 @@ div#card-mod-act.card div.card-body {
 .lpcontent{
     margin-top: 10rem
 }
+
+#btn-create{
+    width: 2rem
+}
