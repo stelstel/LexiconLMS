@@ -695,6 +695,12 @@ namespace LexiconLMS.Controllers
 
             var timeNow = DateTime.Now;
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            // If no users assigned to course yet
+            if (students == 0)
+            {
+                return new TeacherCurrentViewModel { Course = course, Module = module, Activity = null, Assignments = null, Finished = null };
+            }
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
             var assignments = await db.Activities.Where(c => c.ActivityType.Name == "Assignment" && c.Module.CourseId == id)
@@ -724,6 +730,8 @@ namespace LexiconLMS.Controllers
         public async Task<List<TeacherAssignmentListViewModel>> AssignmentListTeacher(int? id)
         {
             var students = db.Courses.Find(id).AppUsers.Count();
+
+            if (students == 0) return null;
 
             var assignments = await db.Activities
                 .Where(a => a.ActivityType.Name == "Assignment" && a.Module.CourseId == id)

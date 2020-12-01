@@ -26,7 +26,7 @@
 <div class="container cont-section" id="assignments">
     <div class="row row-activities">
         <div class="col-sm-12">
-            @if (Model.ModuleList != null)
+            @if (Model.ModuleList != null && Model.AssignmentList != null)
             {
                 <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
             }
