@@ -35,9 +35,6 @@ namespace LexiconLMS.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("bit");
-
                     b.Property<int>("ModuleId")
                         .HasColumnType("int");
 
@@ -189,6 +186,9 @@ namespace LexiconLMS.Migrations
 
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsFinished")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ModuleId")
                         .HasColumnType("int");

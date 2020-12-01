@@ -17,7 +17,7 @@
 @if (Model.ModuleList != null)
 {
     <div id="div-add-module">
-        <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">
+        <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id">
             <img id="add-module-icon" class="icon-img" src="~/icons/plus.svg" />
             Add module
         </a>
@@ -32,20 +32,8 @@
         <div class="col-sm-12">
             @if (Model.ModuleList != null)
             {
-            <div class="row row-add-assignment">
-                <div class="col-sm-12">
-                    <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id">
-                        <img id="icon-add-assignment" class="icon-img" src="~/icons/plus.svg" />
-                        Add assignment
-                    </a>
-                </div>
-            </div>
-
                 <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
             }
         </div>
-    </div>
-    <div id="row-add-assignment" class="row justify-content-center">
-        <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Course.Id" id="btn-teacher-add-assignment" class="btn btn-primary"><i class="material-icons">post_add</i>Add assignment</a>
     </div>
 </div>
