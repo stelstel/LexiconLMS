@@ -144,15 +144,13 @@ namespace LexiconLMS.Controllers
 
                 db.Add(module);
 
-                if (IsActivityOverlap(viewModel.Data))
-                {
-                    TempData["ValidationError"] = "Activity start and end times overlap";
-                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
-                }
-
-                // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
                 if (viewModel.Data != null)
                 {
+                    if (IsActivityOverlap(viewModel.Data))
+                    {
+                        TempData["ValidationError"] = "Activity start and end times overlap";
+                        return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
+                    }
                     foreach (var item in viewModel.Data)
                     {
                         if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
@@ -254,15 +252,13 @@ namespace LexiconLMS.Controllers
                     db.Update(module);
                     await db.SaveChangesAsync();
 
-                    if (IsActivityOverlap(viewModel.Data))
-                    {
-                        TempData["ValidationError"] = "Activity start and end times overlap";
-                        return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
-                    }
-
-                    // TODO: what if viewModel.Data == null (no activities added). Before NPE was thrown and we stayed on create page. Now returns to course page
                     if (viewModel.Data != null)
                     {
+                        if (IsActivityOverlap(viewModel.Data))
+                        {
+                            TempData["ValidationError"] = "Activity start and end times overlap";
+                            return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+                        }
                         foreach (var item in viewModel.Data)
                         {
                             if (!IsActivityTimeCorrect(ref errorMessage, viewModel.Module.ModuleId, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
@@ -333,12 +329,13 @@ namespace LexiconLMS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        // Returns start time for a courses rounded down to midnight
         private DateTime GetCourseStartTime(int courseId)
         {
-            return db.Courses
+            var d =  db.Courses
                 .FirstOrDefault(c => c.Id == courseId)
                 .StartTime;
+            return new DateTime(d.Year, d.Month, d.Day, 0, 0, 0);
         }
         private DateTime GetModuleStartTime(int moduleId)
         {
