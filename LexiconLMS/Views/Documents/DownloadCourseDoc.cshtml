@@ -9,32 +9,13 @@
 <h4>Document for @Model.Course.Name</h4>
 <hr />
 
-
-<form id="fileform" asp-action="DownloadCourseDoc" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="row custom-file">
-        @{
-            int counter = 0;
-        }
-
-        @foreach (var file in Model.fileList)
-        {
-            //TempData["fil-" + @counter] = @file;
-            <li id="customFile" name="file"><a href="@file">@file</a></li>
-        }
-    </div>
-</form>
-
-@*<ul>
+<div class="row custom-file">
+        
     @foreach (var file in Model.fileList)
     {
-        <li>
-            <a asp-controller="Documents" asp-action="DownloadCourseDoc" asp-route-file="@file">@file</a>
-        </li>
+        <li id="customFile" name="file"><a href="@file">@file</a></li>
     }
-</ul>*@
-
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

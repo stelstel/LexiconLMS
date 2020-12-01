@@ -415,39 +415,39 @@ namespace LexiconLMS.Controllers
             return View(model);
         }
 
-        // POST: Download Course Document
-        [Authorize(Roles = "Student, Teacher")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DownloadCourseDoc(int id, /*Document model, IFormFile file*/ string file)
-        public async Task<IActionResult> DownloadCourseDoc(int id, Document model, IFormFile file)
-        {
-            //var fil = TempData["fil"];
+        //// POST: Download Course Document
+        //[Authorize(Roles = "Student, Teacher")]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        ////public async Task<IActionResult> DownloadCourseDoc(int id, /*Document model, IFormFile file*/ string file)
+        //public async Task<IActionResult> DownloadCourseDoc(int id, Document model, IFormFile file)
+        //{
+        //    //var fil = TempData["fil"];
 
-            if (ModelState.IsValid)
-            {
-                var userId = userManager.GetUserId(User);
+        //    if (ModelState.IsValid)
+        //    {
+        //        var userId = userManager.GetUserId(User);
 
-                var courses = await db.Courses.ToListAsync();
-                var course = courses.Where(a => a.Id == id).FirstOrDefault();
-                var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
-                //var filePath = Path.Combine(web.WebRootPath, file.ToString());
+        //        var courses = await db.Courses.ToListAsync();
+        //        var course = courses.Where(a => a.Id == id).FirstOrDefault();
+        //        var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
+        //        //var filePath = Path.Combine(web.WebRootPath, file.ToString());
 
-                var memory = new MemoryStream();
+        //        var memory = new MemoryStream();
 
-                using (var stream = new FileStream(filePath, FileMode.Open))
-                {
-                    await stream.CopyToAsync(memory);
-                }
+        //        using (var stream = new FileStream(filePath, FileMode.Open))
+        //        {
+        //            await stream.CopyToAsync(memory);
+        //        }
 
-                memory.Position = 0;
+        //        memory.Position = 0;
 
-                return File(memory, GetContType(filePath), Path.GetFileName(filePath));
-            }
+        //        return File(memory, GetContType(filePath), Path.GetFileName(filePath));
+        //    }
 
-            //return View(model);
-            return null;
-        }
+        //    //return View(model);
+        //    return null;
+        //}
 
         [HttpGet]
         public string GetContType(string fileName)
