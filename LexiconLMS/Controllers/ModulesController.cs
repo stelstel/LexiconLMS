@@ -158,7 +158,7 @@ namespace LexiconLMS.Controllers
                         if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, item.ActivityStartTime, item.ActivityEndTime))
                         {
                             TempData["ValidationError"] = errorMessage;
-                            return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = module.Id }) });
+                            return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
                         }
                         var activity = new Activity
                         {
