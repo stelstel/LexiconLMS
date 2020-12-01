@@ -89,7 +89,9 @@ namespace LexiconLMS.Controllers
                     Course = course,
                     CourseId = course.Id,
                     UploadTime = DateTime.Now,
-                    AppUserId = userId
+                    AppUserId = userId,
+                    FilePath = $"~/uploads/{course.Name}/{fileName}"
+                    //FilePath = $"{path}/{fileName}"
                 };
 
                 db.Add(newModel);
@@ -394,7 +396,11 @@ namespace LexiconLMS.Controllers
         {
             var courses = await db.Courses.ToListAsync();
             var course = courses.Where(a => a.Id == id).FirstOrDefault();
-            var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
+            //var directoryPath = $"/uploads/{course.Name}";////////////////////
+            var directoryPath = Path.Combine(Environment.CurrentDirectory, $"uploads/{course.Name}");
+            //var folderPath = Server.MapPath($"~/uploads/{course.name}");
+            //var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
+
 
             ICollection<Document> docs = await db.Documents
                 .Where(d => d.Course == course)
@@ -403,7 +409,8 @@ namespace LexiconLMS.Controllers
                 .ToListAsync();
 
             // ONLY course documents. NOT module or activity documents (SearchOption.AllDirectories to see the rest)
-            ICollection<string> fileList = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+            ICollection<string> fileList = Directory.GetFiles($"/uploads/{course.Name}", "*.*", SearchOption.AllDirectories);
+            //string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
 
             var model = new DownloadCourseDocumentViewModel
             {

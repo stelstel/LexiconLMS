@@ -13,6 +13,7 @@ namespace LexiconLMS.Models.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime UploadTime { get; set; }
+        public string FilePath { get; set; }
 
         // Foreign Keys
         public string AppUserId { get; set; }
@@ -25,5 +26,6 @@ namespace LexiconLMS.Models.Entities
         public Course Course { get; set; }
         public Module Module { get; set; }
         public Activity Activity { get; set; }
+        
     }
 }

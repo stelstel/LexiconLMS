@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LexiconLMS.Migrations
 {
-    public partial class Init14 : Migration
+    public partial class Init15 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -252,6 +252,7 @@ namespace LexiconLMS.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     UploadTime = table.Column<DateTime>(nullable: false),
+                    FilePath = table.Column<string>(nullable: true),
                     AppUserId = table.Column<string>(nullable: true),
                     CourseId = table.Column<int>(nullable: true),
                     ModuleId = table.Column<int>(nullable: true),

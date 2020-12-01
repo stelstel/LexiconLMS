@@ -187,6 +187,9 @@ namespace LexiconLMS.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ModuleId")
                         .HasColumnType("int");
 
