@@ -2,11 +2,14 @@
 
 /*
     COLOURS:
-        Darker grey:    gray
-        Lighter grey:   #dbdbdb
-        Green:          #28a745
-        Border-grey     #666
+        Green:              #28a745
+
+        Lighter grey:       #dbdbdb
+        Border-grey         #666
+        line:hover grey     #888
+        Darker grey:        gray
 */
+
 
 body header .navbar {
     background: #dbdbdb !important;
@@ -115,9 +118,19 @@ h1 {
     box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
 }
 
+#current h1 .upload-icon {
+    width: 19px;
+}
+
+#current h1 .info-icon {
+    width: 28px;
+    margin-left: 1rem;
+}
+
 .container h2 {
     text-align: center;
     margin: 0.6em 0;
+    margin-top: 2.4rem;
 }
 
 #col-modal {
@@ -235,6 +248,7 @@ div#card-mod-act.card div.card-body {
 }
 
 .btn-module {
+    margin-top: 15px;
     -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
     box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
@@ -310,13 +324,39 @@ div#card-mod-act.card div.card-body {
     top: 3px;
     font-size: 26px;
     margin-left: 1rem;
+    text-shadow: none;
 }
 
+#add-module-icon,
 #info-module-icon {
     color: black;
     font-size: 26px;
+    margin-left: -35px;
+    margin-top: 1.2rem;
+}
+
+#add-module-icon {
+    vertical-align: bottom;
+}
+
+#icon-add-assignment,
+#add-module-icon {
+    width: 1.5rem;
+}
+
+#assignments #icon-add-assignment {
+    margin-top: -4px;
+}
+
+#div-add-module {
+    z-index: 10;
+    left: 100px;
+    top: 2.5rem;
+    position: relative;
+}
+
+#cont-student-modules-and-activities #info-module-icon {
     margin-left: -20px;
-    top: 6px;
 }
 
 #row-add-assignment {
@@ -333,7 +373,7 @@ div#card-mod-act.card div.card-body {
 
 .row-module-btn-icons {
     margin-top: 0.4rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: center;
 }
 
@@ -347,6 +387,52 @@ div#card-mod-act.card div.card-body {
     text-align: center;
 }
 
+.icon-img:hover {
+    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.75);
+}
+
+#col-modules h2 .icon-img,
+.row-activities h2 .icon-img,
+.row-assignments h2 .icon-img {
+    width: 28px;
+}
+
+.row-assignments .row:nth-child(even) {
+    background: #eee;
+}
+
+/* On hover, except content row 1 command row 3 */
+.row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover {
+    background: #888;
+    color: white;
+    text-shadow: 1px 1px 2px #000;
+}
+
+/* On hover, except content row 1 command row 3 */
+.row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover a {
+    color: white; /*  Remove?? */
+}
+
+/* On hover, except content row 2 */
+#col-activities .row:not(:nth-child(2)):hover {
+    background: #dbdbdb;
+}
+
+.row-assignments h2 {
+    margin-top: 0;
+}
+
+.row-assignments .row-add-assignment {
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+#cont-modules-and-activities {
+    margin-top: -0.7rem;
+}
 
 #detailsicon,
 #editicon
@@ -357,7 +443,6 @@ div#card-mod-act.card div.card-body {
 #deleteicon {
     width: 2.4rem;
 }
-
 
 #courseindex tr:nth-child(even){
     background: #eee

@@ -12,6 +12,7 @@ namespace LexiconLMS.Models.Entities
         [DisplayName("Upload Time")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime UploadTime { get; set; }
+        public string FilePath { get; set; }
         public bool? IsFinished { get; set; }
 
         // Foreign Keys
@@ -26,5 +27,6 @@ namespace LexiconLMS.Models.Entities
         public Course Course { get; set; }
         public Module Module { get; set; }
         public Activity Activity { get; set; }
+        
     }
 }

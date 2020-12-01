@@ -20,9 +20,10 @@
     </div>
 </div>
 
-<div class="row">
-    @foreach (var item in Model)
-    {
+
+@foreach (var item in Model)
+{
+    <div class="row">
         <div class="col-sm-3">
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
         </div>
@@ -40,5 +41,5 @@
             @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"><img src="~/icons/info.svg"/></a>*@
             @*<a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><img src="~/icons/delete.svg" /></a>*@
         </div>
-     }
-</div>
+    </div>
+}

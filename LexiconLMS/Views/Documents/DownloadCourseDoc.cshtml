@@ -1,0 +1,22 @@
+﻿@model DownloadCourseDocumentViewModel
+
+@{
+    ViewData["Title"] = "Download course document";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Document for @Model.Course.Name</h4>
+<hr />
+
+<div class="row custom-file">
+        
+    @foreach (var file in Model.fileList)
+    {
+        <li @*id="customFile" name="file"*@><a href="@file">@file</a></li>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
