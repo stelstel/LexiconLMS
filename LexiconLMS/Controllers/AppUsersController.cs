@@ -510,7 +510,7 @@ namespace LexiconLMS.Controllers
 
             db.Users.Remove(appUser);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(TeacherUserIndex));
         }
 
         [Authorize(Roles = "Student")]
