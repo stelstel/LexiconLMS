@@ -9,12 +9,13 @@
 
 <h1>Details</h1>
 
+<hr />
 <div>
     <h4>Module<a asp-controller="Documents" asp-action="Edit" asp-route-id="@Model.Module.Id">
     <img src="/icons/edit.svg" alt="Edit" style="width:1.4rem"/>
 </a></h4>
     
-    <hr />
+    
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Module.Name)
@@ -50,18 +51,18 @@
 </div>
 
 
-
+<hr />
 
 
 <h4>Module Documents</h4>
 
-<div class="row">
+<div class="row font-weight-bold">
     <div class="col-sm">
         @Html.DisplayNameFor(model => model.Documents[0].Name)
     </div>
-    <div class="col-sm">
+    @*<div class="col-sm">
         @Html.DisplayNameFor(model => model.Documents[0].Description)
-    </div>
+    </div>*@
     <div class="col-sm">
         @Html.DisplayNameFor(model => model.Documents[0].UploadTime)
     </div>
@@ -86,9 +87,9 @@
         <div class="col-sm">
             @Html.DisplayFor(modelItem => item.Name)
         </div>
-        <div class="col-sm">
+        @*<div class="col-sm">
             @Html.DisplayFor(modelItem => item.Description)
-        </div>
+        </div>*@
         <div class="col-sm">
             @Html.DisplayFor(modelItem => item.UploadTime)
         </div>
