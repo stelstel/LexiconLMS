@@ -71,9 +71,10 @@ namespace LexiconLMS.Controllers
                     StartTime = courseModel.StartTime
                 };
 
+                ViewBag.Result = "Course created successfully!";
                 db.Add(course);
                 await db.SaveChangesAsync();
-                return RedirectToAction("TeacherHome", "AppUsers");
+                //return RedirectToAction("TeacherHome", "AppUsers");
             }
             return View();
         }
@@ -113,6 +114,7 @@ namespace LexiconLMS.Controllers
             {
                 try
                 {
+                    ViewBag.Result = "Course edited successfully!";
                     db.Update(course);
                     await db.SaveChangesAsync();
                 }
@@ -127,7 +129,7 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("TeacherHome", "AppUsers");
+                //return RedirectToAction("TeacherHome", "AppUsers");
             }
             return View(course);
         }
