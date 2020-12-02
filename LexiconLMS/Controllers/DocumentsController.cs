@@ -241,6 +241,7 @@ namespace LexiconLMS.Controllers
                     CourseId = course.Id,
                     UploadTime = upload,
                     AppUserId = userId,
+                    FilePath = $"/uploads/{module.Course.Name}/{module.Name}/Activities/{activity.Name}/{fileName}"
                 };
 
                 db.Add(model);
@@ -426,25 +427,60 @@ namespace LexiconLMS.Controllers
             return View(model);
         }
 
+        //********************* DownloadModuleDoc GET ************************************
         // GET: Download Module Document
         [Authorize(Roles = "Student")]
         [HttpGet]
-        public async Task<IActionResult> DownloadmoduleDoc(int? id)
+        public async Task<IActionResult> DownloadModuleDoc(int? id)
         {
             
             var modules = await db.Modules.ToListAsync();
             var module = modules.Where(m => m.Id == id).FirstOrDefault();
 
+            var course = db.Courses
+                .Where(c => c.Id == module.CourseId)
+                .FirstOrDefault();
+
             ICollection<Document> docs = await db.Documents
                 .Where(d => d.ModuleId == id)
-                //.Where(d => d.ModuleId == null)
+                //.Where(d => d.CourseId == course.Id)
                 //.Where(d => d.ActivityId == null)
                 .ToListAsync();
 
             var model = new DownloadModuleDocumentViewModel
             {
                 Name = module.Name,
+                DocumentList = docs,
+                Course = course
+            };
+
+            return View(model);
+        }
+
+        //********************* DownloadActivityDoc GET ************************************
+        // GET: Download Activity Document
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> DownloadActivityDoc(int? id)
+        {
+            var activities = await db.Activities.ToListAsync();
+            var activity = activities.Where(a => a.Id == id).FirstOrDefault();
+
+            //var course = db.Courses
+            //    .Where(c => c.Id == module.CourseId)
+            //    .FirstOrDefault();
+
+            ICollection<Document> docs = await db.Documents
+                .Where(d => d.ActivityId == id)
+                //.Where(d => d.CourseId == course.Id)
+                //.Where(d => d.ActivityId == null)
+                .ToListAsync();
+
+            var model = new DownloadActivityDocumentViewModel
+            {
+                Name = activity.Name,
                 DocumentList = docs
+                //Course = course
             };
 
             return View(model);

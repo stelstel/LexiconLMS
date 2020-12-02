@@ -464,6 +464,10 @@ table#userindex tbody tr:hover a {
     transform: rotate(180deg);
 }
 
+#download-activity-doc-icon {
+    width: 2rem;
+}
+
 #studentuploadsbottom {
     width: 1.3rem;
     transform: rotate(180deg);
@@ -493,4 +497,12 @@ table#userindex tbody tr:hover a {
 #download-module-doc-icon {
     margin-top: 0.45rem;
     width: 28px;
+}
+
+/* No bullets in ul*/
+.row-module-documents ul,
+.row-course-documents ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
