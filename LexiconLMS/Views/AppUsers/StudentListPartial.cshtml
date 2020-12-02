@@ -3,13 +3,16 @@
 <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FullName)
+            @*@Html.DisplayNameFor(model => model.FullName)*@
+            <a asp-action="TeacherUserIndex" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.FullName)</a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @*@Html.DisplayNameFor(model => model.Email)*@
+            <a asp-action="TeacherUserIndex" asp-route-sortOrder="@ViewData["EmailSortParm"]">@Html.DisplayNameFor(model => model.Email)</a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Course)
+            @*@Html.DisplayNameFor(model => model.Course)*@
+            <a asp-action="TeacherUserIndex" asp-route-sortOrder="@ViewData["CourseSortParm"]">@Html.DisplayNameFor(model => model.Course)</a>
         </th>
 
         <th></th>
