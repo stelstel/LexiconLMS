@@ -9,12 +9,15 @@
 <h4>Document for @Model.Course.Name</h4>
 <hr />
 
-<div class="row custom-file">
-        
-    @foreach (var file in Model.fileList)
-    {
-        <li @*id="customFile" name="file"*@><a href="@file">@file</a></li>
-    }
+<div class="row row-course-documents">
+    <ul>
+        @foreach (var doc in Model.DocumentList)
+        {
+            <li>
+                <a href="@doc.FilePath">@doc.FilePath.Split("/uploads/" + doc.Course.Name + '/').Last()</a>
+            </li>
+        }
+    </ul>
 </div>
 
 @section Scripts {

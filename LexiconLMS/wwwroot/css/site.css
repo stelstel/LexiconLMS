@@ -10,7 +10,6 @@
         Darker grey:        gray
 */
 
-
 body header .navbar {
     background: #dbdbdb !important;
     border-bottom: 1px solid #666 !important;
@@ -331,8 +330,8 @@ div#card-mod-act.card div.card-body {
 #info-module-icon {
     color: black;
     font-size: 26px;
-    margin-left: -35px;
-    margin-top: 1.2rem;
+    margin-left: -20px;
+    margin-top: 0.5rem;
 }
 
 #add-module-icon {
@@ -403,11 +402,19 @@ div#card-mod-act.card div.card-body {
     background: #eee;
 }
 
+table#courseindex tbody tr:hover,
+table#userindex tbody tr:hover,
 /* On hover, except content row 1 command row 3 */
 .row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover {
     background: #888;
     color: white;
     text-shadow: 1px 1px 2px #000;
+}
+
+/* Link color on hover */
+table#courseindex tbody tr:hover a,
+table#userindex tbody tr:hover a {
+    color: white;
 }
 
 /* On hover, except content row 1 command row 3 */
@@ -445,15 +452,19 @@ div#card-mod-act.card div.card-body {
 }
 
 #courseindex tr:nth-child(even){
-    background: #eee
+    background: #eee;
 }
 
 #userindex tr:nth-child(even) {
-    background: #eee
+    background: #eee;
 }
 
-#studentuploadassignment{
-    width: 2rem
+#studentuploadassignment {
+    width: 2rem;
+}
+
+#download-activity-doc-icon {
+    width: 2rem;
 }
 
 #studentuploadsbottom {
@@ -461,21 +472,35 @@ div#card-mod-act.card div.card-body {
 }
 
 #loginicon {
-    width: 8rem
+    width: 8rem;
 }
 
 .lpcontent{
-    margin-top: 10rem
+    margin-top: 10rem;
 }
 
 #btn-create{
-    width: 2rem
+    width: 2rem;
 }
 
 .remove{
-    border-radius: 30%
+    border-radius: 30%;
 }
 
-#moduleinfoicons{
-    width: 1.5rem
+#download-module-doc-icon {
+    transform: rotate(180deg);
+    width: 20px;
+}
+
+#download-module-doc-icon {
+    margin-top: 0.45rem;
+    width: 28px;
+}
+
+/* No bullets in ul*/
+.row-module-documents ul,
+.row-course-documents ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }

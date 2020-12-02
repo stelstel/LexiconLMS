@@ -1,0 +1,25 @@
+﻿@model DownloadActivityDocumentViewModel
+
+@{
+    ViewData["Title"] = "Download activity document";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Documents for @Model.Name</h4>
+<hr />
+
+<div class="row row-module-documents">
+    <ul>    
+        @foreach (var doc in Model.DocumentList)
+        {
+            <li>
+                <a href="@doc.FilePath">@doc.FilePath.Split('/').Last()</a>
+            </li>
+        }
+    </ul>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

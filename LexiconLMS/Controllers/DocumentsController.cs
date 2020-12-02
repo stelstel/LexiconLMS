@@ -90,9 +90,8 @@ namespace LexiconLMS.Controllers
                     CourseId = course.Id,
                     UploadTime = DateTime.Now,
                     AppUserId = userId,
-                    FilePath = $"~/uploads/{course.Name}/{fileName}"
-                    //FilePath = $"{path}/{fileName}"
-                };
+                    FilePath = $"/uploads/{course.Name}/{fileName}"
+                 };
 
                 db.Add(newModel);
                 await db.SaveChangesAsync();
@@ -132,10 +131,13 @@ namespace LexiconLMS.Controllers
             if (ModelState.IsValid)
             {
                 var userId = userManager.GetUserId(User);
-
+                               
                 var modules = await db.Modules.Include(m => m.Course).ToListAsync();
                 var module = modules.Where(a => a.Id == id).FirstOrDefault();
 
+                //var courses = await db.Courses.ToListAsync();
+                //var course = courses.Where(a => a.Id == module.CourseId).FirstOrDefault();
+               
                 string path = Path.Combine(web.WebRootPath, $"uploads/{module.Course.Name}/{module.Name}");
 
                 if (!Directory.Exists(path))
@@ -158,7 +160,8 @@ namespace LexiconLMS.Controllers
                     ModuleId = module.Id,
                     CourseId = module.CourseId,
                     UploadTime = DateTime.Now,
-                    AppUserId = userId
+                    AppUserId = userId,
+                    FilePath = $"/uploads/{module.Course.Name}/{module.Name}/{fileName}"
                 };
 
                 db.Add(model);
@@ -238,6 +241,7 @@ namespace LexiconLMS.Controllers
                     CourseId = course.Id,
                     UploadTime = upload,
                     AppUserId = userId,
+                    FilePath = $"/uploads/{module.Course.Name}/{module.Name}/Activities/{activity.Name}/{fileName}"
                 };
 
                 db.Add(model);
@@ -414,65 +418,80 @@ namespace LexiconLMS.Controllers
         {
             var courses = await db.Courses.ToListAsync();
             var course = courses.Where(a => a.Id == id).FirstOrDefault();
-            //var directoryPath = $"/uploads/{course.Name}";////////////////////
-            var directoryPath = Path.Combine(Environment.CurrentDirectory, $"uploads/{course.Name}");
-            //var folderPath = Server.MapPath($"~/uploads/{course.name}");
-            //var directoryPath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
-
-
+                        
             ICollection<Document> docs = await db.Documents
                 .Where(d => d.Course == course)
                 //.Where(d => d.ModuleId == null)
                 //.Where(d => d.ActivityId == null)
                 .ToListAsync();
 
-            // ONLY course documents. NOT module or activity documents (SearchOption.AllDirectories to see the rest)
-            ICollection<string> fileList = Directory.GetFiles($"/uploads/{course.Name}", "*.*", SearchOption.AllDirectories);
-            //string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
-
             var model = new DownloadCourseDocumentViewModel
             {
                 Course = course,
-                DirectoryPath = directoryPath,
-                fileList = fileList
+                DocumentList = docs
             };
 
             return View(model);
         }
 
-        //// POST: Download Course Document
-        //[Authorize(Roles = "Student, Teacher")]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        ////public async Task<IActionResult> DownloadCourseDoc(int id, /*Document model, IFormFile file*/ string file)
-        //public async Task<IActionResult> DownloadCourseDoc(int id, Document model, IFormFile file)
-        //{
-        //    //var fil = TempData["fil"];
+        //********************* DownloadModuleDoc GET ************************************
+        // GET: Download Module Document
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> DownloadModuleDoc(int? id)
+        {
+            
+            var modules = await db.Modules.ToListAsync();
+            var module = modules.Where(m => m.Id == id).FirstOrDefault();
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        var userId = userManager.GetUserId(User);
+            var course = db.Courses
+                .Where(c => c.Id == module.CourseId)
+                .FirstOrDefault();
 
-        //        var courses = await db.Courses.ToListAsync();
-        //        var course = courses.Where(a => a.Id == id).FirstOrDefault();
-        //        var filePath = Path.Combine(web.WebRootPath, $"uploads/{course.Name}/{file}");
-        //        //var filePath = Path.Combine(web.WebRootPath, file.ToString());
+            ICollection<Document> docs = await db.Documents
+                .Where(d => d.ModuleId == id)
+                //.Where(d => d.CourseId == course.Id)
+                //.Where(d => d.ActivityId == null)
+                .ToListAsync();
 
-        //        var memory = new MemoryStream();
+            var model = new DownloadModuleDocumentViewModel
+            {
+                Name = module.Name,
+                DocumentList = docs,
+                Course = course
+            };
 
-        //        using (var stream = new FileStream(filePath, FileMode.Open))
-        //        {
-        //            await stream.CopyToAsync(memory);
-        //        }
+            return View(model);
+        }
 
-        //        memory.Position = 0;
+        //********************* DownloadActivityDoc GET ************************************
+        // GET: Download Activity Document
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> DownloadActivityDoc(int? id)
+        {
+            var activities = await db.Activities.ToListAsync();
+            var activity = activities.Where(a => a.Id == id).FirstOrDefault();
 
-        //        return File(memory, GetContType(filePath), Path.GetFileName(filePath));
-        //    }
+            //var course = db.Courses
+            //    .Where(c => c.Id == module.CourseId)
+            //    .FirstOrDefault();
 
-        //    //return View(model);
-        //    return null;
-        //}
+            ICollection<Document> docs = await db.Documents
+                .Where(d => d.ActivityId == id)
+                //.Where(d => d.CourseId == course.Id)
+                //.Where(d => d.ActivityId == null)
+                .ToListAsync();
+
+            var model = new DownloadActivityDocumentViewModel
+            {
+                Name = activity.Name,
+                DocumentList = docs
+                //Course = course
+            };
+
+            return View(model);
+        }
 
         [HttpGet]
         public string GetContType(string fileName)

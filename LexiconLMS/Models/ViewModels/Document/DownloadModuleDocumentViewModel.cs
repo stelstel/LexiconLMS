@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LexiconLMS.Models.ViewModels.Document
 {
-    public class DownloadCourseDocumentViewModel
+    public class DownloadModuleDocumentViewModel
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -17,7 +17,6 @@ namespace LexiconLMS.Models.ViewModels.Document
         public ICollection<Entities.Document> DocumentList { get; set; }
         // public string CurrentDirectory { get; set; }
         
-
         public AppUser AppUser { get; set; }
         public Course Course { get; set; }
     }
