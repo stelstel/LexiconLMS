@@ -14,7 +14,8 @@
         @foreach (var doc in Model.DocumentList)
         {
             <li>
-                <a href="@doc.FilePath">@doc.FilePath.Split("/uploads/" + doc.Course.Name + '/').Last()</a>
+                @*<a href="@doc.FilePath">@doc.FilePath.Split("/uploads/" + doc.Course.Name + '/').Last()</a>*@
+                <a href="@doc.FilePath">@doc.Name</a>
             </li>
         }
     </ul>

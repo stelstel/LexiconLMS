@@ -102,6 +102,7 @@ namespace LexiconLMS.Controllers
                     ModuleId = activity.Module.Id,
                     ActivityId = activity.Id,
                     AppUserId = userId,
+                    FilePath = $"/uploads/Assignments/{activity.Name}/{fileName}"
                 };
 
                 db.Add(model);
