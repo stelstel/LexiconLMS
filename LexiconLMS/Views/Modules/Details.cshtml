@@ -11,11 +11,25 @@
 
 <hr />
 <div>
-    <h4>Module<a asp-controller="Documents" asp-action="Edit" asp-route-id="@Model.Module.Id">
-    <img src="/icons/edit.svg" alt="Edit" style="width:1.4rem"/>
-</a></h4>
     
-    
+
+    @if (User.IsInRole("Teacher"))
+    {
+        <h4>
+            Module<a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.Module.Id">
+                <img src="/icons/edit.svg" alt="Edit" style="width:1.4rem" />
+            </a>
+        </h4>
+    }
+    else if (User.IsInRole("Student"))
+    {
+        <h4>
+            Module
+        </h4>
+    }
+
+
+
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Module.Name)
