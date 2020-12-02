@@ -461,7 +461,6 @@ table#userindex tbody tr:hover a {
 
 #studentuploadassignment {
     width: 2rem;
-    transform: rotate(180deg);
 }
 
 #download-activity-doc-icon {

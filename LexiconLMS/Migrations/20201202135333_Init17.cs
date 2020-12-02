@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LexiconLMS.Migrations
 {
-    public partial class init : Migration
+    public partial class Init17 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
