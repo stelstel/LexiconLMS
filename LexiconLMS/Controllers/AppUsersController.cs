@@ -696,8 +696,8 @@ namespace LexiconLMS.Controllers
             var timeNow = DateTime.Now;
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
-            // If no users assigned to course yet
-            if (students == 0)
+            // If no users assigned to course yet or there are no activities in the module
+            if (students == 0 || module.Activities.Count == 0)
             {
                 return new TeacherCurrentViewModel { Course = course, Module = module, Activity = null, Assignments = null, Finished = null };
             }
