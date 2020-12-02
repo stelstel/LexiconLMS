@@ -11,7 +11,7 @@ namespace LexiconLMS.Models.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
+        [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
         public DateTime StartTime { get; set; }
 

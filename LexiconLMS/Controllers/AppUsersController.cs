@@ -246,7 +246,7 @@ namespace LexiconLMS.Controllers
             if (Request.IsAjax())
             {
                 var module = await db.Modules.FirstOrDefaultAsync(m => m.Id == id);
-
+                var current = await CurrentTeacher(module.CourseId);
                 var modules = await db.Modules
                     .Where(m => m.CourseId == module.CourseId)
                     .OrderBy(m => m.StartTime)
@@ -265,7 +265,8 @@ namespace LexiconLMS.Controllers
                 var teacherModel = new TeacherViewModel()
                 {
                     ModuleList = modules,
-                    ActivityList = GetModuleActivityListAsync((int)id).Result
+                    ActivityList = GetModuleActivityListAsync((int)id).Result,
+                    Current = current
                 };
 
                 return PartialView("TeacherModuleAndActivityPartial", teacherModel);
@@ -758,8 +759,8 @@ namespace LexiconLMS.Controllers
             var timeNow = DateTime.Now;
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
-            // If no users assigned to course yet
-            if (students == 0)
+            // If no users assigned to course yet or there are no activities in the module
+            if (students == 0 || module.Activities.Count == 0)
             {
                 return new TeacherCurrentViewModel { Course = course, Module = module, Activity = null, Assignments = null, Finished = null };
             }

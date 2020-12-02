@@ -430,9 +430,9 @@ div#card-mod-act.card div.card-body {
     margin-bottom: 0.3rem;
 }
 
-#cont-modules-and-activities {
-    margin-top: -0.7rem;
-}
+/*#cont-modules-and-activities {
+    margin-top: 3rem;
+}*/
 
 #detailsicon,
 #editicon
