@@ -457,7 +457,7 @@ div#card-mod-act.card div.card-body {
 }
 
 #studentuploadsbottom {
-    width: 1.3rem
+    width: 1.2rem
 }
 
 #loginicon {
@@ -474,4 +474,8 @@ div#card-mod-act.card div.card-body {
 
 .remove{
     border-radius: 30%
+}
+
+#moduleinfoicons{
+    width: 1.5rem
 }

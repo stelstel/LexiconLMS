@@ -378,6 +378,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
@@ -412,6 +413,7 @@ namespace LexiconLMS.Controllers
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, EditUserViewModel editUser)
@@ -584,8 +586,8 @@ namespace LexiconLMS.Controllers
             return model;
         }
 
-        //[Authorize(Roles = "Teacher")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Teacher")]
+        //[Authorize(Roles = "Student")]
         public async Task<IActionResult> TeacherUserIndex(string sortOrder)
         {
 

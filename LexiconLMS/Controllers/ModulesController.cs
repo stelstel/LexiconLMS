@@ -25,6 +25,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = db.Modules.Include(c => c.Course);
@@ -182,6 +183,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -303,6 +305,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -322,14 +325,20 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: Modules/Delete/5
+        [Authorize(Roles = "Teacher")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var module = await db.Modules.FindAsync(id);
+            var courseid = module.CourseId;
             db.Modules.Remove(module);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction(
+                "Teacher",
+                "AppUsers",
+                new { id = courseid });
         }
 
         // Returns start time for a courses rounded down to midnight

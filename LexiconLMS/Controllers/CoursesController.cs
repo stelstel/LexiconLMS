@@ -29,6 +29,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Courses/Details/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
