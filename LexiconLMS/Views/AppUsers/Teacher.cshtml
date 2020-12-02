@@ -18,6 +18,10 @@
 {
     <partial name="TeacherModuleAndActivityPartial" model="@Model" />
 }
+else
+{
+    <h2 style="margin: 5px 25px 20px 0px">Modules<a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id"><img style="margin: 0px 0px 5px 5px" id="btn-create" src="/icons/create.svg" alt="Alternate Text" /></a></h2>
+}
 
 <!--Assignments-->
 <div class="container cont-section" id="assignments">
