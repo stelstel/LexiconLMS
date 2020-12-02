@@ -9,61 +9,59 @@
 
 <h4>Module</h4>
 <hr />
+<form id="module">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    
-        <form id="module">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        
-                        <div class="form-group">
-                            <input type="hidden" asp-for="CourseId" class="form-control" />
-                            @*<label asp-for="CourseId" class="control-label"></label>
-                            <select asp-for="CourseId" asp-items="@await service.SelectCourses()" class="form-control"></select>
-                            <span asp-validation-for="CourseId" class="text-danger"></span>*@
-                        </div>
+                <div class="form-group">
+                    <input type="hidden" asp-for="CourseId" class="form-control" />
+                    @*<label asp-for="CourseId" class="control-label"></label>
+                        <select asp-for="CourseId" asp-items="@await service.SelectCourses()" class="form-control"></select>
+                        <span asp-validation-for="CourseId" class="text-danger"></span>*@
+                </div>
 
-                        <div class="form-group">
-                            <label asp-for="ModuleName" class="control-label"></label>
-                            <input asp-for="ModuleName" class="form-control" />
-                            <span asp-validation-for="ModuleName" class="text-danger"></span>
-                        </div>
+                <div class="form-group">
+                    <label asp-for="ModuleName" class="control-label"></label>
+                    <input asp-for="ModuleName" class="form-control" />
+                    <span asp-validation-for="ModuleName" class="text-danger"></span>
+                </div>
 
 
-                        <div class="form-group">
-                            <label asp-for="ModuleStartTime" class="control-label"></label>
-                            <input asp-for="ModuleStartTime" class="form-control" />
-                            <span asp-validation-for="ModuleStartTime" class="text-danger"></span>
-                        </div>
+                <div class="form-group">
+                    <label asp-for="ModuleStartTime" class="control-label"></label>
+                    <input asp-for="ModuleStartTime" class="form-control" />
+                    <span asp-validation-for="ModuleStartTime" class="text-danger"></span>
+                </div>
 
-                        <div class="form-group">
-                            <label asp-for="ModuleEndTime" class="control-label"></label>
-                            <input asp-for="ModuleEndTime" class="form-control" />
-                            <span asp-validation-for="ModuleEndTime" class="text-danger"></span>
-                        </div>
+                <div class="form-group">
+                    <label asp-for="ModuleEndTime" class="control-label"></label>
+                    <input asp-for="ModuleEndTime" class="form-control" />
+                    <span asp-validation-for="ModuleEndTime" class="text-danger"></span>
+                </div>
 
-                    </div>
+            </div>
 
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label asp-for="ModuleDescription" class="control-label"></label><br />
-                            <textarea asp-for="ModuleDescription" class="form-control" rows="12">Add module description here...</textarea>
-                            <span asp-validation-for="ModuleDescription" class="text-danger"></span>
-                        </div>
-                    </div>
-
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="ModuleDescription" class="control-label"></label><br />
+                    <textarea asp-for="ModuleDescription" class="form-control" rows="12">Add module description here...</textarea>
+                    <span asp-validation-for="ModuleDescription" class="text-danger"></span>
                 </div>
             </div>
 
-            @*<div class="form-group">
-                <input onclick="sendJson()" type="button" value="Create module" class="btn btn-primary" />
-            </div>*@
+        </div>
+    </div>
+
+    @*<div class="form-group">
+            <input onclick="sendJson()" type="button" value="Create module" class="btn btn-primary" />
+        </div>*@
 
 
-        </form>
-    
+</form>
+
 
 
 
@@ -131,7 +129,7 @@
 </form>
 
 
-    
+
 
 
 <div class="form-group">

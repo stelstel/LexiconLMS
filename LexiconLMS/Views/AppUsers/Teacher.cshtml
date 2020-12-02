@@ -14,16 +14,8 @@
 </div>
 
 <!--Modules and Activities-->
-<div id="div-add-module">
-    <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id">
-        <img id="add-module-icon" class="icon-img" src="~/icons/plus.svg" />
-        Add module
-    </a>
-</div>
-
 @if (Model.ModuleList != null)
 {
-
     <partial name="TeacherModuleAndActivityPartial" model="@Model" />
 }
 
