@@ -3,18 +3,24 @@
 @{
     ViewData["Title"] = "Student";
 }
+@if (Model.ModuleList == null || Model.ActivityList == null)
+{
+    <div>No Modules/Activities available...</div>
+}
+else
+{
+    <!--Current-->
+    <partial name="StudentCurrentPartial" model="@Model.CurrentViewModel" />
 
-<!--Current-->
-<partial name="StudentCurrentPartial" model="@Model.CurrentViewModel" />
+    <!--Modules and Activities-->
+    <partial name="StudentModuleAndActivityPartial" model="@Model" />
 
-<!--Modules and Activities-->
-<partial name="StudentModuleAndActivityPartial" model="@Model" />
-
-<!--Assignments-->
-<div class="container cont-section" id="assignments">
-    <div class="row row-assignments">
-        <div class="col-sm-12">
-            <partial name="StudentAssignmentListPartial" model="@Model.AssignmentList" />
+    <!--Assignments-->
+    <div class="container cont-section" id="assignments">
+        <div class="row row-assignments">
+            <div class="col-sm-12">
+                <partial name="StudentAssignmentListPartial" model="@Model.AssignmentList" />
+            </div>
         </div>
     </div>
-</div>
+}
