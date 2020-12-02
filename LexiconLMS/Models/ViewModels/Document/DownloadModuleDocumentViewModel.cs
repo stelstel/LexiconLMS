@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LexiconLMS.Models.ViewModels.Document
 {
-    public class DownloadCourseDocumentViewModel
+    public class DownloadModuleDocumentViewModel
     {
         public string Name { get; set; }
         public string Description { get; set; }

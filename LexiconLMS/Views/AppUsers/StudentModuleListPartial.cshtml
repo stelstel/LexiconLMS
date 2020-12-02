@@ -5,7 +5,7 @@
 @foreach (var item in Model)
 {
 <div class="row">
-    <div class="col-sm-11 mb-3">
+    <div class="col-sm-8">
         <a asp-action="GetActListAjax" asp-route-id="@item.Id"
            data-ajax="true"
            data-ajax-method="GET"
@@ -25,9 +25,14 @@
             }
         </a>
     </div>
-    <div class="col-sm-1">
+    <div class="col-sm-2">
+        <a asp-controller="Documents" asp-action="DownloadModuleDoc" asp-route-id="@item.Id">
+            <img id="download-module-doc-icon" class="icon-img" src="~/icons/share.svg" style="transform: rotate(180deg);" />
+        </a>
+    </div>
+    <div class="col-sm-2">
         <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">
-            <i id="info-module-icon" class="material-icons align-middle">error_outline</i>
+            <img id="add-module-icon" class="icon-img" src="~/icons/info_black.svg" />
         </a>
     </div>
 </div>
