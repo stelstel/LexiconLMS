@@ -1,11 +1,5 @@
 ﻿@model IEnumerable<TeacherModuleViewModel>
 
-    <div class="row">
-        <div class="col-sm-10 ml-1">
-            <h2>Modules</h2>
-        </div>
-    </div>
-
 @foreach (var item in Model)
 {
     <div class="row">
@@ -39,7 +33,7 @@
     <div class="row row-module-btn-icons">
         <div class="col-sm-10">
             <a asp-controller="Documents" asp-action="UploadModuleDoc" asp-route-id="@item.Id">
-                <img class="icon-img" src="~/icons/share.svg"  />
+                <img class="icon-img" src="~/icons/share.svg" />
             </a>
             <a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">
                 <img class="icon-img" src="~/icons/edit.svg" />
@@ -51,4 +45,4 @@
         <div class="col-sm-2">
         </div>
     </div>
- }
+}
