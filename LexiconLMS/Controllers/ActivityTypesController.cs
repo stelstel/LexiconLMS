@@ -28,6 +28,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: ActivityTypes/Details/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +47,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: ActivityTypes/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace LexiconLMS.Controllers
         // POST: ActivityTypes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] ActivityType activityType)
@@ -68,6 +71,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: ActivityTypes/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +90,7 @@ namespace LexiconLMS.Controllers
         // POST: ActivityTypes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] ActivityType activityType)
@@ -119,6 +124,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: ActivityTypes/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +143,7 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: ActivityTypes/Delete/5
+        [Authorize(Roles = "Teacher")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

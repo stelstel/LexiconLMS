@@ -16,21 +16,18 @@
 <!--Modules and Activities-->
 @if (Model.ModuleList != null)
 {
-    <div id="div-add-module">
-        <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id">
-            <img id="add-module-icon" class="icon-img" src="~/icons/plus.svg" />
-            Add module
-        </a>
-    </div>
-
     <partial name="TeacherModuleAndActivityPartial" model="@Model" />
+}
+else
+{
+    <h2 style="margin: 5px 25px 20px 0px">Modules<a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id"><img style="margin: 0px 0px 5px 5px" id="btn-create" src="/icons/create.svg" alt="Alternate Text" /></a></h2>
 }
 
 <!--Assignments-->
 <div class="container cont-section" id="assignments">
     <div class="row row-assignments">
         <div class="col-sm-12">
-            @if (Model.ModuleList != null)
+            @if (Model.ModuleList != null && Model.AssignmentList != null)
             {
                 <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
             }

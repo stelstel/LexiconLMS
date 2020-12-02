@@ -4,10 +4,11 @@
 <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FullName)
+            <a asp-action="TeacherUserIndex" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.FullName)</a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @*@Html.DisplayNameFor(model => model.Email)*@
+            <a asp-action="TeacherUserIndex" asp-route-sortOrder="@ViewData["EmailSortParm"]">@Html.DisplayNameFor(model => model.Email)</a>
         </th>
         <th></th>
     </tr>
@@ -28,18 +29,30 @@
                 </td>
                 @if (User.IsInRole("Teacher"))
                 {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.AppUserId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.AppUserId">Details</a> |
-                        @if (UserManager.GetUserId(User).Equals(item.AppUserId))
-                        {
-                            <a>Delete</a>
-                        }
-                        else
-                        {
-                            <a asp-action="Delete" asp-route-id="@item.AppUserId">Delete</a>
-                        }
-                    </td>
+            <td>
+                @*<a asp-action="Edit" asp-route-id="@item.AppUserId">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.AppUserId">Details</a> |*@
+                <a asp-action="Edit" asp-route-id="@item.AppUserId">
+                    <img id="editicon" src="/icons/edit.svg" alt="Edit" />
+                </a> &nbsp;
+                <a asp-action="Details" asp-route-id="@item.AppUserId">
+                    <img id="detailsicon" src="/icons/info.svg" alt="Details" />
+                </a> &nbsp;
+
+                @if (UserManager.GetUserId(User).Equals(item.AppUserId))
+                {
+                    @*<a>Delete</a>*@
+                    @*<img id="deleteicon" src="/icons/delete.svg" alt="Delete" />*@
+            <p></p>
+                }
+                else
+                {
+                    @*<a asp-action="Delete" asp-route-id="@item.AppUserId">Delete</a>*@
+                    <a asp-action="Delete" asp-route-id="@item.AppUserId">
+                        <img id="deleteicon" src="/icons/delete.svg" alt="Delete" />
+                    </a>
+                }
+            </td>
                 }
             </tr>
         }

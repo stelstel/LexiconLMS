@@ -4,10 +4,12 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @*@Html.DisplayNameFor(model => model.Name)*@
+                <a asp-action="TeacherHome" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartTime)
+                @*@Html.DisplayNameFor(model => model.StartTime)*@
+                <a asp-action="TeacherHome" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.StartTime)</a>
             </th>
             <th></th>
         </tr>
@@ -24,9 +26,15 @@
             </td>
 
             <td>
-                <a asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id">
+                    <img id="editicon" src="/icons/edit.svg" alt="Edit" />
+                </a> &nbsp;
+                <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Id">
+                    <img id="detailsicon" src="/icons/info.svg" alt="Details" />
+                </a> &nbsp;
+                <a asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id">
+                    <img id="deleteicon" src="/icons/delete.svg" alt="Delete" />
+                </a>
             </td>
 
         </tr>

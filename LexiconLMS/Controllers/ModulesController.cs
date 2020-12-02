@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using LexiconLMS.Models.ViewModels;
 using AutoMapper;
 using System;
+using System.Collections.Generic;
 
 namespace LexiconLMS.Controllers
 {
@@ -24,6 +25,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = db.Modules.Include(c => c.Course);
@@ -87,18 +89,30 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
+            if (id is null || !CourseExists((int) id))
+            {
+                return NotFound();
+            }
+
+            if (TempData["ValidationError"] != null)
+            {
+                ModelState.AddModelError("", (string)TempData["ValidationError"]);
+            }
+
+            var moduleDefaultStartTime = GetCourseStartTime((int)id).AddHours(8);
 
             var model = new ModuleActivityCreateViewModel
             {
                 CourseId = (int)id,
-                ModuleStartTime = DateTime.Now,
-                ModuleEndTime = DateTime.Now,
-                ActivityStartTime = DateTime.Now,
-                ActivityEndTime = DateTime.Now
+                ModuleStartTime = moduleDefaultStartTime,
+                ModuleEndTime = moduleDefaultStartTime.AddHours(1),
+                ActivityStartTime = moduleDefaultStartTime,
+                ActivityEndTime = moduleDefaultStartTime
             };
-
             return View(model);
         }
+
+  
 
         // POST: Modules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -106,12 +120,22 @@ namespace LexiconLMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel)
+        public async Task<IActionResult> Create(ModuleActivityPostViewModel viewModel) 
         {
             if (ModelState.IsValid)
             {
                 // TODO: perform id control comparison
                 // TODO: Check if redirect problem stems from ajax 
+
+                // Check module not is in same timespan as existing module for this course. Also validate other things for start and end time
+
+                var errorMessage = "";
+                if (!IsModuleTimeCorrect(ref errorMessage, viewModel.Module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, null))
+                {
+                    TempData["ValidationError"] = errorMessage;
+                    return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
+                    // TODO: Create view is reset with default values. Can that be fixed?
+                }
 
                 var module = new Module
                 {                   
@@ -124,29 +148,42 @@ namespace LexiconLMS.Controllers
 
                 db.Add(module);
 
-                foreach (var item in viewModel.Data)
+                if (viewModel.Data != null)
                 {
-                    var activity = new Activity
+                    if (IsActivityOverlap(viewModel.Data))
                     {
-                        Name = item.ActivityName,
-                        Description = item.ActivityDescription,
-                        StartTime = item.ActivityStartTime,
-                        EndTime = item.ActivityEndTime,
-                        ActivityTypeId = item.ActivityTypeId,
-                        Module = module
-                    };
-                    db.Add(activity);
+                        TempData["ValidationError"] = "Activity start and end times overlap";
+                        return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
+                    }
+                    foreach (var item in viewModel.Data)
+                    {
+                        if (!IsActivityTimeCorrect(ref errorMessage, null, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, item.ActivityStartTime, item.ActivityEndTime))
+                        {
+                            TempData["ValidationError"] = errorMessage;
+                            return Json(new { redirectToUrl = Url.Action("Create", "Modules", new { id = viewModel.Module.CourseId }) });
+                        }
+                        var activity = new Activity
+                        {
+                            Name = item.ActivityName,
+                            Description = item.ActivityDescription,
+                            StartTime = item.ActivityStartTime,
+                            EndTime = item.ActivityEndTime,
+                            ActivityTypeId = item.ActivityTypeId,
+                            Module = module
+                        };
+                        db.Add(activity);
+                    }
                 }
 
                 await db.SaveChangesAsync();
                 return Json(new { redirectToUrl = Url.Action("Teacher", "AppUsers", new { id = viewModel.Module.CourseId }) });
-                //return RedirectToAction(nameof(Index)); // TODO: change so it points to course dashboard
             }
             //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId); // What does this show? Which course it belongs to?
             return View(viewModel);
         }
 
         // GET: Modules/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -160,11 +197,16 @@ namespace LexiconLMS.Controllers
                 return NotFound();
             }
 
+            if (TempData["ValidationError"] != null)
+            {        
+                ModelState.AddModelError("", (string) TempData["ValidationError"]);
+            }
 
             // List of activities so it can be displayed in the Edit View
 
             var activityList = await db.Activities.Include(t => t.ActivityType).Where(a => a.ModuleId == id).ToListAsync();
             var activityTypeList = activityList.Select(a => a.ActivityType).FirstOrDefault();
+            var activityDefaultStartTime = module.StartTime;
 
             var viewModel = new ModuleEditViewModel
             {
@@ -176,8 +218,8 @@ namespace LexiconLMS.Controllers
                 ModuleEndTime = module.EndTime,
                 Activities = activityList,
                 ActivityType = activityTypeList,
-                ActivityStartTime = DateTime.Now,
-                ActivityEndTime = DateTime.Now
+                ActivityStartTime = activityDefaultStartTime,
+                ActivityEndTime = activityDefaultStartTime
 
             };
 
@@ -193,14 +235,15 @@ namespace LexiconLMS.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(ModuleActivityPostViewModel viewModel)
         {
-
-            //if (id != viewmodel.Module.Id)
-            //{
-            //    return NotFound();
-            //}
-
-            
             var module = db.Modules.Find(viewModel.Module.ModuleId);
+
+            // Validate start and end time
+            var errorMessage = "";
+            if (!IsModuleTimeCorrect(ref errorMessage, module.CourseId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, viewModel.Module.ModuleId))
+            {                
+                TempData["ValidationError"] = errorMessage;
+                return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+            }
 
             if (ModelState.IsValid)
             {
@@ -211,26 +254,37 @@ namespace LexiconLMS.Controllers
                     module.StartTime = viewModel.Module.ModuleStartTime;
                     module.EndTime = viewModel.Module.ModuleEndTime;
 
-
                     db.Update(module);
                     await db.SaveChangesAsync();
 
-                    foreach (var item in viewModel.Data)
+                    if (viewModel.Data != null)
                     {
-                        var activity = new Activity
+                        if (IsActivityOverlap(viewModel.Data))
                         {
-                            Name = item.ActivityName,
-                            Description = item.ActivityDescription,
-                            StartTime = item.ActivityStartTime,
-                            EndTime = item.ActivityEndTime,
-                            ActivityTypeId = item.ActivityTypeId,
-                            Module = module
-                        };
-                        db.Add(activity);
+                            TempData["ValidationError"] = "Activity start and end times overlap";
+                            return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+                        }
+                        foreach (var item in viewModel.Data)
+                        {
+                            if (!IsActivityTimeCorrect(ref errorMessage, viewModel.Module.ModuleId, viewModel.Module.ModuleStartTime, viewModel.Module.ModuleEndTime, item.ActivityStartTime, item.ActivityEndTime))
+                            {
+                                TempData["ValidationError"] = errorMessage;
+                                return Json(new { redirectToUrl = Url.Action("Edit", "Modules", new { id = module.Id }) });
+                            }
+                            var activity = new Activity
+                            {
+                                Name = item.ActivityName,
+                                Description = item.ActivityDescription,
+                                StartTime = item.ActivityStartTime,
+                                EndTime = item.ActivityEndTime,
+                                ActivityTypeId = item.ActivityTypeId,
+                                Module = module
+                            };
+                            db.Add(activity);
+                        }
+
+                        await db.SaveChangesAsync();
                     }
-
-                    await db.SaveChangesAsync();
-
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -244,7 +298,6 @@ namespace LexiconLMS.Controllers
                         throw;
                     }
                 }
-                //return RedirectToAction(nameof(Index));                 // TODO, byt ut till redirect to url json.
                 return Json(new { redirectToUrl = Url.Action("Teacher", "AppUsers", new {id = module.CourseId }) });
             }
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
@@ -252,6 +305,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Modules/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -271,23 +325,154 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: Modules/Delete/5
+        [Authorize(Roles = "Teacher")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var module = await db.Modules.FindAsync(id);
+            var courseid = module.CourseId;
             db.Modules.Remove(module);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction(
+                "Teacher",
+                "AppUsers",
+                new { id = courseid });
         }
+
+        // Returns start time for a courses rounded down to midnight
+        private DateTime GetCourseStartTime(int courseId)
+        {
+            var d =  db.Courses
+                .FirstOrDefault(c => c.Id == courseId)
+                .StartTime;
+            return new DateTime(d.Year, d.Month, d.Day, 0, 0, 0);
+        }
+        private DateTime GetModuleStartTime(int moduleId)
+        {
+            return db.Modules
+                .FirstOrDefault(m => m.Id == moduleId)
+                .StartTime;
+        }
+
+        private bool IsModuleTimeCorrect(ref string errorMessage, int courseId, DateTime startTime, DateTime endTime, int? thisModuleId)
+        {
+            // Module starttime must be < module endtime
+            if (endTime < startTime)
+            {
+                errorMessage = "Module end time is before its start time";
+                return false;
+            }
+            if (endTime == startTime)
+            {
+                errorMessage = "Module end time is equal to its start time";
+                return false;
+            }
+            //  Module ModuleStartTime must be >= course start time  
+            var courseStartTime = GetCourseStartTime(courseId);
+            if (startTime < courseStartTime)
+            {
+                errorMessage = $"Module start time is before course start time ({courseStartTime}) ";
+                return false;
+            }
+
+            var modules = db.Modules
+                .Where(m => m.CourseId == courseId)
+                .ToList();
+
+            foreach (var module in modules)
+            {
+                if (module.Id != thisModuleId)
+                {
+                    if ((startTime < module.StartTime && endTime > module.EndTime)        // timespan over existing module
+                        || (startTime >= module.StartTime && startTime < module.EndTime)  // startTime within existing module
+                        || (endTime > module.StartTime && endTime <= module.EndTime))     // endTime within existing module
+                    {
+                        errorMessage = $"Module time span interferes with module '{module.Name}'";
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsActivityTimeCorrect(ref string errorMessage, int? moduleId, DateTime moduleStartTime, DateTime moduleEndTime, DateTime startTime, DateTime endTime)
+        {
+            // TODO all this could be in IsActivityOverlap where we have sorted it. No need for the loop below either.
+
+            if (endTime == startTime)
+            {
+                errorMessage = "Activity end time is equal to its start time";
+                return false;
+            }
+
+            // activity starttime must be < module endtime
+            if (endTime < startTime)
+            {
+                errorMessage = "Activity end time is before its start time";
+                return false;
+            }
+            //  Activity start time must be >= module start time  
+
+            if (startTime < moduleStartTime || endTime > moduleEndTime)
+            {
+                errorMessage = $"Activity not within module time span ({moduleStartTime} - {moduleEndTime}) ";
+                return false;
+            }
+          
+            if (moduleId != null)  // moduleId is null when creating a new module
+            {
+                var activities = db.Activities
+                    .Where(a => a.ModuleId == moduleId)
+                    .ToList();
+
+                foreach (var activity in activities)
+                {
+                    if ((startTime < activity.StartTime && endTime > activity.EndTime)        // timespan over existing activity
+                        || (startTime >= activity.StartTime && startTime < activity.EndTime)  // startTime within existing activity
+                        || (endTime > activity.StartTime && endTime <= activity.EndTime))     // endTime within existing activity
+                    {
+                        errorMessage = $"Activity time span interferes with activity '{activity.Name}'";
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // Test if there are any time overlaps in the viewModel.Data
+        private bool IsActivityOverlap(IEnumerable<ActivityPostViewModel> viewModelData)
+        {
+            if (viewModelData.Count<ActivityPostViewModel>() < 2) return false;  // no need if count < 2
+            {
+                var length = viewModelData.Count<ActivityPostViewModel>();
+                var sortedData = viewModelData.OrderBy(s => s.ActivityStartTime).ToArray<ActivityPostViewModel>();
+
+                for (var i = 1; i < length; i++)
+                {
+                    if (sortedData[i - 1].ActivityEndTime > sortedData[i].ActivityStartTime)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
 
         private bool ModuleExists(int id)
         {
             return db.Modules.Any(e => e.Id == id);
         }
 
-
-        
-
+        private bool CourseExists(int id)
+        {
+            return db.Courses.Any(e => e.Id == id);
+        }
     }
 }

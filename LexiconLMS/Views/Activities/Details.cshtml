@@ -8,10 +8,10 @@
 }
 
 <h1>Details</h1>
-
+<hr />
 <div>
     <h4>Activity</h4>
-    <hr />
+
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Activity.Name)
@@ -51,14 +51,16 @@
         </dd>
     </dl>
 </div>
+
+
 @if (User.IsInRole("Teacher"))
 {
-
+    <hr />
     <h4>Assignment Completion</h4>
 
     if (Model.Activity.ActivityType.Name == "Assignment")
     {
-        <div class="row">
+        <div class="row font-weight-bold">
             <div class="col">
                 Uploaders
             </div>
@@ -74,13 +76,14 @@
         }
     }
 
-
+    <hr />
     <div>
         <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
     </div>
 }
 else if (User.IsInRole("Student"))
 {
+    <hr />
     <div>
         <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
     </div>

@@ -38,6 +38,39 @@
     <a asp-controller="AppUsers" asp-action="TeacherHome">Back to List</a>
 </div>
 
+
+<div class="modal fade" id="CreateCourseResult" tabindex="-1" role="dialog" aria-labelledby="aModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h5 class="modal-title" id="aModalLabel">TESTEST</h5>*@
+            </div>
+            <div class="modal-body">
+                @ViewBag.Result
+            </div>
+            <div class="modal-footer">
+                <a asp-controller="AppUsers" asp-action="TeacherHome">To Course List</a>
+                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    if (ViewBag.Result != null)
+    {
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $("#CreateCourseResult").modal('show');
+            });
+        </script>
+    }
+}
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

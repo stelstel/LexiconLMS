@@ -6,9 +6,9 @@
 }
 
 <h1>Create</h1>
-
-<h4>Module</h4>
 <hr />
+<h4>Module</h4>
+
 
     
         <form id="module">
@@ -20,9 +20,6 @@
                         
                         <div class="form-group">
                             <input type="hidden" asp-for="CourseId" class="form-control" />
-                            @*<label asp-for="CourseId" class="control-label"></label>
-                            <select asp-for="CourseId" asp-items="@await service.SelectCourses()" class="form-control"></select>
-                            <span asp-validation-for="CourseId" class="text-danger"></span>*@
                         </div>
 
                         <div class="form-group">
@@ -49,7 +46,7 @@
                     <div class="col-md-8">
                         <div class="form-group">
                             <label asp-for="ModuleDescription" class="control-label"></label><br />
-                            <textarea asp-for="ModuleDescription" class="form-control" rows="12">Add module description here...</textarea>
+                            <textarea asp-for="ModuleDescription" class="form-control" rows="9">Add module description here...</textarea>
                             <span asp-validation-for="ModuleDescription" class="text-danger"></span>
                         </div>
                     </div>
@@ -113,7 +110,7 @@
                     <span asp-validation-for="ActivityDescription" class="text-danger"></span>
                 </div>
 
-                <div class="form-group bg-light">
+                <div class="form-group">
                     <label for="exampleFormControlSelect2">Module activities</label>
                     <div id="theList" class="rounded bg-light"></div>
                 </div>
@@ -130,7 +127,7 @@
     </div>
 </form>
 
-
+<hr />
     
 
 

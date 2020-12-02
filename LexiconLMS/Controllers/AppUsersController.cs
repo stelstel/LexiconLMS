@@ -13,6 +13,7 @@ using LexiconLMS.Models.ViewModels.Student;
 using LexiconLMS.Models.ViewModels;
 using LexiconLMS.Extensions;
 using LexiconLMS.Models.ViewModels.Teacher;
+using System.Data.Common;
 
 namespace LexiconLMS.Controllers
 {
@@ -245,7 +246,7 @@ namespace LexiconLMS.Controllers
             if (Request.IsAjax())
             {
                 var module = await db.Modules.FirstOrDefaultAsync(m => m.Id == id);
-
+                var current = await CurrentTeacher(module.CourseId);
                 var modules = await db.Modules
                     .Where(m => m.CourseId == module.CourseId)
                     .OrderBy(m => m.StartTime)
@@ -264,7 +265,8 @@ namespace LexiconLMS.Controllers
                 var teacherModel = new TeacherViewModel()
                 {
                     ModuleList = modules,
-                    ActivityList = GetModuleActivityListAsync((int)id).Result
+                    ActivityList = GetModuleActivityListAsync((int)id).Result,
+                    Current = current
                 };
 
                 return PartialView("TeacherModuleAndActivityPartial", teacherModel);
@@ -377,6 +379,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
@@ -411,6 +414,7 @@ namespace LexiconLMS.Controllers
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, EditUserViewModel editUser)
@@ -583,18 +587,55 @@ namespace LexiconLMS.Controllers
             return model;
         }
 
-        //[Authorize(Roles = "Teacher")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> TeacherUserIndex()
+        [Authorize(Roles = "Teacher")]
+        //[Authorize(Roles = "Student")]
+        public async Task<IActionResult> TeacherUserIndex(string sortOrder)
         {
-            var userList = await db.Users
-                .OrderBy(u => u.LastName)
-                .Include(a => a.Course)
-                .ToListAsync();
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CourseSortParm"] = sortOrder == "Course" ? "course_desc" : "Course";
+            ViewData["EmailSortParm"] = sortOrder == "Email" ? "email_desc" : "Email";
+
+
+            //var userList = await db.Users
+            //    .OrderBy(u => u.LastName)
+            //    .Include(a => a.Course)
+            //    .ToListAsync();
+
+
+            var userList = (from q in db.Users 
+                            select q).Include("Course");
+                        
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    userList = userList.OrderByDescending(s => s.LastName);
+                    break;
+                case "Course":
+                    userList = userList.OrderBy(s => s.Course.Name);
+                    break;
+                case "course_desc":
+                    userList = userList.OrderByDescending(s => s.Course.Name);
+                    break;
+                case "Email":
+                    userList = userList.OrderBy(s => s.Email);
+                    break;
+                case "email_desc":
+                    userList = userList.OrderByDescending(s => s.Email);
+                    break;
+                default:
+                    userList = userList.OrderBy(s => s.LastName);
+                    break;
+            }
+            var userList2 = userList.ToList();
+
+            
+
 
             var model = new List<AppUserListViewModel>();
 
-            foreach (var appUser in userList)
+            //foreach (var appUser in userList)
+            foreach (var appUser in userList2)
             {
                 model.Add(new AppUserListViewModel
                 {
@@ -666,15 +707,37 @@ namespace LexiconLMS.Controllers
 
         // Teacher Home Page
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> TeacherHome()
+        public async Task<IActionResult> TeacherHome(string sortOrder)
         {
-            var courses = await db.Courses
-                .OrderBy(n => n.Name)
-                .ToListAsync();
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            var courses = from c in db.Courses select c;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    courses = courses.OrderByDescending(s => s.Name);
+                    break;
+                case "Date":
+                    courses = courses.OrderBy(s => s.StartTime);
+                    break;
+                case "date_desc":
+                    courses = courses.OrderByDescending(s => s.StartTime);
+                    break;
+                default:
+                    courses = courses.OrderBy(s => s.Name);
+                    break;
+            }
+            var coursesList = courses.ToList();
+
+            //var courses = await db.Courses
+            //    .OrderBy(n => n.Name)
+            //    .ToListAsync();
 
             var model = new TeacherHomeViewModel
             {
-                Courses = courses
+                Courses = coursesList
             };
 
             return View(model);
@@ -695,6 +758,12 @@ namespace LexiconLMS.Controllers
 
             var timeNow = DateTime.Now;
             var module = course.Modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
+
+            // If no users assigned to course yet or there are no activities in the module
+            if (students == 0 || module.Activities.Count == 0)
+            {
+                return new TeacherCurrentViewModel { Course = course, Module = module, Activity = null, Assignments = null, Finished = null };
+            }
             var activity = module.Activities.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First();
 
             var assignments = await db.Activities.Where(c => c.ActivityType.Name == "Assignment" && c.Module.CourseId == id)
@@ -724,6 +793,8 @@ namespace LexiconLMS.Controllers
         public async Task<List<TeacherAssignmentListViewModel>> AssignmentListTeacher(int? id)
         {
             var students = db.Courses.Find(id).AppUsers.Count();
+
+            if (students == 0) return null;
 
             var assignments = await db.Activities
                 .Where(a => a.ActivityType.Name == "Assignment" && a.Module.CourseId == id)
