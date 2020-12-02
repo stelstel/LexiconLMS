@@ -419,15 +419,19 @@ namespace LexiconLMS.Controllers
                 //.Where(d => d.ActivityId == null)
                 .ToListAsync();
 
+            //List<string> fileList = new List<string>();
+
             // ONLY course documents. NOT module or activity documents (SearchOption.AllDirectories to see the rest)
-            ICollection<string> fileList = Directory.GetFiles($"/uploads/{course.Name}", "*.*", SearchOption.AllDirectories);
+            //ICollection<string> fileList = Directory.GetFiles($"/uploads/{course.Name}", "*.*", SearchOption.AllDirectories);
             //string path = Path.Combine(web.WebRootPath, $"uploads/{course.Name}");
 
             var model = new DownloadCourseDocumentViewModel
             {
                 Course = course,
                 DirectoryPath = directoryPath,
-                fileList = fileList
+                CurrentDirectory = Environment.CurrentDirectory,
+                //FileList = fileList,
+                DocumentList = docs
             };
 
             return View(model);

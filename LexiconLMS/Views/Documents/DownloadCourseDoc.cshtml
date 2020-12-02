@@ -11,9 +11,14 @@
 
 <div class="row custom-file">
         
-    @foreach (var file in Model.fileList)
+    @foreach (var doc in Model.DocumentList)
     {
-        <li @*id="customFile" name="file"*@><a href="@file">@file</a></li>
+    <li>
+        @*<a href="@Model.CurrentDirectory/@doc.FilePath">@doc.FilePath</a>*@
+        <a href="@doc.FilePath">@doc.FilePath</a>
+
+    </li>
+        
     }
 </div>
 
