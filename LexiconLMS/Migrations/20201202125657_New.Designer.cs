@@ -10,8 +10,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LexiconLMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<< HEAD:LexiconLMS/Migrations/20201202105932_init.Designer.cs
     [Migration("20201202105932_init")]
     partial class init
+=======
+    [Migration("20201202125657_New")]
+    partial class New
+>>>>>>> Joakim:LexiconLMS/Migrations/20201202125657_New.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
