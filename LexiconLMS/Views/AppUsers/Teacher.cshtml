@@ -14,14 +14,15 @@
 </div>
 
 <!--Modules and Activities-->
+<div id="div-add-module">
+    <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id">
+        <img id="add-module-icon" class="icon-img" src="~/icons/plus.svg" />
+        Add module
+    </a>
+</div>
+
 @if (Model.ModuleList != null)
 {
-    <div id="div-add-module">
-        <a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Current.Course.Id">
-            <img id="add-module-icon" class="icon-img" src="~/icons/plus.svg" />
-            Add module
-        </a>
-    </div>
 
     <partial name="TeacherModuleAndActivityPartial" model="@Model" />
 }
@@ -30,7 +31,7 @@
 <div class="container cont-section" id="assignments">
     <div class="row row-assignments">
         <div class="col-sm-12">
-            @if (Model.ModuleList != null)
+            @if (Model.ModuleList != null && Model.AssignmentList != null)
             {
                 <partial name="TeacherAssignmentPartial" model="@Model.AssignmentList" />
             }
