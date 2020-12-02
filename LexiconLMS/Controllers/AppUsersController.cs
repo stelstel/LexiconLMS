@@ -95,11 +95,14 @@ namespace LexiconLMS.Controllers
                 .OrderBy(m => m.StartTime)
                 .ToListAsync();
 
-            var currentModuleId = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First().Id;
-
-            SetCurrentModule(modules, currentModuleId);
-
-            return modules;
+            if (modules.Count() != 0)
+            {
+                var currentModuleId = modules.OrderBy(t => Math.Abs((t.StartTime - timeNow).Ticks)).First().Id;
+                SetCurrentModule(modules, currentModuleId);
+                return modules;
+            }
+            else
+                return modules;
         }
 
         public async Task<List<TeacherModuleViewModel>> GetTeacherModuleListAsync(int? id)
@@ -521,9 +524,19 @@ namespace LexiconLMS.Controllers
             {
                 activityList = await GetModuleActivityListAsync(module.Id);
             }
-
+            else
+            {
+                var nullModel = new StudentViewModel
+                {
+                    AssignmentList = null,
+                    ModuleList = null,
+                    ActivityList = null,
+                };
+                return View(nullModel);
+            }
             var assignmentList = await GetStudentAssignmentsAsync();
             var current = await Current();
+
 
             var appUser = await db.Users
                 .Include(a => a.Course)
@@ -601,9 +614,9 @@ namespace LexiconLMS.Controllers
             //    .ToListAsync();
 
 
-            var userList = (from q in db.Users 
+            var userList = (from q in db.Users
                             select q).Include("Course");
-                        
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -627,7 +640,7 @@ namespace LexiconLMS.Controllers
             }
             var userList2 = userList.ToList();
 
-            
+
 
 
             var model = new List<AppUserListViewModel>();
