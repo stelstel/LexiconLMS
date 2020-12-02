@@ -252,6 +252,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Documents/Details/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -274,6 +275,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Documents/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             ViewData["ActivityId"] = new SelectList(db.Activities, "Id", "Id");
@@ -286,6 +288,7 @@ namespace LexiconLMS.Controllers
         // POST: Documents/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,UploadTime,AppUserId,CourseId,ModuleId,ActivityId")] Document document)
@@ -304,6 +307,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Documents/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -326,6 +330,7 @@ namespace LexiconLMS.Controllers
         // POST: Documents/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,UploadTime,AppUserId,CourseId,ModuleId,ActivityId")] Document document)
@@ -363,6 +368,7 @@ namespace LexiconLMS.Controllers
         }
 
         // GET: Documents/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -385,6 +391,7 @@ namespace LexiconLMS.Controllers
         }
 
         // POST: Documents/Delete/5
+        [Authorize(Roles = "Teacher")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
