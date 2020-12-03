@@ -10,7 +10,21 @@
 <h1>Details</h1>
 <hr />
 <div>
-    <h4>Activity</h4>
+
+    @if (User.IsInRole("Teacher"))
+    {
+        <h4>
+            Activity<a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.Activity.ModuleId">
+                <img src="/icons/edit.svg" alt="Edit" style="width:1.4rem" />
+            </a>
+        </h4>
+    }
+    else if (User.IsInRole("Student"))
+    {
+        <h4>
+            Activity
+        </h4>
+    }
 
     <dl class="row">
         <dt class="col-sm-2">
@@ -53,7 +67,7 @@
 </div>
 
 
-@if (User.IsInRole("Teacher"))
+@if (User.IsInRole("Teacher") && Model.Activity.ActivityType.Name == "Assignment")
 {
     <hr />
     <h4>Assignment Completion</h4>
@@ -75,16 +89,20 @@
             </div>
         }
     }
+}
 
-    <hr />
-    <div>
-        <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
-    </div>
-}
-else if (User.IsInRole("Student"))
-{
-    <hr />
-    <div>
-        <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
-    </div>
-}
+    @if (User.IsInRole("Teacher"))
+    {
+
+        <hr />
+        <div>
+            <a asp-controller="AppUsers" asp-action="Teacher" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
+        </div>
+    }
+    else if (User.IsInRole("Student"))
+    {
+        <hr />
+        <div>
+            <a asp-controller="AppUsers" asp-action="Student" asp-route-id="@Model.Activity.Module.CourseId">Go Back</a>
+        </div>
+    }

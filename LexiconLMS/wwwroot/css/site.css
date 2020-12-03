@@ -492,13 +492,16 @@ table#userindex tbody tr:hover a {
 }
 
 #download-module-doc-icon {
-    transform: rotate(180deg);
     width: 20px;
 }
 
 #download-module-doc-icon {
     margin-top: 0.45rem;
     width: 28px;
+}
+
+#download-module-doc-icon-teacher {
+    width: 21px
 }
 
 /* No bullets in ul*/

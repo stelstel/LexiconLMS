@@ -229,7 +229,7 @@ namespace LexiconLMS.Data
             // Seed Students
             var students = new List<AppUser>();
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 50; i++)
             {
                 var fName = fake.Name.FirstName();
                 var lName = fake.Name.LastName();
