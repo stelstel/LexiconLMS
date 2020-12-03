@@ -3,7 +3,7 @@
 <h2>Activities</h2>
 
 <div id="activity-header-row" class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         @Html.DisplayNameFor(model => model.Name)
     </div>
     <div class="col-sm-3">
@@ -12,7 +12,7 @@
     <div class="col-sm-3">
         @Html.DisplayNameFor(model => model.EndTime)
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
         @Html.DisplayNameFor(model => model.ActivityType)
     </div>
     <div class="col-sm-1">
@@ -23,7 +23,7 @@
 {
     <!--Edit/Details etc-->
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
         </div>
         <div class="col-sm-3">
@@ -32,7 +32,7 @@
         <div class="col-sm-3">
             @Html.DisplayFor(modelItem => item.EndTime)
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             @Html.DisplayFor(modelItem => item.ActivityType)
         </div>
         <div class="col-sm-1 col-icons">
