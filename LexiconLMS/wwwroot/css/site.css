@@ -422,8 +422,8 @@ table#userindex tbody tr:hover a {
 }
 
 /* On hover, except content row 1 command row 3 */
-.row-assignments .row:not(:nth-child(1)):not(:nth-child(3)):hover a {
-    color: white; /*  Remove?? */
+.row-assignments .row:not(:nth-child(1)):not(:nth-child(2)):hover a {
+    color: white;
 }
 
 /* On hover, except content row 2 */
