@@ -610,14 +610,11 @@ namespace LexiconLMS.Controllers
             ViewData["EmailSortParm"] = sortOrder == "Email" ? "email_desc" : "Email";
 
 
-            //var userList = await db.Users
-            //    .OrderBy(u => u.LastName)
-            //    .Include(a => a.Course)
-            //    .ToListAsync();
+            var userList = db.Users
+                .OrderBy(u => u.LastName)
+                .Include(a => a.Course)
+                .AsQueryable();
 
-
-            var userList = (from q in db.Users
-                            select q).Include("Course");
 
             switch (sortOrder)
             {

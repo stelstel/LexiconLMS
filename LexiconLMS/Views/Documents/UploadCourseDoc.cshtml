@@ -16,13 +16,12 @@
     }
 </script>
 
-
-
 <h4>Upload Document for @Model.Course.Name</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form name="uploadForm" asp-action="UploadCourseDoc" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <form name="uploadForm" asp-action="UploadCourseDoc" method="post" 
+              enctype="multipart/form-data" onsubmit="return validateForm()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <label for="Document">Document</label>
             <div class="custom-file" style="margin-bottom:10px">

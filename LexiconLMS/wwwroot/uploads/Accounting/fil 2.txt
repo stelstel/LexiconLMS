@@ -1,0 +1,23 @@
+* View and Controller font
+* Valde denna vy för mest saker händer här
+* Kommer tekniskt sett visa upp två vyer till 
+men det är för att vi vill visa vad som sker i kontrollern, 
+vyerna i sig är ganska ointressanta
+--
+* Totalt fem partiella vyer
+* Denna har två stycken i sig
+--
+* Här ser ni hierarkin
+--
+* Vi börjar överst
+* pågående modul och aktivitet, de aktiviteter som ligger närmast i tid,
+samt hur stor del av klassen som gjort uppgifterna.
+* Vi går igenom dessa tre knappar: 
+* Istället för att ha en Details-vy kör vi med en modal och lägger även in en
+lista av alla elever som går kursen.
+--
+* Såhär ser det ut när man klickar och såhär ser koden ut som alltså ligger på samma
+cshtml fil.
+* Datat finns också redan laddat i den partiella vyn 
+--
+* Nästa: dokumentuppladdning på kursnivå

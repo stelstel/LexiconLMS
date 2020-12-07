@@ -421,8 +421,6 @@ namespace LexiconLMS.Controllers
                         
             ICollection<Document> docs = await db.Documents
                 .Where(d => d.Course == course)
-                //.Where(d => d.ModuleId == null)
-                //.Where(d => d.ActivityId == null)
                 .ToListAsync();
 
             var model = new DownloadCourseDocumentViewModel
